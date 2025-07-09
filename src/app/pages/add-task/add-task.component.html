@@ -1,0 +1,69 @@
+<!-- Add Task Title -->
+<!-- <h2>Activity Tracker</h2> -->
+
+<!-- Custom Alert Message in Top Right -->
+<div class="custom-alert" *ngIf="showAlert" [ngClass]="alertType">
+  <div class="alert-content">
+    <span class="alert-message">{{ alertMessage }}</span>
+    <button type="button" class="close-btn" (click)="closeAlert()">&times;</button>
+  </div>
+</div>
+
+<!-- Header Section -->
+<div class="header-info">
+  <div class="date-section">
+    <span class="today-date">{{ 'Today: ' + (today | date:'fullDate') }}</span>
+  </div>
+  <div class="user-info">
+    <div class="user-icon" (click)="triggerFileInput()">
+      <img *ngIf="userPhoto" [src]="userPhoto" alt = "User photo" class="user-photo zoomed">
+      <span *ngIf="!userPhoto" class="user-placeholder">👤</span>
+    </div>
+    <input #fileInput type="file" accept="image/*" (change)="onPhotoSelected($event)" style="display: none;">
+    <span>Yuvaraj</span>
+  </div>
+</div>
+
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form">
+  
+  <!-- Task Name Field with Validation -->
+  <div class="form-field">
+    <input type="text" formControlName="name" placeholder="Task Name" />
+    <div class="error-messages" *ngIf="name?.invalid && (name?.dirty || name?.touched || submitted)">
+      <div *ngIf="hasNameError('required')" class="error">Task name is required</div>
+      <div *ngIf="hasNameError('minlength')" class="error">Task name must be at least 3 characters long</div>
+      <div *ngIf="hasNameError('maxlength')" class="error">Task name cannot exceed 20 characters</div>
+      <div *ngIf="hasNameError('pattern')" class="error">Task name can only contain letters, numbers, and spaces</div>
+    </div>
+  </div>
+
+  <!-- Description Field with Validation -->
+  <div class="form-field">
+    <textarea formControlName="description" placeholder="Description (optional)"></textarea>
+    <div class="error-messages" *ngIf="description?.invalid && (description?.dirty || description?.touched || submitted)">
+      <div *ngIf="hasDescriptionError('minlength')" class="error">Description must be at least 5 characters long</div>
+    </div>
+  </div>
+
+  <!-- Date Fields -->
+  <div class="form-field">
+    <label for="startDate">Start Date (optional)</label>
+    <input type="date" id="startDate" formControlName="startDate" />
+  </div>
+
+  <div class="form-field">
+    <label for="endDate">End Date (optional)</label>
+    <input type="date" id="endDate" formControlName="endDate" />
+  </div>
+
+  <!-- Target Date Field with Validation -->
+  <div class="form-field">
+    <label for="targetDate">Target Date *</label>
+    <input type="date" id="targetDate" formControlName="targetDate" />
+    <div class="error-messages" *ngIf="targetDate?.invalid && (targetDate?.dirty || targetDate?.touched || submitted)">
+      <div *ngIf="hasTargetDateError('required')" class="error">Target date is required</div>
+    </div>
+  </div>
+
+  <button type="submit">Add Task</button>
+</form>

@@ -1,0 +1,71 @@
+<div class="pending-tasks-container">
+  <div class="header-section">
+    <h2>📋 Pending Tasks</h2>
+    <div class="task-count">
+      <span class="count">{{ tasks.length }}</span>
+      <span class="label">  Tasks Remaining</span>
+    </div>
+  </div>
+
+  <div class="tasks-grid" *ngIf="tasks.length > 0; else noTasks">
+    <div class="task-card" *ngFor="let task of tasks;  ">
+      <div class="task-header">
+        <div class="task-checkbox">
+          <input type="checkbox" 
+                 [id]="'task-' + task.id" 
+                 (change)="markCompleted(task)" 
+                 class="custom-checkbox" />
+          <label [for]="'task-' + task.id" class="checkbox-label"></label>
+        </div>
+        <div class="task-priority">
+          <span class="priority-indicator high"></span>
+        </div>
+      </div>
+      
+      <div class="task-content">
+        <h3 class="task-name">{{ task.name }}</h3>
+        <p class="task-description" *ngIf="task.description">
+          {{ task.description }}
+        </p>
+        <p class="task-description empty" *ngIf="!task.description">
+          No description provided
+        </p>
+        
+        <div class="task-dates">
+          <div class="date-item" *ngIf="task.startDate">
+            <span class="date-label">📅 Start:</span>
+            <span class="date-value">{{ task.startDate | date:'mediumDate' }}</span>
+          </div>
+          
+          <div class="date-item" *ngIf="task.endDate">
+            <span class="date-label">🏁 End:</span>
+            <span class="date-value">{{ task.endDate | date:'mediumDate' }}</span>
+          </div>
+          
+          <div class="date-item target-date">
+            <span class="date-label">🎯 Target:</span>
+            <span class="date-value">{{ task.targetDate | date:'mediumDate' }}</span>
+          </div>
+        </div>
+        
+        <div class="task-footer">
+          <div class="task-status">
+            <span class="status-badge pending">{{ getStatusText(task.status) }}</span>
+          </div>
+          <div class="task-actions">
+            <button class="action-btn edit" title="Edit Task">✏️</button>
+            <button class="action-btn delete" title="Delete Task">🗑️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #noTasks>
+    <div class="no-tasks">
+      <div class="no-tasks-icon">📝</div>
+      <h3>No Pending Tasks</h3>
+      <p>You're all caught up! Add a new task to get started.</p>
+      <button class="add-task-btn" routerLink="/add-task">➕ Add New Task</button>
+    </div>
+  </ng-template>
+</div>
