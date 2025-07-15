@@ -1,0 +1,672 @@
+<div class="custom-top-div">
+  <!-- This is a new top-level div for demonstration -->
+</div>
+
+<!-- PrimeNG Menubar -->
+<nav class="nav-container">
+    <div class="nav-content">
+        <p-menubar [model]="items" styleClass="custom-menubar"></p-menubar>
+    </div>
+    <div class="nav-calendar">
+        <p-calendar [(ngModel)]="date" [showIcon]="true"></p-calendar>
+    </div>
+</nav>
+
+<!-- Toggle Button Section -->
+<div class="card save-section">
+    <p-toggleButton 
+        [(ngModel)]="checked" 
+        onLabel="On" 
+        offLabel="Off">
+    </p-toggleButton>
+    <h2>Save The Page!</h2>
+</div>
+
+<!-- Text Editor Section
+<div class="card editor-section">
+    <h3>Rich Text Editor</h3>
+    <p-editor [(ngModel)]="text" [style]="{ height: '320px' }"></p-editor>
+</div> -->
+
+
+
+
+
+
+
+
+<!-- Table with Pagination -->
+<div class="card table-section">
+    <h3>Products Table with Built-in Pagination</h3>
+    <p-table 
+        #dt2
+        [value]="products" 
+        [paginator]="true" 
+        [rows]="10" 
+        [totalRecords]="products.length"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+        styleClass="p-datatable-gridlines"
+        [globalFilterFields]="['code', 'name', 'category', 'quantity']">
+        
+        <ng-template pTemplate="caption">
+            <div class="table-header">
+                <span class="table-title">Product Inventory</span>
+                <p-iconField iconPosition="left" class="search-field">
+                    <p-inputIcon>
+                        <i class="pi pi-search"></i>
+                    </p-inputIcon>
+                    <input 
+                        pInputText 
+                        type="text" 
+                        (input)="dt2.filterGlobal($any($event.target).value, 'contains')" 
+                        placeholder="Search products..." />
+                </p-iconField>
+            </div>
+        </ng-template>
+        
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="code" style="width:25%">
+                    Code 
+                    <p-sortIcon field="code"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name" style="width:25%">
+                    Name 
+                    <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="category" style="width:25%">
+                    Category 
+                    <p-sortIcon field="category"></p-sortIcon>
+                </th>
+                <th pSortableColumn="quantity" style="width:25%">
+                    Quantity 
+                    <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{ product.code }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.quantity }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<!-- AutoComplete Section -->
+<div class="card autocomplete-section">
+    <div class="autocomplete-container">
+        <h3>Country AutoComplete</h3>
+        <p-autoComplete
+            [(ngModel)]="selectedCountry"
+            [suggestions]="filteredCountries"
+            (completeMethod)="filterCountry($event)"
+            optionLabel="name"
+            placeholder="Type to search countries..."
+            [minLength]="1"
+            [dropdown]="true"
+            inputId="country"
+            styleClass="custom-autocomplete">
+        </p-autoComplete>
+        
+        <!-- Show selected country -->
+        <div *ngIf="selectedCountry" class="selected-country">
+            <p><strong>Selected Country:</strong> {{ selectedCountry.name }} ({{ selectedCountry.code }})</p>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================
+     PRIMEFLEX GRID SYSTEM EXAMPLES
+========================================= -->
+
+<!-- Basic Grid Layout -->
+<div class="card mt-4">
+    <h3 class="text-center mb-4">PrimeFlex Grid System Examples</h3>
+    
+    <!-- 12 Column Grid -->
+    <div class="grid mb-6">
+        <div class="col-12">
+            <div class="bg-blue-100 p-3 border-round text-center">
+                <h5 class="m-0">12 Columns - Full Width</h5>
+                <div class="bg-white border-round p-4 mt-3 shadow-1">
+                    <div class="grid gap-4">
+                        <div 
+                            *ngFor="let box of [].constructor(20); let i = index" 
+                            class="col-2"
+                            style="border: 2px solid #1976d2; border-radius: 8px; padding: 16px; margin-bottom: 8px; background: #e3f2fd; text-align: center;"
+                        >
+                            <span class="font-semibold text-blue-700">Box {{ i + 1 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 6-6 Grid -->
+    <!-- <div class="grid mb-4">
+        <div class="col-6">
+            <div class="bg-green-100 p-3 border-round text-center">
+                <h5 class="m-0">6 Columns</h5>
+                  <div 
+                            *ngFor="let box of [].constructor(20); let i = index" 
+                            class="col-2"
+                            style="border: 2px solid #1976d2; border-radius: 8px; padding: 16px; margin-bottom: 8px; background: #e3f2fd; text-align: center;"
+                        >
+                            <span class="font-semibold text-blue-700">Box {{ i + 1 }}</span>
+                        </div>
+            </div>
+            </div> -->
+            <div class="col-6">
+                <div class="bg-orange-100 p-3 border-round text-center">
+                    <h5 class="m-0">6 Columns</h5>
+                </div>
+            </div>
+    <!-- Removed stray closing </div> tag here -->
+    
+    <!-- 4-4-4 Grid -->
+    <div class="grid mb-4">
+        <div class="col-4">
+            <div class="bg-purple-100 p-3 border-round text-center">
+                <h5 class="m-0">4 Columns</h5>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="bg-pink-100 p-3 border-round text-center">
+                <h5 class="m-0">4 Columns</h5>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="bg-teal-100 p-3 border-round text-center">
+            <h5 class="m-0">4 Columns</h5>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <!-- 3-3-3-3 Grid -->
+    <div class="grid mb-4">
+        <div class="col-3">
+            <div class="bg-red-100 p-3 border-round text-center">
+                <h5 class="m-0">3 Cols</h5>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="bg-yellow-100 p-3 border-round text-center">
+                <h5 class="m-0">3 Cols</h5>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="bg-cyan-100 p-3 border-round text-center">
+                <h5 class="m-0">3 Cols</h5>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="bg-indigo-100 p-3 border-round text-center">
+                <h5 class="m-0">3 Cols</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Responsive Grid -->
+<div class="card mt-4">
+    <h3 class="text-center mb-4">Responsive Grid Layout</h3>
+    
+    <div class="grid">
+        <div class="col-12 md:col-6 lg:col-4">
+            <div class=" p-4 border-round-lg shadow-2">
+                <div class="flex align-items-center mb-3">
+                    <i class="pi pi-user text-red-500 text-2xl mr-3"></i>
+                    <h4 class="m-0 text-red-900">User Profile</h4>
+                </div>
+                <p class="text-600 line-height-3">
+                    Responsive grid that adapts to different screen sizes. 
+                    Mobile: 12 cols, Tablet: 6 cols, Desktop: 4 cols.
+                </p>
+                <div class="flex justify-content-between align-items-center mt-3">
+                    <span class="text-sm text-500">Status: Active</span>
+                    <p-button label="View" icon="pi pi-eye" size="small" severity="danger"></p-button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 md:col-6 lg:col-4">
+            <!-- <div class="p-4 bg-red-50 border-round-lg shadow-2"> -->
+            <div class="bg-red-50 p-4 border-round-lg shadow-2   mb-4">
+                <div class="flex align-items-center mb-3">
+                    <i class="pi pi-chart-line text-green-500 text-2xl mr-3"></i>
+                    <h4 class="m-0 text-green-900">Analytics</h4>
+                </div>
+                <p class="text-600 line-height-4">
+                    Track your performance metrics and view detailed analytics 
+                    with real-time data visualization.
+                </p>
+                <div class="flex align-items-center justify-content-between mt-3">
+                    <span>Updated: Today</span>
+                    <p-button label="Open" icon="pi pi-pencil" size="small" severity="success"></p-button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 md:col-6 lg:col-4">
+            <div class="bg-orange-50 p-4 border-round-lg shadow-2">
+                <div class="flex align-items-center mb-3">
+                    <i class="pi pi-pencil text-orange-500 text-2xl mr-3"></i>
+                    <h4 class="m-0 text-orange-900">Settings</h4>
+                </div>
+                <p class="text-600 line-height-3">
+                    Configure your application preferences and customize 
+                    the interface to match your workflow.
+                </p>
+                <div class="flex justify-content-between align-items-center mt-3">
+                    <span class="text-sm text-500">Last Modified: 2 days ago</span>
+                    <p-button label="Edit" icon="pi pi-pencil" size="small" severity="warning"></p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Flexbox Utilities -->
+<div class="card mt-4">
+    <h3 class="text-center mb-4">Flexbox Utilities</h3>
+    
+    <!-- Flex Direction Examples -->
+    <div class="mb-5">
+        <h5 class="mb-3">Flex Direction</h5>
+        <div class="grid">
+            <div class="col-6">
+                <h6 class="mb-2">Row (Default)</h6>
+                <div class="flex p-3 bg-gray-100 border-round gap-2">
+                    <div class="bg-primary p-2 border-round text-white text-center flex-5">1</div>
+                    <div class="bg-primary p-2 border-round text-white text-center flex-1">2</div>
+                    <div class="bg-primary p-2 border-round text-white text-center flex-1">3</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <h6 class="mb-2">Column</h6>
+                <div class="flex flex-column p-3 bg-gray-100 border-round gap-2" style="height: 120px;">
+                    <div class="bg-primary p-2 border-round text-white text-center">1</div>
+                    <div class="bg-primary p-2 border-round text-white text-center">2</div>
+                    <div class="bg-primary p-2 border-round text-white text-center">3</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Justify Content Examples -->
+    <div class="mb-5">
+        <h5 class="mb-3">Justify Content</h5>
+        <div class="grid">
+            <div class="col-4">
+                <h6 class="mb-2 text-sm">Start</h6>
+                <div class="flex justify-content-start p-3 bg-blue-100 border-round gap-2">
+                    <div class="bg-blue-500 p-2 border-round text-white">A</div>
+                    <div class="bg-blue-500 p-2 border-round text-white">B</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h6 class="mb-2 text-sm">Center</h6>
+                <div class="flex justify-content-center p-3 bg-green-100 border-round gap-2">
+                    <div class="bg-green-500 p-2 border-round text-white">A</div>
+                    <div class="bg-green-500 p-2 border-round text-white">B</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h6 class="mb-2 text-sm">End</h6>
+                <div class="flex justify-content-end p-3 bg-orange-100 border-round gap-2">
+                    <div class="bg-orange-500 p-2 border-round text-white">A</div>
+                    <div class="bg-orange-500 p-2 border-round text-white">B</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Align Items Examples -->
+    <div class="mb-4">
+        <h5 class="mb-3">Align Items</h5>
+        <div class="grid">
+            <div class="col-4">
+                <h6 class="mb-2 text-sm">Start</h6>
+                <div class="flex align-items-start p-3 bg-purple-100 border-round gap-2" style="height: 80px;">
+                    <div class="bg-purple-500 p-2 border-round text-white">1</div>
+                    <div class="bg-purple-500 p-3 border-round text-white">2</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h6 class="mb-2 text-sm">Center</h6>
+                <div class="flex align-items-center p-3 bg-pink-100 border-round gap-2" style="height: 80px;">
+                    <div class="bg-pink-500 p-2 border-round text-white">1</div>
+                    <div class="bg-pink-500 p-3 border-round text-white">2</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <h6 class="mb-2 text-sm">End</h6>
+                <div class="flex align-items-end p-3 bg-teal-100 border-round gap-2" style="height: 80px;">
+                    <div class="bg-teal-500 p-2 border-round text-white">1</div>
+                    <div class="bg-teal-500 p-3 border-round text-white">2</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gap and Spacing Examples -->
+<div class="card mt-4">
+    <h3 class="text-center mb-4">Gap and Spacing Utilities</h3>
+    
+    <div class="grid">
+        <div class="col-6">
+            <h5 class="mb-3">Grid with Gaps</h5>
+            <div class="grid gap-4">
+                <div class="col-6">
+                    <div class="bg-cyan-200 p-3 border-round text-center">
+                        <span class="font-semibold">Gap 3</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-cyan-200 p-3 border-round text-center">
+                        <span class="font-semibold">Gap 3</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-cyan-200 p-3 border-round text-center">
+                        <span class="font-semibold">Gap 3</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-cyan-200 p-3 border-round text-center">
+                        <span class="font-semibold">Gap 3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-6">
+            <h5 class="mb-3">Margin and Padding</h5>
+            <div class="bg-gray-200 p-4 border-round">
+                <div class="bg-white p-3 mb-3 border-round shadow-1">
+                    <span class="text-sm">Padding: p-3, Margin Bottom: mb-3</span>
+                </div>
+                <div class="bg-white p-2 mt-2 border-round shadow-1">
+                    <span class="text-sm">Padding: p-2, Margin Top: mt-2</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Grid Examples -->
+<div class="card mt-4">
+    <h3 class="text-center mb-4">Advanced Grid Layouts</h3>
+    
+    <!-- Nested Grids -->
+    <div class="mb-5">
+        <h5 class="mb-3">Nested Grids</h5>
+        <div class="grid">
+            <div class="col-8">
+                <div class="bg-blue-100 p-3 border-round">
+                    <h6 class="mb-3 text-blue-900">Main Content (8 columns)</h6>
+                    <div class="grid">
+                        <div class="col-6">
+                            <div class="bg-blue-200 p-2 border-round text-center">
+                                <span class="text-blue-900">Nested 6</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-blue-200 p-2 border-round text-center">
+                                <span class="text-blue-900">Nested 6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="bg-orange-100 p-3 border-round">
+                    <h6 class="mb-3 text-orange-900">Sidebar (4 columns)</h6>
+                    <div class="grid">
+                        <div class="col-12">
+                            <div class="bg-orange-200 p-2 border-round text-center">
+                                <span class="text-orange-900">Widget 1</span>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <div class="bg-orange-200 p-2 border-round text-center">
+                                <span class="text-orange-900">Widget 2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Offset Columns -->
+    <div class="mb-5">
+        <h5 class="mb-3">Offset Columns</h5>
+        <div class="grid">
+            <div class="col-6 col-offset-3">
+                <div class="bg-green-100 p-3 border-round text-center">
+                    <span class="text-green-900 font-semibold">Centered with offset-3 (6 columns)</span>
+                </div>
+            </div>
+        </div>
+        <div class="grid mt-3">
+            <div class="col-4 col-offset-2">
+                <div class="bg-purple-100 p-3 border-round text-center">
+                    <span class="text-purple-900">offset-2</span>
+                </div>
+            </div>
+            <div class="col-4 col-offset-2">
+                <div class="bg-pink-100 p-3 border-round text-center">
+                    <span class="text-pink-900">offset-2</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Variable Width Columns -->
+    <div class="mb-4">
+        <h5 class="mb-3">Variable Width & Auto Columns</h5>
+        <div class="grid">
+            <div class="col-fixed" style="width: 200px;">
+                <div class="bg-yellow-100 p-3 border-round text-center">
+                    <span class="text-yellow-900">Fixed 200px</span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="bg-cyan-100 p-3 border-round text-center">
+                    <span class="text-cyan-900">Auto width (fills remaining)</span>
+                </div>
+            </div>
+            <div class="col-fixed" style="width: 150px;">
+                <div class="bg-red-100 p-3 border-round text-center">
+                    <span class="text-red-900">Fixed 150px</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interactive Grid Layout Switcher -->
+<div class="card mt-4">
+    <h3 class="text-center mb-4">Interactive Grid Layout</h3>
+    
+    <!-- Layout Controls -->
+    <div class="flex justify-content-center mb-4 gap-2">
+        <p-button 
+            label="Grid View" 
+            icon="pi pi-th-large" 
+            [outlined]="layout !== 'grid'"
+            (onClick)="layout = 'grid'"
+            size="small">
+        </p-button>
+        <p-button 
+            label="List View" 
+            icon="pi pi-list" 
+            [outlined]="layout !== 'list'"
+            (onClick)="layout = 'list'"
+            size="small">
+        </p-button>
+        <p-button 
+            label="Card View" 
+            icon="pi pi-th" 
+            [outlined]="layout !== 'card'"
+            (onClick)="layout = 'card'"
+            size="small">
+        </p-button>
+    </div>
+    
+    <!-- Grid Layout -->
+    <div *ngIf="layout === 'grid'" class="grid col-offset-3 ">
+        <div *ngFor="let item of gridItems" class="col-12 md:col-6 lg:col-4 xl:col-3">
+            <div class="bg-white p-3 border-round shadow-2 h-full">
+                <img [src]="item.image" [alt]="item.title" class="w-full h-8rem object-cover border-round mb-3">
+                <h6 class="m-0 mb-2 text-900">{{ item.title }}</h6>
+                <p class="text-600 text-sm line-height-3 mb-3">{{ item.description }}</p>
+                <div class="flex justify-content-between align-items-center">
+                    <span class="text-xl font-bold text-primary">{{ item.price }}</span>
+                    <p-button icon="pi pi-shopping-cart" size="small"></p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- List Layout -->
+    <div *ngIf="layout === 'list'" class="flex flex-column gap-3">
+        <div *ngFor="let item of gridItems" class="bg-white p-3 border-round shadow-2">
+            <div class="flex align-items-center gap-3">
+                <img [src]="item.image" [alt]="item.title" class="w-6rem h-4rem object-cover border-round">
+                <div class="flex-1">
+                    <h6 class="m-0 mb-1 text-900">{{ item.title }}</h6>
+                    <p class="text-600 text-sm m-0">{{ item.description }}</p>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <span class="text-xl font-bold text-primary">{{ item.price }}</span>
+                    <p-button icon="pi pi-shopping-cart" size="small"></p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Card Layout -->
+    <div *ngIf="layout === 'card'" class="grid">
+        <div *ngFor="let item of gridItems" class="col-12 md:col-6">
+            <div class="bg-white p-4 border-round shadow-3 h-full">
+                <div class="flex align-items-start gap-3">
+                    <img [src]="item.image" [alt]="item.title" class="w-8rem h-6rem object-cover border-round">
+                    <div class="flex-1">
+                        <div class="flex justify-content-between align-items-start mb-2">
+                            <h5 class="m-0 text-900">{{ item.title }}</h5>
+                            <span class="bg-primary text-white px-2 py-1 border-round text-xs">{{ item.category }}</span>
+                        </div>
+                        <p class="text-600 line-height-3 mb-3">{{ item.description }}</p>
+                        <div class="flex justify-content-between align-items-center">
+                            <div class="flex align-items-center gap-1">
+                                <i class="pi pi-star-fill text-yellow-500"></i>
+                                <span class="text-sm">{{ item.rating }}</span>
+                            </div>
+                            <span class="text-2xl font-bold text-primary">{{ item.price }}</span>
+                        </div>
+                        <!-- <div class="flex gap-2 mt-3">
+                            <p-button label="View Details" outlined size="small" class="flex-1"></p-button>
+                            <p-button icon="pi pi-shopping-cart" size="small"></p-button>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Masonry-like Layout -->
+<div class="card mt-4">
+    <h3 class="text-center mb-4">Masonry-style Layout</h3>
+    
+    <div class="grid">
+        <div class="col-12 md:col-6 lg:col-3">
+            <div class="bg-gradient-to-br from-blue-400 to-blue-600 p-4 border-round text-white mb-3" style="height: 120px;">
+                <h6 class="m-0 mb-2">Sales Overview</h6>
+                <div class="text-2xl font-bold">$24,580</div>
+                <div class="text-blue-100 text-sm">+12% from last month</div>
+            </div>
+        </div>
+        
+        <div class="col-12 md:col-6 lg:col-3">
+            <div class="bg-gradient-to-br from-green-400 to-green-600 p-4 border-round text-white mb-3" style="height: 180px;">
+                <h6 class="m-0 mb-2">Revenue Growth</h6>
+                <div class="text-3xl font-bold mb-2">158%</div>
+                <div class="text-green-100 text-sm mb-3">Quarterly increase</div>
+                <div class="bg-green-500 border-round p-2">
+                    <div class="text-xs">Target: 150%</div>
+                    <div class="bg-white border-round mt-1" style="height: 4px;">
+                        <div class="bg-green-200 border-round h-full" style="width: 95%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 md:col-6 lg:col-3">
+            <div class="bg-gradient-to-br from-purple-400 to-purple-600 p-4 border-round text-white mb-3" style="height: 140px;">
+                <h6 class="m-0 mb-2">Active Users</h6>
+                <div class="text-2xl font-bold mb-1">8,429</div>
+                <div class="text-purple-100 text-sm">Online now: 1,247</div>
+                <div class="flex align-items-center gap-1 mt-2">
+                    <i class="pi pi-arrow-up text-xs"></i>
+                    <span class="text-xs">+5.2%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 md:col-6 lg:col-3">
+            <div class="bg-gradient-to-br from-orange-400 to-orange-600 p-4 border-round text-white mb-3" style="height: 200px;">
+                <h6 class="m-0 mb-2">Task Completion</h6>
+                <div class="text-center mb-3">
+                    <div class="text-4xl font-bold">87%</div>
+                    <div class="text-orange-100 text-sm">This week</div>
+                </div>
+                <div class="flex justify-content-between text-xs mb-2">
+                    <span>Completed: 174</span>
+                    <span>Pending: 26</span>
+                </div>
+                <div class="bg-orange-500 border-round" style="height: 6px;">
+                    <div class="bg-white border-round h-full" style="width: 87%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-container flex justify-content-center  bg-red gap-4 mt-4"></div>
+        <div class="w-4rem h-4rem bg-red-500 font-bold text-center p-4 border-round flex align-items-center justify-content-center" style="background-color: #dc3545;">1</div>
+        <div class="w-4rem h-4rem bg-red-500 font-bold text-center p-4 border-round flex align-items-center justify-content-center" style="background-color: #dc3545;">2</div>
+        <div class="w-4rem h-4rem bg-red-500 font-bold text-center p-4 border-round flex align-items-center justify-content-center" style="background-color: #dc3545;">3</div>
+    </div>
+
+<div class="line-height-3">
+    <div class="overflow-auto surface-overlay surface-ground  p-3 border-red-500 border-2 " style="height: 100px">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+        esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </div>
+</div> 
+<div class="grid nested-grid" style="border: 2px solid #1976d2; border-radius: 8px; display: flex;">
+    <div class="col-6" style="border-right: 2px solid #1976d2;">
+        <div class="grid" style="display: flex;">
+            <div class="col" style="border-right: 1px solid #1976d2;">
+                <div class="text-center p-3 border-round-sm bg-primary font-bold" style="border: 1px solid #1976d2;">6</div>
+            </div>
+            <!-- <div class="col-6">
+                <div class="text-center p-3 border-round-sm bg-primary font-bold" style="border: 1px solid #1976d2;">6</div>
+            </div> -->
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="text-center p-3 border-round-sm h-full bg-primary font-bold" style="border: 1px solid #1976d2;">4</div>
+    </div>
+</div>

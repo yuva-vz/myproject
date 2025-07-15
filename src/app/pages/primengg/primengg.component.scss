@@ -1,0 +1,390 @@
+/* ========================================
+   NAVIGATION STYLING
+========================================= */
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  background: #343a40;
+  padding: 0 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nav-content {
+  flex: 1;
+}
+
+.nav-calendar {
+  margin-left: auto;
+}
+
+/* ========================================
+   CARD SECTIONS
+========================================= */
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.save-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  width: fit-content;
+  margin: 20px auto;
+}
+
+.editor-section {
+  background: #f8f9fa;
+}
+
+.table-section {
+  background: #ffffff;
+}
+
+.autocomplete-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* ========================================
+   TABLE STYLING
+========================================= */
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.table-title {
+  font-weight: 600;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.search-field {
+  width: 250px;
+}
+
+::ng-deep .p-datatable .p-datatable-header {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  font-weight: 600;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr {
+  transition: all 0.2s ease;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background: #f8f9fa;
+}
+
+/* ========================================
+   AUTOCOMPLETE STYLING
+========================================= */
+
+.autocomplete-container {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+  
+}
+
+.autocomplete-container h3 {
+  margin-bottom: 15px;
+  color: #495057;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+/* Custom AutoComplete Styling */
+.custom-autocomplete {
+  width: 100% !important;
+}
+
+.custom-autocomplete .p-autocomplete {
+  width: 100%;
+}
+
+.custom-autocomplete .p-inputtext {
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.custom-autocomplete .p-inputtext:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
+
+.custom-autocomplete .p-autocomplete-dropdown {
+  border: 2px solid #dee2e6;
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.custom-autocomplete .p-autocomplete-dropdown:hover {
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  transform: translateY(-1px);
+}
+
+/* AutoComplete Panel */
+::ng-deep .p-autocomplete-panel {
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  margin-top: 2px;
+}
+
+::ng-deep .p-autocomplete-items {
+  padding: 8px 0;
+}
+
+::ng-deep .p-autocomplete-item {
+  padding: 12px 15px;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+::ng-deep .p-autocomplete-item:hover {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  transform: translateX(5px);
+}
+
+::ng-deep .p-autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+/* Selected Country Display */
+.selected-country {
+  background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+  border: 2px solid #4caf50;
+  border-radius: 8px;
+  padding: 12px 15px;
+  text-align: left;
+  animation: fadeInUp 0.3s ease;
+}
+
+.selected-country p {
+  margin: 0;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+/* Animation for selected country */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive AutoComplete */
+@media (max-width: 768px) {
+  .autocomplete-container {
+    padding: 15px;
+    max-width: 100%;
+  }
+  
+  .custom-autocomplete .p-inputtext {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ========================================
+   ADVANCED GRID STYLING
+========================================= */
+
+/* Grid Layout Animations */
+.grid > div {
+  transition: all 0.3s ease;
+}
+
+.grid > div:hover {
+  transform: translateY(-2px);
+}
+
+/* Card hover effects */
+.shadow-2:hover {
+  box-shadow: 0 8px 25px rgba(10, 194, 34, 0.15) !important;
+  transition: all 0.3s ease;
+}
+
+.shadow-3:hover {
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s ease;
+}
+
+/* Gradient backgrounds for masonry cards */
+.bg-gradient-to-br {
+  background: linear-gradient(to bottom right, var(--from-color), var(--to-color));
+}
+
+/* Interactive grid buttons */
+.p-button-outlined:not(.p-disabled):hover {
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* Grid item image styling */
+.object-cover {
+  object-fit: cover;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+  .grid > div {
+    margin-bottom: 1rem;
+  }
+  
+  .flex.gap-2 {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .text-2xl {
+    font-size: 1.5rem !important;
+  }
+  
+  .text-3xl {
+    font-size: 2rem !important;
+  }
+  
+  .text-4xl {
+    font-size: 2.5rem !important;
+  }
+}
+
+/* Grid layout specific styles */
+.grid-item-enter {
+  opacity: 0;
+  transform: scale(0.8);
+  animation: gridItemEnter 0.3s ease forwards;
+}
+
+@keyframes gridItemEnter {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* List layout specific styles */
+.list-item {
+  transition: all 0.2s ease;
+}
+
+.list-item:hover {
+  background-color: #f8f9fa;
+  border-left: 4px solid #667eea;
+  padding-left: 1rem;
+}
+
+/* Card layout specific styles */
+.card-layout .bg-white {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.card-layout .bg-white:hover {
+  border-color: #667eea;
+  transform: translateY(-4px);
+}
+
+/* Masonry grid responsive heights */
+@media (min-width: 992px) {
+  .masonry-item-1 { height: 120px !important; }
+  .masonry-item-2 { height: 180px !important; }
+  .masonry-item-3 { height: 140px !important; }
+  .masonry-item-4 { height: 200px !important; }
+}
+
+@media (max-width: 991px) {
+  .masonry-item-1,
+  .masonry-item-2,
+  .masonry-item-3,
+  .masonry-item-4 {
+    height: auto !important;
+    min-height: 120px;
+  }
+}
+
+/* ========================================
+   IMAGE STYLING
+========================================= */
+
+/* Remove background from all images in grid items */
+.grid img, 
+.card img {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+/* Image hover effects */
+.grid img:hover,
+.card img:hover {
+  transform: scale(1.02);
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure consistent image sizing */
+.object-cover {
+  object-fit: cover;
+  background: transparent !important;
+}
+
+/* Grid layout image styling */
+.grid .bg-white img {
+  background: transparent !important;
+  border-radius: 8px;
+}
+
+/* List layout image styling */
+.flex .border-round img {
+  background: transparent !important;
+}
+
+/* Card layout image styling */
+.bg-white img {
+  background: transparent !important;
+}
