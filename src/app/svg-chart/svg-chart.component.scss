@@ -1,0 +1,127 @@
+// .dashboard-charts {
+//   display: flex;
+//   flex-wrap: wrap;
+//   justify-content: center;
+//   align-items: flex-start;
+//   gap: 2rem;
+//   width: 100%;
+//   margin: 2rem auto;
+// }
+
+// .chart-container, .piechart-container, .donutchart-container, .areachart-container {
+//   flex: 1 1 350px;
+//   min-width: 300px;
+//   max-width: 60vw;
+
+//  }
+
+// .piechart-container {
+//   background: #fffbe7;
+//   border-radius: 1rem;
+//   box-shadow: 0 2px 8px rgba(155, 30, 30, 0.067);
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 1rem 0;
+//   position: relative;
+//   right: 5px;
+//   top:1rem;
+// }
+
+// .piechart-container svg {
+//   width: 100%;
+//    height: 300px;
+   
+// //  
+//  }
+
+// .donutchart-container {
+//   background: #f7faff;
+//   border-radius: 1rem;
+//   box-shadow: 0 2px 8px #0001;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 1rem 0;
+//   margin-top: 2rem;
+//   min-width: 300px;
+//   max-width: 60vw;
+// }
+
+// .donutchart-container svg {
+//   width: 100%;
+//   height: 300px;
+//   background: #f7faff;
+//   border-radius: 50%;
+// }
+
+// .chart-container {
+//   // width: 900px; // Match the chart bar (svg) width
+//   max-width: 60vw;
+//   min-width: 300px;
+//   height: auto;
+//   margin-top: auto;
+//   position: relative;
+//   left: 14px; 
+
+
+//   overflow-x: auto;
+
+
+// //   /* Style scrollbars to match border radius */
+// //   scrollbar-width: thin; // "thin" is typically around 6px in Firefox
+// //   scrollbar-color: #dfdbdb #f4f4f4;
+
+// //   &::-webkit-scrollbar {
+// //     height: 8px;
+// //     border-radius: 1rem;
+// //     background: #f4f4f4;
+// //   }
+
+// //   &::-webkit-scrollbar-thumb {
+// //     background: #ccc;
+// //     border-radius: 1rem;
+// //   }
+// }
+
+// .chart-container svg {
+//     width: 900px; /* or set dynamically based on data */
+//     min-width: 100%;
+//     height: 300px;
+//     background: white; // Use white so axis lines are visible
+//     overflow: visible;
+//     /* Ensure x-axis is visible by not hiding overflow and keeping background white */
+//     margin-left: 1px;
+//     margin-top: 1%;
+//     display: block;
+// }
+
+// .areachart-container {
+//   background: #e3f2fd;
+//   border-radius: 1rem;
+//   box-shadow: 0 2px 8px #0001;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 1rem 0;
+//   margin-top: 2rem;
+//   min-width: 300px;
+//   max-width: 60vw;
+//   overflow-x: auto;
+// }
+
+// .areachart-container svg {
+//   width: 40px * 12; /* 12 months, 40px per label, adjust as needed */
+//   min-width: 100%;
+//   height: 300px;
+//   background: #e3f2fd;
+//   border-radius: 1rem;
+//   display: block;
+//   padding-left: 40px;
+//   padding-right: 40px;
+// }
+
+// .area-legend-label, .area-legend-value {
+//   font-size: 11px;
+// }

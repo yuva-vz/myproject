@@ -29,11 +29,11 @@
   <!-- Task Name Field with Validation -->
   <div class="form-field">
     <input type="text" formControlName="name" placeholder="Task Name" />
-    <div class="error-messages" *ngIf="name?.invalid && (name?.dirty || name?.touched || submitted)">
+    <div class="error-messages" *ngIfpattern="name?.invalid && (name?.dirty || name?.touched || submitted)">
       <div *ngIf="hasNameError('required')" class="error">Task name is required</div>
       <div *ngIf="hasNameError('minlength')" class="error">Task name must be at least 3 characters long</div>
       <div *ngIf="hasNameError('maxlength')" class="error">Task name cannot exceed 20 characters</div>
-      <div *ngIf="hasNameError('pattern')" class="error">Task name can only contain letters, numbers, and spaces</div>
+      <div *ngIf="hasNameError('')" class="error">Task name can only contain letters, numbers, and spaces</div>
     </div>
   </div>
 

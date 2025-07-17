@@ -29,6 +29,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TooltipModule } from 'primeng/tooltip';
 import { RippleModule } from 'primeng/ripple';
+import { SvgChartComponent } from './svg-chart/svg-chart.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { RippleModule } from 'primeng/ripple';
     CompletedTasksComponent,
     HeaderComponent,
     FooterComponent,
-    PrimenggComponent
+    PrimenggComponent,
+    SvgChartComponent
   ],
   imports: [
     BrowserModule,
