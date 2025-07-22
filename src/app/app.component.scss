@@ -1,25 +1,25 @@
-// Main app background styling
-:host {
-  display: block;
-  min-height: 100vh;
-  padding-top: 80px; // Add padding for fixed header
-  background: linear-gradient(135deg, #0f3f88 0%, #c3cfe2 100%);
-  background-attachment: fixed;
-}
-
-// Alternative solid background option
+// // Main app background styling
 // :host {
 //   display: block;
 //   min-height: 100vh;
-//   background-color: #f8f9fa;
+//   padding-top: 80px; // Add padding for fixed header
+//   background: linear-gradient(135deg, #0f3f88 0%, #c3cfe2 100%);
+//   background-attachment: fixed;
 // }
 
-// Global body styling
-::ng-deep body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #456da8 0%, #1458c4 100%);
-  background-attachment: fixed;
-}
+// // Alternative solid background option
+// // :host {
+// //   display: block;
+// //   min-height: 100vh;
+// //   background-color: #f8f9fa;
+// // }
+
+// // Global body styling
+// ::ng-deep body {
+//   margin: 0;
+//   padding: 0;
+//   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+//   background: linear-gradient(135deg, #456da8 0%, #1458c4 100%);
+//   background-attachment: fixed;
+// }
 

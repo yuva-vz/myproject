@@ -23,29 +23,54 @@ export class SvgChartComponent implements AfterViewInit {
   @ViewChild('svgLine', { static: true }) svgLineRef!: ElementRef<SVGElement>;
   @ViewChild('svgCards', { static: true }) svgCardsRef!: ElementRef<SVGElement>;
 
-  // Convert viewport units (vh, vw) to pixels
-  convertToPx(value: string): string {
-    if (value.endsWith('vh')) {
-      return `${(parseFloat(value) / 100) * window.innerHeight}px`;
-    } else if (value.endsWith('vw')) {
-      return `${(parseFloat(value) / 100) * window.innerWidth}px`;
-    } else {
-      return value;
-    }
-  }
+  // // 📱 RESPONSIVE HELPER METHODS
+  // getResponsiveDimensions(svg: SVGElement): { width: number; height: number } {
+  //   const container = svg.parentElement;
+  //   if (container) {
+  //     const containerRect = container.getBoundingClientRect();
+  //     const padding = 32; // Account for container padding
+  //     return {
+  //       width: Math.max(containerRect.width - padding, 250), // Minimum 250px
+  //       height: Math.max(containerRect.height - padding, 200) // Minimum 200px
+  //     };
+  //   }
+  //   // Fallback dimensions
+  //   return { width: 300, height: 250 };
+  // }
+
+  // setResponsiveSVG(svg: SVGElement, width: number, height: number) {
+  //   svg.setAttribute('width', '100%');
+  //   svg.setAttribute('height', '100%');
+  //   svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  //   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  //   svg.style.maxWidth = '100%';
+  //   svg.style.maxHeight = '100%';
+  // }
+
+  // Convert viewport units (vh, vw) to pixels as number
+  // convertToPx(value: string): number {
+  //   if (value.endsWith('vh')) {
+  //     return (parseFloat(value) / 100) * window.innerHeight;
+  //   } else if (value.endsWith('vw')) {
+  //     return (parseFloat(value) / 100) * window.innerWidth;
+  //   } else {
+  //     return parseFloat(value);
+  //   }
+  // }
 
   chartData = [
-    { label: 'Jan', type: 'bar', x: 10, y: 30, width: 40, height: 80 },
-    { label: 'Feb', type: 'bar', x: 60, y: 30, width: 40, height: 120 },
-    { label: 'Mar', type: 'bar', x: 110, y: 30, width: 40, height: 60 },
-    { label: 'Apr', type: 'bar', x: 160, y: 30, width: 40, height: 140 },
-    { label: 'May', type: 'bar', x: 210, y: 30, width: 40, height: 100 },
-    { label: 'Jun', type: 'bar', x: 260, y: 30, width: 40, height: 90 },
-    // { label: 'Jul', type: 'bar', x: 310, y: 30, width: 40, height: 130 },
-    // { label: 'Aug', type: 'bar', x: 360, y: 30, width: 40, height: 70 },
-    // { label: 'Sep', type: 'bar', x: 410, y: 30, width: 40, height: 110 },
-    // { label: 'Oct', type: 'bar', x: 460, y: 30, width: 40, height: 80 }
-  ];
+    { x: 10, y: 30, width: 40, height: 120, },
+    { x: 60, y: 30, width: 40, height: 100,  },
+    { x: 110, y: 30, width: 40, height: 80, },
+    { x: 160, y: 30, width: 40, height: 140,  },
+    { x: 210, y: 30, width: 40, height: 110,  },
+    { x: 260, y: 30, width: 40, height: 90,  },
+    // { x: 310, y: 30, width: 40, height: 70, type: 'bar', label: 'Jul' },
+    // { x: 360, y: 30, width: 40, height: 130, type: 'bar', label: 'Aug' },
+    // { x: 410, y: 30, width: 40, height: 120, type: 'bar', label: 'Sep' },
+    // { x: 460, y: 30, width: 40, height: 100, type: 'bar', label: 'Oct' }
+  ]
+  
   // Chart data for area chart
   // Chart data for area line chart
 
@@ -72,89 +97,106 @@ export class SvgChartComponent implements AfterViewInit {
   //   { number: '8', label: 'Performance\nManagement', highlighted: false },
   //   { number: '2', label: 'Talent acquisition', highlighted: false }
    ];
-layoutData: { type: string; svg: ElementRef<SVGElement>; w: number; h: number; x: number; y: number; }[] = [];
+  layoutData: { type: string; svg: ElementRef<SVGElement>; w: string; h: string; x: string; y: string; }[] | undefined;
 
 ngAfterViewInit(): void {
-  // this.layoutData = [
-  //   { type: 'bar', svg: this.svgRef, w: 300, h: 400, x: 700, y: 160 },
-  //   { type: 'pie', svg: this.svgPieRef, w: 200, h: 150, x: 210, y: 6 },
-  //   { type: 'donut', svg: this.svgDonutRef, w: 200, h: 150, x: 420, y: 4 },
-  //   { type: 'area', svg: this.svgAreaRef, w: 200, h: 150, x: 0, y: 160 },
-  //   { type: 'card', svg: this.svgCardChartRef, w: 200, h: 150, x: 210, y: 160 },
-  //   { type: 'line', svg: this.svgLineRef, w: 200, h: 150, x: 420, y: 160 },
-  //   { type: 'cards', svg: this.svgCardsRef, w: 200, h: 150, x: 700, y: 160 },
- 
-  // ];
   const svgRefMap: Record<string, ElementRef<SVGElement>> = {
-  bar: this.svgRef,
-  pie: this.svgPieRef,
-  donut: this.svgDonutRef,
-  area: this.svgAreaRef,
-  card: this.svgCardChartRef,
-  line: this.svgLineRef,
-  cards: this.svgCardsRef
-};
+    bar: this.svgRef,
+    pie: this.svgPieRef,
+    donut: this.svgDonutRef,
+    area: this.svgAreaRef,
+    card: this.svgCardChartRef,
+    line: this.svgLineRef,
+    cards: this.svgCardsRef
+  };
 
-// 2. Sample API response
-const apiResponse = [
-  {
-    type: 'cards',
-    position: { height: '5vh', width: '7vw', x: '44vw', y: '0vh' }
-  },
-  {
-    type: 'pie',
-    position: { height: '14vh', width: '22vw', x: '22vw', y: '0vh' }
-  },
-  {
-    type: 'bar',
-    position: { height: '14vh', width: '22vw', x: '0vw', y: '0vh' }
-  },
-  // {
-  //   type: 'bar',
-  //   position: { height: '14vh', width: '55vw', x: '0vw', y: '14vh' }
-  // },
-  // {
-  //   type: 'cards',
-  //   position: { height: '5vh', width: '7vw', x: '44vw', y: '6vh' }
-  // }
-];
+  // Helper to convert viewport units to pixels
+  const convertToPx = (value: string): string => {
+    if (value.endsWith('vh')) {
+      return ((parseFloat(value) / 100) * window.innerHeight).toString();
+    } else if (value.endsWith('vw')) {
+      return ((parseFloat(value) / 100) * window.innerWidth).toString();
+    } else {
+      return value;
+    }
+  };
 
-// 3. Final layoutData with svg refs
-this.layoutData = apiResponse
-  .filter(item => svgRefMap[item.type]) // only those with valid SVG
-  .map(item => ({
-    type: item.type,
-    svg: svgRefMap[item.type],
-    w: parseFloat(this.convertToPx(item.position.width)),
-    h: parseFloat(this.convertToPx(item.position.height)),
-    x: parseFloat(this.convertToPx(item.position.x)),
-    y: parseFloat(this.convertToPx(item.position.y))
-  }));
-  this.layoutData.forEach(({ type, svg, w, h, x, y }: { type: string; svg: ElementRef<SVGElement>; w: number; h: number; x: number; y: number; }) => {
+  const apiResponse = [
+    {
+      type: 'pie',
+      position: { height: '14vh', width: '22vw', x: '22vw', y: '0vh' }
+    },
+    {
+      type: 'bar',
+      position: { height: '14vh',width: '22vw', x: '0vw', y: '0vh' }
+    },
+    {
+      type: 'bar',
+      position: { height: '14vh',width: '22vw', x: '5vw', y: '10vh' }
+    },
+    {
+      type: 'donut',
+      position: { height: '14vh', width: '22vw', x: '-4vw', y: '50vh' }
+    },
+    {
+      type: 'area',
+      position: { height: '14vh', width: '30vw', x: '2vw', y: '30vh' }
+    }
+  ];
+
+  // Convert all positions to px for assignment
+  apiResponse.forEach(item => {
+    item.position.width = convertToPx(item.position.width);
+    item.position.height = convertToPx(item.position.height);
+    item.position.x = convertToPx(item.position.x);
+    item.position.y = convertToPx(item.position.y);
+  });
+
+  this.layoutData = apiResponse
+    .filter(item => svgRefMap[item.type])
+    .map(item => ({
+      type: item.type,
+      svg: svgRefMap[item.type],
+      w: item.position.width,
+      h: item.position.height,
+      x: item.position.x,
+      y: item.position.y
+    }));
+
+  this.layoutData.forEach(({ type, svg, w, h, x, y }: { type: string; svg: ElementRef<SVGElement>; w: string; h: string; x: string; y: string; }) => {
     const svgEl = svg?.nativeElement;
     if (!svgEl) return;
-    svgEl.setAttribute('width', w.toString());
-    svgEl.setAttribute('height', h.toString());
-
-    // 🟡 Set position using transform
-    svgEl.setAttribute('style', `position: absolute; left: ${x}px; top: ${y}px;`);
-
+    svgEl.setAttribute('width', w);
+    svgEl.setAttribute('height', h);
+    svgEl.setAttribute('style', `position: absolute; margin-left: ${x}; margin-top: ${y};`);
     switch (type) {
-      case 'bar': this.renderChart(svgEl); break;
-      case 'pie': this.renderPieChart(svgEl); break;
-      case 'donut': this.renderDonutChart(svgEl); break;
-      case 'area': this.renderAreaChart(svgEl); break;
-      case 'line': this.renderLineChart(svgEl); break;
-      case 'cards': this.renderSvgCards(svgEl); break;
-      case 'dashboard': console.log(`${type} layout`); break;
+      case 'bar':
+        this.renderChart(svgEl);
+        break;
+     
+      case 'pie':
+        this.renderPieChart(svgEl,);
+        break;
+        
+      case 'donut':
+        this.renderDonutChart(svgEl, );
+        break;
+      case 'area':
+        this.renderAreaChart(svgEl);
+        break;
+      case 'line':
+        this.renderLineChart(svgEl);
+        break;
+      // case 'card':
+      //   this.renderSvgCards(svgEl);
+      //   break;
+      case 'cards':
+        this.renderSvgCards(svgEl);
+        break;
     }
   });
 }
 // // 1. Map for type to SVG reference
-
-
-
-
 
 
   // ngAfterViewInit(): void {
@@ -199,13 +241,15 @@ this.layoutData = apiResponse
     svg.appendChild(rect);
   }
 
-  renderChart(nativeElement: SVGElement) {
+  renderChart(nativeElement: SVGElement, ) {
     const svg = nativeElement;
-    const width = 300; // Use a numeric value for width
-    const height = 400; // Use a numeric value for height
+    const height = 150;
+    const width = 300;
+    
     svg.setAttribute('width', width.toString());
-    svg.setAttribute('height', height.toString());
 
+
+    svg.setAttribute('height', height.toString());
     // Remove any gradient defs if present
     const defs = svg.querySelector('defs');
     if (defs) svg.removeChild(defs);
@@ -216,10 +260,10 @@ this.layoutData = apiResponse
 
     // Loop through data
     this.chartData.forEach((data) => {
-      if (data.type === 'bar') {
-        this.createRect(svg, data.x, height - data.y - data.height, data.width, data.height, '#42a5f5');
-        // this.createText(svg, data.label, data.x + data.width / 2, height - 5, true);
-      }
+   
+      this.createRect(svg, data.x, height - data.y - data.height, data.width, data.height, '#42a5f5');
+
+      // this.createText(svg, data.label, data.x + data.width / 2, heightNum - 5, true);
     });
   }
 
@@ -228,17 +272,17 @@ this.layoutData = apiResponse
     while (svg.firstChild) svg.removeChild(svg.firstChild);
   }
 
-  renderPieChart(nativeElement: SVGElement) {
+  renderPieChart(nativeElement: SVGElement,  ) {
     const svg = this.svgPieRef.nativeElement;
-    const widthStr = '14vw';
-    const heightStr = '22vh';
-    svg.setAttribute('width', widthStr);
-    svg.setAttribute('height', heightStr);
-    const width = svg.clientWidth || svg.parentElement?.clientWidth || 300;
-    const height = svg.clientHeight || svg.parentElement?.clientHeight || 300;
-    const radius = Math.min(width, height) / 2 - 10;
-    const cx = width / 2;
-    const cy = height / 2;
+    
+   
+    const widtht = svg.clientWidth || svg.parentElement?.clientWidth || 300 ; 
+    const heightt = svg.clientHeight || svg.parentElement?.clientHeight || 300;
+    svg.setAttribute('width', widtht.toString());
+    svg.setAttribute('height', heightt.toString());
+    const radius = Math.min(widtht, heightt) / 2 - 10;
+    const cx = widtht / 2;
+    const cy = heightt / 2;
     // if you want  to  add new json move the  chartData   and  new json .
     const total = this.chartData.reduce((sum, d) => sum + d.height, 0);
     let startAngle = 0;
@@ -271,16 +315,17 @@ this.layoutData = apiResponse
     while (svg.firstChild) svg.removeChild(svg.firstChild);
   }
 
-  renderDonutChart(nativeElement: SVGElement) {
+  renderDonutChart(nativeElement: SVGElement, ) {
     const svg = this.svgDonutRef.nativeElement;
-    const width = svg.clientWidth || svg.parentElement?.clientWidth || 300;
-    const height = svg.clientHeight || 300;
-    svg.setAttribute('width', width.toString());
-    svg.setAttribute('height', height.toString());
-    const outerRadius = Math.min(width, height) / 2 - 10;
+    // Convert string parameters to numbers
+    const widthNum = Number(nativeElement.getAttribute('width')) || 300;
+    const heightNum = Number(nativeElement.getAttribute('height')) || 300;
+    svg.setAttribute('width', widthNum.toString());
+    svg.setAttribute('height', heightNum.toString());
+    const outerRadius = Math.min(widthNum, heightNum) / 2 - 10;
     const innerRadius = outerRadius * 0.6;
-    const cx = width / 2;
-    const cy = height / 2;
+    const cx = widthNum / 2;
+    const cy = heightNum / 2;
     const total = this.chartData.reduce((sum, d) => sum + d.height, 0);
     let startAngle = 0;
     this.chartData.forEach((data, i) => {
@@ -321,15 +366,13 @@ this.layoutData = apiResponse
 
   renderAreaChart(nativeElement: SVGElement) {
     const svg = this.svgAreaRef.nativeElement;
-    const widthStr = 'calc(100vw - 60px)';
-    const heightStr = 'calc(100vh - 60px)';
-    svg.setAttribute('width', widthStr.toString());
-    svg.setAttribute('height', heightStr.toString());
+    const width = svg.clientWidth || svg.parentElement?.clientWidth || 300;
+    const height = svg.clientHeight || svg.parentElement?.clientHeight || 150;
+    svg.setAttribute('width', width.toString());
+    svg.setAttribute('height', height.toString());
 
     // Convert width and height to numbers for calculation
-    const width = parseFloat(this.convertToPx(widthStr));
-    const height = parseFloat(this.convertToPx(heightStr));
-
+   
     // Clear previous
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
@@ -443,7 +486,7 @@ this.layoutData = apiResponse
   // }
 
   getPieColor(i: number): string {
-    const colors = ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f', '#edc949', '#af7aa1', '#ff9da7'];
+    const colors = ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f', '#edc949', '#af7aa1', '#fe9da7'];
     return colors[i % colors.length];
   }
 

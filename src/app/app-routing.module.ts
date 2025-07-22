@@ -5,14 +5,16 @@ import { PendingTasksComponent } from './pages/pending-tasks/pending-tasks.compo
 import { CompletedTasksComponent } from './pages/completed-tasks/completed-tasks.component';
 import { PrimenggComponent } from './pages/primengg/primengg.component';
 import { SvgChartComponent } from './svg-chart/svg-chart.component';
+import { SamplesvgComponent } from './samplesvg/samplesvg.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'add', pathMatch: 'full' },
+    { path: '', redirectTo: 'samplesvg', pathMatch: 'full' },
   { path: 'add', component: AddTaskComponent },
   { path: 'pending', component: PendingTasksComponent },
   { path: 'completed', component: CompletedTasksComponent },
    { path: 'primeng', component: PrimenggComponent },
-   { path: 'svgchart', component: SvgChartComponent }
+   { path: 'svgchart', component: SvgChartComponent },
+   { path: 'samplesvg', component: SamplesvgComponent }
 ];
 
 

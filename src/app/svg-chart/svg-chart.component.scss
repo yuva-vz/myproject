@@ -1,0 +1,377 @@
+// /* 📱 RESPONSIVE DASHBOARD - MOBILE FIRST APPROACH */
+
+// /* Main Dashboard Container */
+// .dashboard-charts {
+//   display: grid;
+//   grid-template-columns: 1fr;
+//   gap: 16px;
+//   padding: 16px;
+//   width: 100%;
+//   min-height: 100vh;
+//   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+//   box-sizing: border-box;
+//   overflow-x: hidden; /* Prevent horizontal scroll */
+// }
+
+// /* Universal Chart Container Styles */
+// .chart-container,
+// .piechart-container,
+// .donutchart-container,
+// .areachart-container,
+// .linechart-container,
+// .svg-cards-container {
+//   width: 100%;
+//   max-width: 100%;
+//   background: rgba(255, 255, 255, 0.95);
+//   border-radius: 12px;
+//   padding: 16px;
+//   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+//   backdrop-filter: blur(10px);
+//   border: 1px solid rgba(255, 255, 255, 0.2);
+//   transition: all 0.3s ease;
+//   position: relative;
+//   overflow: hidden;
+//   margin: 0; /* Remove all margins */
+  
+//   /* Hover Effects */
+//   &:hover {
+//     transform: translateY(-2px);
+//     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+//   }
+// }
+
+// /* SVG Responsive Styles */
+// .chart-container svg,
+// .piechart-container svg,
+// .donutchart-container svg,
+// .areachart-container svg,
+// .linechart-container svg,
+// .svg-cards-container svg {
+//   width: 100% !important;
+//   height: auto !important;
+//   max-width: 100%;
+//   max-height: 280px;
+//   display: block;
+//   margin: 0 auto; /* Center the SVG */
+//   border-radius: 8px;
+//   box-sizing: border-box;
+  
+//   /* Remove problematic margins */
+//   margin-left: 0 !important;
+//   margin-top: 0 !important;
+// }
+
+// /* 📱 MEDIA QUERIES FOR RESPONSIVE DESIGN */
+
+// /* Small Mobile Devices (up to 480px) */
+// @media screen and (max-width: 480px) {
+//   .dashboard-charts {
+//     grid-template-columns: 1fr;
+//     gap: 12px;
+//     padding: 12px;
+//   }
+  
+//   .chart-container,
+//   .piechart-container,
+//   .donutchart-container,
+//   .areachart-container,
+//   .linechart-container,
+//   .svg-cards-container {
+//     padding: 12px;
+//     border-radius: 8px;
+//   }
+  
+//   .chart-container svg,
+//   .piechart-container svg,
+//   .donutchart-container svg,
+//   .areachart-container svg,
+//   .linechart-container svg,
+//   .svg-cards-container svg {
+//     max-height: 220px;
+//   }
+// }
+
+// /* Medium Mobile Devices (481px to 600px) */
+// @media screen and (min-width: 481px) and (max-width: 600px) {
+//   .dashboard-charts {
+//     grid-template-columns: 1fr;
+//     gap: 16px;
+//     padding: 16px;
+//   }
+  
+//   .chart-container svg,
+//   .piechart-container svg,
+//   .donutchart-container svg,
+//   .areachart-container svg,
+//   .linechart-container svg,
+//   .svg-cards-container svg {
+//     max-height: 250px;
+//   }
+// }
+
+// /* Tablet Portrait (601px to 768px) */
+// @media screen and (min-width: 601px) and (max-width: 768px) {
+//   .dashboard-charts {
+//     grid-template-columns: repeat(2, 1fr);
+//     gap: 18px;
+//     padding: 20px;
+//   }
+  
+//   .svg-cards-container {
+//     grid-column: 1 / -1; /* Full width for cards */
+//   }
+  
+//   .chart-container svg,
+//   .piechart-container svg,
+//   .donutchart-container svg,
+//   .areachart-container svg,
+//   .linechart-container svg,
+//   .svg-cards-container svg {
+//     max-height: 280px;
+//   }
+// }
+
+// /* Tablet Landscape & Small Desktop (769px to 1024px) */
+// @media screen and (min-width: 769px) and (max-width: 1024px) {
+//   .dashboard-charts {
+//     grid-template-columns: repeat(3, 1fr);
+//     gap: 20px;
+//     padding: 24px;
+//   }
+  
+//   .svg-cards-container {
+//     grid-column: 1 / -1; /* Full width for cards */
+//   }
+  
+//   .chart-container svg,
+//   .piechart-container svg,
+//   .donutchart-container svg,
+//   .areachart-container svg,
+//   .linechart-container svg,
+//   .svg-cards-container svg {
+//     max-height: 320px;
+//   }
+// }
+
+// /* Desktop (1025px to 1440px) */
+// @media screen and (min-width: 1025px) and (max-width: 1440px) {
+//   .dashboard-charts {
+//     grid-template-columns: repeat(3, 1fr);
+//     gap: 24px;
+//     padding: 30px;
+//     max-width: 1200px;
+//     margin: 0 auto;
+//   }
+  
+//   .svg-cards-container {
+//     grid-column: 1 / -1;
+//   }
+  
+//   .chart-container svg,
+//   .piechart-container svg,
+//   .donutchart-container svg,
+//   .areachart-container svg,
+//   .linechart-container svg,
+//   .svg-cards-container svg {
+//     max-height: 360px;
+//   }
+// }
+
+// /* Large Desktop (1441px and up) */
+// @media screen and (min-width: 1441px) {
+//   .dashboard-charts {
+//     grid-template-columns: repeat(4, 1fr);
+//     gap: 28px;
+//     padding: 40px;
+//     max-width: 1600px;
+//     margin: 0 auto;
+//   }
+  
+//   .svg-cards-container {
+//     grid-column: 1 / -1;
+//   }
+  
+//   .chart-container svg,
+//   .piechart-container svg,
+//   .donutchart-container svg,
+//   .areachart-container svg,
+//   .linechart-container svg,
+//   .svg-cards-container svg {
+//     max-height: 400px;
+//   }
+// }
+
+// /* 🎨 VISUAL ENHANCEMENTS */
+
+// /* Chart Element Animations */
+// svg rect, svg circle, svg path {
+//   transition: all 0.3s ease;
+// }
+
+// svg rect:hover {
+//   opacity: 0.8;
+//   transform: scale(1.02);
+// }
+
+// svg circle:hover {
+//   r: 6;
+//   stroke-width: 3;
+// }
+
+// svg path:hover {
+//   stroke-width: 3;
+// }
+
+// /* Text Styling */
+// svg text {
+//   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+//   font-size: 11px;
+//   fill: #333;
+//   pointer-events: none;
+// }
+
+// /* Loading Animation */
+// @keyframes pulse {
+//   0% { opacity: 0.6; }
+//   50% { opacity: 1; }
+//   100% { opacity: 0.6; }
+// }
+
+// .loading svg {
+//   animation: pulse 2s infinite;
+// }
+
+// /* 🔧 ACCESSIBILITY & FOCUS */
+// .chart-container:focus-within,
+// .piechart-container:focus-within,
+// .donutchart-container:focus-within,
+// .areachart-container:focus-within,
+// .linechart-container:focus-within,
+// .svg-cards-container:focus-within {
+//   outline: 2px solid #667eea;
+//   outline-offset: 2px;
+// }
+
+// /* 🖨️ PRINT STYLES */
+// @media print {
+//   .dashboard-charts {
+//     background: white;
+//     display: block;
+//   }
+  
+//   .chart-container,
+//   .piechart-container,
+//   .donutchart-container,
+//   .areachart-container,
+//   .linechart-container,
+//   .svg-cards-container {
+//     break-inside: avoid;
+//     margin-bottom: 20px;
+//     box-shadow: none;
+//     border: 1px solid #ccc;
+//   }
+// }
+
+// .svg-cards-container {
+//     // width: 100%;
+//     // max-width: 1000px;
+//     margin: 0 auto 2rem auto;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// }
+// .svg-cards-container svg {
+//     // width: 100%;
+//     // height: auto;
+//     // max-width: 100%;
+//     // min-width: 400px;
+//     // min-height: 400px;
+//     display: block;
+//     margin-left: 5vh;
+//     margin-top: 5vh;
+//     box-sizing: border-box;
+//     overflow: visible;
+//     border-radius: 8px;
+//     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+// }
+
+// @media (max-width: 900px) {
+//     .svg-cards-container svg {
+//         width: 100%;
+//         min-width: 200px;
+//         height: 200px;
+//     }
+// }
+
+// @media (max-width: 600px) {
+//     .chart-container,
+//     .piechart-container,
+//     .donutchart-container,
+//     .areachart-container,
+//     .linechart-container,
+//     .svg-cards-container {
+//         max-width: 100%;
+//         margin-bottom: 1rem;
+//     }
+
+//     .chart-container svg,
+//     .piechart-container svg,
+//     .donutchart-container svg,
+//     .areachart-container svg,
+//     .linechart-container svg,
+//     .svg-cards-container svg {
+//         min-width: 120px;
+//         min-height: 120px;
+//         height: 150px;
+//         border-radius: 4px;
+//     }
+// }
+// .dashboard-charts {
+//   display: flex;
+//   flex-wrap: wrap;
+//   justify-content: center;
+//   align-items: flex-start;
+//   gap: 16px;
+//   padding: 20px;
+// }
+
+// .chart-container {
+//   width: 100%;
+//   max-width: 360px;
+//   height: auto;
+//   background: white;
+//   border-radius: 12px;
+//   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+//   padding: 8px;
+// }
+//  .chart-container svg,
+//   .piechart-container svg,
+//   .donutchart-container svg,
+//   .areachart-container svg,
+//   .linechart-container svg,
+//   .svg-cards-container svg {
+//     max-height: 360px;
+//   }
+// .svg-container {
+//   display: flex;
+//   flex-wrap: wrap;
+//   gap: 20px;
+//   justify-content: center; /* optional, for centering */
+// }
+
+// .svg-container svg {
+//   flex: 1 1 100px; /* allow responsiveness */
+//   max-width: 150px; /* optional, prevent oversized SVGs */
+// }
+.svg-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+//    justify-items: center; ;/* optional, for centering */
+
+}
+
+.svg-container svg {
+  flex: 1 1 100px; /* allow responsiveness */
+  max-width: 1500px; /* optional, prevent oversized SVGs */
+}

@@ -30,6 +30,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TooltipModule } from 'primeng/tooltip';
 import { RippleModule } from 'primeng/ripple';
 import { SvgChartComponent } from './svg-chart/svg-chart.component';
+import { SamplesvgComponent } from './samplesvg/samplesvg.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { SvgChartComponent } from './svg-chart/svg-chart.component';
     HeaderComponent,
     FooterComponent,
     PrimenggComponent,
-    SvgChartComponent
+    SvgChartComponent,
+    SamplesvgComponent
   ],
   imports: [
     BrowserModule,
