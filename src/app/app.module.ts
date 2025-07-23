@@ -36,6 +36,7 @@ import { BarChartComponent } from './bar-chart/bar-chart.component';
 import { PieChartComponent } from './pie-chart/pie-chart.component';
 import { CombinedDashboardComponent } from './combined-dashboard/combined-dashboard.component';
 import { CardChartsComponent } from './card-charts/card-charts.component';
+import { DashboardWrapperComponent } from './dashboard-wrapper/dashboard-wrapper.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { CardChartsComponent } from './card-charts/card-charts.component';
     BarChartComponent,
     PieChartComponent,
     CombinedDashboardComponent,
-    CardChartsComponent
+    CardChartsComponent,
+    DashboardWrapperComponent
   ],
   imports: [
     BrowserModule,

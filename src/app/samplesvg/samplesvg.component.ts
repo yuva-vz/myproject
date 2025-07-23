@@ -16,126 +16,92 @@ export class SamplesvgComponent implements AfterViewInit {
   //   { type: 'donut', w: '250', h: '250', x: '280px', y: '250px', title: 'User Types', data: [40, 30, 20, 10] },
   //   { type: 'line', w: '350', h: '200', x: '550px', y: '280px', title: 'Revenue Growth', data: [100, 120, 110, 140, 160, 180] },
   // ];
-  layoutPositions = [
-    // Top row - Left: Bar chart
-    // {
-    //   type: 'bar',
-    //   position: {
-    //     h: '40vh',
-    //     w: '30vw',
-    //     x: '2vw',
-    //     y: '5vh',
-    //   }
-    // },
-    // // Top row - Center: Pie chart
-    // {
-    //   type: 'pie',
-    //   position: {
-    //     h: '40vh',
-    //     w: '25vw',
-    //     x: '35vw',
-    //     y: '5vh',
-    //   }
-    // },
-    // // Top row - Right top: Card 1
-    // {
-    //   type: 'card',
-    //   position: {
-    //     h: '18vh',
-    //     w: '25vw',
-    //     x: '72vw',
-    //     y: '5vh',
-    //   }
-    // },
-    // Top row - Right bottom: Card 2 (FIXED: Different Y position)
-    {
-      type: 'card',
-      position: {
-        h: '18vh',
-        w: '25vw',
-        x: '72vw',
-        y: '27vh',
-      }
-    },
-    // Bottom row - Full width: Bar chart
-    {
-      type: 'bar',
-      position: {
-        h: '35vh',
-        w: '95vw',
-        x: '2vw',
-        y: '50vh',
-      }
-    },
-    {
-        type:'card',
-        position:{
-        "h": '5vh',
-        "w": '7vw',
-        "x": '44vw',
-        "y": '0',
-        }
-    },
-  ];
-
-chartInfo = [
-  // ✅ One entry per type - all charts of same type will share this data
-  { type: 'card', title: '4772', data: [4772] },
-  { type: 'pie', title: 'Distribution', data: [30, 25, 20, 15, 10] },
-  { type: 'bar', title: 'Facility Stats', data: [15, 8, 7, 7,  5, 5, 4] },
+ originalLayout = [
+  // { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '0vh' } },
+  // { type: 'bar', position: { h: '14vh', w: '22vw', x: '22vw', y: '0vh' } },
+  // { type: 'pie', position: { h: '14vh', w: '22vw', x: '0vw', y: '0vh' } },
+  // { type: 'bar', position: { h: '14vh', w: '55vw', x: '0vw', y: '14vh' } },
+  // { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '6vh' } },
+ 
+  { type: 'bar', position: { h: '14vh', w: '22vw', x: '1vw', y: '0vh' } },
+  { type: 'table', position: { h: '14vh', w: '22vw', x: '23vw', y: '0vh' } },
+  { type: 'card', position: { h: '9vh', w: '15vw', x: '24vw', y: '15vh' } },
+  { type: 'pie', position: { h: '14vh', w: '22vw', x: '1vw', y: '15vh' } },
+  // { type: 'table', position: { h: '20vh', w: '49vw', x: '1vw', y: '30vh' } },
+  { type: 'bar', position: { h: '20vh', w: '49vw', x: '1vw', y: '30vh' } },
+  
 ];
 
-// // 🔄 Transform backend positions to reference layout positions
-// transformToReferenceLayout(backendPositions: any[]): any[] {
-//   // Reference layout pattern (like image 2):
-//   // Top row: Pie (left) | Bar (center) | Cards (right)
-//   // Bottom row: Full-width Bar
-  
-//   const referencePositions = [
-//     // Top left - Pie chart
-//     { h: '45vh', w: '30vw', x: '2vw', y: '5vh' },
-//     // Top center - Bar chart  
-//     { h: '45vh', w: '35vw', x: '34vw', y: '5vh' },
-//     // Top right - Card 1
-//     { h: '20vh', w: '25vw', x: '72vw', y: '5vh' },
-//     // Top right - Card 2
-//     { h: '20vh', w: '25vw', x: '72vw', y: '28vh' },
-//     // Bottom - Full width Bar
-//     { h: '40vh', w: '95vw', x: '2vw', y: '55vh' }
-//   ];
+ REF_HEIGHT = 60; // Reference container height
+ REF_WIDTH = 60;  // Reference container width
+ 
+ 
+// ✅ Step 1: Normalize layout to percentages based on 60vh × 60vw
+normalizeLayout(layout: any[]) {
+  return layout.map(item => {
+    const h = parseFloat(item.position.h);
+    const w = parseFloat(item.position.w);
+    const x = parseFloat(item.position.x);
+    const y = parseFloat(item.position.y);
 
-//   return backendPositions.map((item, index) => ({
-//     ...item,
-//     position: referencePositions[index] || item.position // Fallback to original if no mapping
-//   }));
-// }
+    return {
+      type: item.type,
+      position: {
+        h: `${((h / this.REF_HEIGHT) * 100).toFixed(2)}vw`,
+        w: `${((w / this.REF_WIDTH) * 100).toFixed(2)}vw`,
+        x: `${((x / this.REF_WIDTH) * 100).toFixed(2)}vw`,
+        y: `${((y / this.REF_HEIGHT) * 100).toFixed(2)}vw`,
+      }
+    };
+  });
+}
 
-layoutData = this.layoutPositions.map((layoutItem) => {
-  const type = layoutItem.type;
+chartInfo = [
+  { type: 'card', title: '4772', data: ['123.'] },
+  { type: 'pie', title: 'Distribution', data: [30, 25, 20, 15, 10] },
+  { type: 'bar', title: 'Facility Stats', data: [15, 8, 7, 7, 6, 5, 4] },
+  { type: 'donut', title: 'User Types', data: [40, 30, 20, 10] },
+  { type: 'area', title: 'User Growth', data: [10, 20, 30, 40, 50] },
+  { type: 'line', title: 'Revenue Growth', data: [100, 120, 110, 140, 160, 180] },
+  { 
+    type: 'table', 
+    title: 'Performance Data', 
+    data: [
+      ['Product', 'Sales', 'Revenue', 'Growth'],
+      ['Product A', '125', '$45K', '+12%'],
+      ['Product B', '89', '$32K', '+8%'],
+      ['Product C', '156', '$67K', '+15%'],
+      ['Product D', '203', '$78K', '+22%']
+    ]
+  },
+  // Add your new chart info objects below as needed
+];
 
-  // ✅ Get the FIRST chartInfo with matching type (shared data for same type)
-  const chart = this.chartInfo.find(c => c.type === type);
+normalizedLayout = this.normalizeLayout(this.originalLayout);
 
+// ✅ Step 2: Merge normalized positions with chartInfo
+layoutData = this.normalizedLayout.map(layoutItem => {
+  const chart = this.chartInfo.find(c => c.type === layoutItem.type);
   return {
-    type,
+    type: layoutItem.type,
     position: layoutItem.position,
     title: chart?.title || '',
-    data: chart?.data || [],
+    data: chart?.data || []
   };
 });
-
-
-
-
-  // Chart colors
-  colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
-
   ngAfterViewInit() {
     // Wait for DOM to be ready
+    
     setTimeout(() => {
       this.renderAllCharts();
     }, 100);
   }
+
+
+  // Chart colors
+  colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8',];
+
+ 
 
   renderAllCharts() {
     this.layoutData.forEach((chart, index) => {
@@ -170,22 +136,25 @@ layoutData = this.layoutPositions.map((layoutItem) => {
 
       switch (chart.type) {
         case 'bar':
-          this.renderBarChart(svg, width, height, chart.data, index);
+          this.renderBarChart(svg, width, height, chart.data as number[], index);
           break;
         case 'pie':
-          this.renderPieChart(svg, width, height, chart.data, index);
+          this.renderPieChart(svg, width, height, chart.data as number[], index);
           break;
         case 'donut':
-          this.renderDonutChart(svg, width, height, chart.data, index);
+          this.renderDonutChart(svg, width, height, chart.data as number[], index);
           break;
         case 'line':
-          this.renderLineChart(svg, width, height, chart.data, index);
+          this.renderLineChart(svg, width, height, chart.data as number[], index);
           break;
         case 'area':
-          this.renderAreaChart(svg, width, height, chart.data, index);
+          this.renderAreaChart(svg, width, height, chart.data as number[], index);
           break;
         case 'card':
-          this.renderCardChart(svg, width, height, chart.data, chart.title, index);
+          this.renderCardChart(svg, width, height, chart.data as number[], chart.title, index);
+          break;
+        case 'table':
+          this.renderTableChart(svg, width, height, chart.data as string[][], chart.title, index);
           break;
         default:
           console.warn(`Unknown chart type: ${chart.type}`);
@@ -253,7 +222,7 @@ layoutData = this.layoutPositions.map((layoutItem) => {
       rect.setAttribute('y', y.toString());
       rect.setAttribute('width', barWidth.toString());
       rect.setAttribute('height', barHeight.toString());
-      rect.setAttribute('fill', this.colors[index % this.colors.length]);
+      rect.setAttribute('fill', this.colors[0]);
       rect.setAttribute('rx', '4');
       svg.appendChild(rect);
 
@@ -499,7 +468,7 @@ svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
   
 
   // 📊 Card Chart Renderer
-  renderCardChart(svg: SVGElement, width: number, height: number, data: number[], title: string, chartIndex: number) {
+  renderCardChart(svg: SVGElement, width: number, height: number, data: (number | string)[], title: string, chartIndex: number) {
     // Validate inputs
     if (!data || data.length === 0 || isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
       console.warn('Invalid data or dimensions for card chart');
@@ -508,36 +477,156 @@ svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
 
     const value = data[0]; // Cards typically show one value
     
-    // Create background rectangle
-    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    bg.setAttribute('x', '0');
-    bg.setAttribute('y', '0');
-    bg.setAttribute('width', width.toString());
-    bg.setAttribute('height', height.toString());
-    bg.setAttribute('fill', this.colors[chartIndex % this.colors.length]);
-    bg.setAttribute('rx', '8');
-    svg.appendChild(bg);
+    // // Create background rectangle
+    // const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    // bg.setAttribute('x', '0');
+    // bg.setAttribute('y', '0');
+    // bg.setAttribute('width', width.toString());
+    // bg.setAttribute('height', height.toString());
+    // bg.setAttribute('fill', 'white');
+    // bg.setAttribute('rx', '8');
+    // svg.appendChild(bg);
     
     // Add value text
-    const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     valueText.setAttribute('x', (width / 2).toString());
     valueText.setAttribute('y', (height / 2).toString());
     valueText.setAttribute('text-anchor', 'middle');
     valueText.setAttribute('dominant-baseline', 'middle');
     valueText.setAttribute('font-size', Math.min(width, height) * 0.3 + 'px');
     valueText.setAttribute('font-weight', 'bold');
-    valueText.setAttribute('fill', 'white');
+    valueText.setAttribute('fill', '#000');
+    valueText.setAttribute('border-radius', '18px');
     valueText.textContent = value.toString();
     svg.appendChild(valueText);
     
     // Add title text
+    // const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    // titleText.setAttribute('x', (width / 2).toString());
+    // titleText.setAttribute('y', (height * 0.8).toString());
+    // titleText.setAttribute('text-anchor', 'middle');
+    // titleText.setAttribute('font-size', Math.min(width, height) * 0.15 + 'px');
+    // titleText.setAttribute('fill', 'white');
+    // titleText.textContent = title;
+    // svg.appendChild(titleText);
+  }
+
+  // 📊 Table Chart Renderer
+  renderTableChart(svg: SVGElement, width: number, height: number, data: string[][], title: string, chartIndex: number) {
+    // Validate inputs
+    if (!data || data.length === 0 || isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+      console.warn('Invalid data or dimensions for table chart');
+      return;
+    }
+
+    const padding = { left: 10, right: 10, top: 40, bottom: 10 };
+    const tableWidth = width - padding.left - padding.right;
+    const tableHeight = height - padding.top - padding.bottom;
+    
+    if (tableWidth <= 0 || tableHeight <= 0) {
+      console.warn('Table dimensions too small after padding');
+      return;
+    }
+
+    // Calculate dimensions
+    const rowCount = data.length;
+    const colCount = data[0]?.length || 0;
+    const rowHeight = tableHeight / rowCount;
+    const colWidth = tableWidth / colCount;
+
+    // Add title
     const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     titleText.setAttribute('x', (width / 2).toString());
-    titleText.setAttribute('y', (height * 0.8).toString());
+    titleText.setAttribute('y', '25');
     titleText.setAttribute('text-anchor', 'middle');
-    titleText.setAttribute('font-size', Math.min(width, height) * 0.15 + 'px');
-    titleText.setAttribute('fill', 'white');
+    titleText.setAttribute('font-size', '16');
+    titleText.setAttribute('font-weight', 'bold');
+    titleText.setAttribute('fill', '#333');
     titleText.textContent = title;
     svg.appendChild(titleText);
+
+    // Create table background
+    const tableBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    tableBg.setAttribute('x', padding.left.toString());
+    tableBg.setAttribute('y', padding.top.toString());
+    tableBg.setAttribute('width', tableWidth.toString());
+    tableBg.setAttribute('height', tableHeight.toString());
+    tableBg.setAttribute('fill', 'white');
+    tableBg.setAttribute('stroke', '#ddd');
+    tableBg.setAttribute('stroke-width', '1');
+    svg.appendChild(tableBg);
+
+    // Draw table rows and cells
+    data.forEach((row, rowIndex) => {
+      const y = padding.top + rowIndex * rowHeight;
+      
+      // Draw row background (alternating colors)
+      const rowBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rowBg.setAttribute('x', padding.left.toString());
+      rowBg.setAttribute('y', y.toString());
+      rowBg.setAttribute('width', tableWidth.toString());
+      rowBg.setAttribute('height', rowHeight.toString());
+      rowBg.setAttribute('fill', rowIndex === 0 ? '#f8f9fa' : (rowIndex % 2 === 0 ? '#ffffff' : '#f8f9fa'));
+      rowBg.setAttribute('stroke', '#ddd');
+      rowBg.setAttribute('stroke-width', '0.5');
+      svg.appendChild(rowBg);
+
+      // Draw cells and text
+      row.forEach((cell, colIndex) => {
+        const x = padding.left + colIndex * colWidth;
+        
+        // Draw cell border
+        const cellBorder = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        cellBorder.setAttribute('x', x.toString());
+        cellBorder.setAttribute('y', y.toString());
+        cellBorder.setAttribute('width', colWidth.toString());
+        cellBorder.setAttribute('height', rowHeight.toString());
+        cellBorder.setAttribute('fill', 'none');
+        cellBorder.setAttribute('stroke', '#ddd');
+        cellBorder.setAttribute('stroke-width', '0.5');
+        svg.appendChild(cellBorder);
+
+        // Add cell text
+        const cellText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        cellText.setAttribute('x', (x + colWidth / 2).toString());
+        cellText.setAttribute('y', (y + rowHeight / 2 + 4).toString()); // +4 for vertical centering
+        cellText.setAttribute('text-anchor', 'middle');
+        cellText.setAttribute('dominant-baseline', 'middle');
+        cellText.setAttribute('font-size', Math.min(12, rowHeight * 0.6).toString());
+        cellText.setAttribute('font-weight', rowIndex === 0 ? 'bold' : 'normal');
+        cellText.setAttribute('fill', rowIndex === 0 ? '#333' : '#666');
+        
+        // Truncate text if too long
+        const maxTextLength = Math.floor(colWidth / 8); // Rough estimate
+        const displayText = cell.length > maxTextLength ? cell.substring(0, maxTextLength - 3) + '...' : cell;
+        cellText.textContent = displayText;
+        svg.appendChild(cellText);
+      });
+
+      // Draw horizontal line after header
+      if (rowIndex === 0) {
+        const headerLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        headerLine.setAttribute('x1', padding.left.toString());
+        headerLine.setAttribute('y1', (y + rowHeight).toString());
+        headerLine.setAttribute('x2', (padding.left + tableWidth).toString());
+        headerLine.setAttribute('y2', (y + rowHeight).toString());
+        headerLine.setAttribute('stroke', '#333');
+        headerLine.setAttribute('stroke-width', '2');
+        svg.appendChild(headerLine);
+      }
+    });
+
+    // Draw vertical lines for columns
+    for (let i = 0; i <= colCount; i++) {
+      const x = padding.left + i * colWidth;
+      const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      verticalLine.setAttribute('x1', x.toString());
+      verticalLine.setAttribute('y1', padding.top.toString());
+      verticalLine.setAttribute('x2', x.toString());
+      verticalLine.setAttribute('y2', (padding.top + tableHeight).toString());
+      verticalLine.setAttribute('stroke', '#ddd');
+      verticalLine.setAttribute('stroke-width', i === 0 || i === colCount ? '1' : '0.5');
+      svg.appendChild(verticalLine);
+    }
   }
 }
