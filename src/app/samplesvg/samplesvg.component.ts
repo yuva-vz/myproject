@@ -17,61 +17,104 @@ export class SamplesvgComponent implements AfterViewInit {
   //   { type: 'line', w: '350', h: '200', x: '550px', y: '280px', title: 'Revenue Growth', data: [100, 120, 110, 140, 160, 180] },
   // ];
   layoutPositions = [
-    // Top row - Left: Pie chart
-    { type: 'pie', position: { h: '40vh', w: '30vw', x: '2vw', y: '2vh' } },
-    
-    // Top row - Center: Bar chart
-    { type: 'bar', position: { h: '40vh', w: '35vw', x: '34vw', y: '2vh' } },
-    
-    // Top row - Right top: Card 1
-    { type: 'card', position: { h: '18vh', w: '25vw', x: '72vw', y: '2vh' } },
-    
-    // Top row - Right bottom: Card 2  
-    { type: 'card', position: { h: '18vh', w: '25vw', x: '72vw', y: '24vh' } },
-    
+    // Top row - Left: Bar chart
+    // {
+    //   type: 'bar',
+    //   position: {
+    //     h: '40vh',
+    //     w: '30vw',
+    //     x: '2vw',
+    //     y: '5vh',
+    //   }
+    // },
+    // // Top row - Center: Pie chart
+    // {
+    //   type: 'pie',
+    //   position: {
+    //     h: '40vh',
+    //     w: '25vw',
+    //     x: '35vw',
+    //     y: '5vh',
+    //   }
+    // },
+    // // Top row - Right top: Card 1
+    // {
+    //   type: 'card',
+    //   position: {
+    //     h: '18vh',
+    //     w: '25vw',
+    //     x: '72vw',
+    //     y: '5vh',
+    //   }
+    // },
+    // Top row - Right bottom: Card 2 (FIXED: Different Y position)
+    {
+      type: 'card',
+      position: {
+        h: '18vh',
+        w: '25vw',
+        x: '72vw',
+        y: '27vh',
+      }
+    },
     // Bottom row - Full width: Bar chart
-    { type: 'bar', position: { h: '35vh', w: '95vw', x: '2vw', y: '45vh' } },
-    // Bottom row - Left: Donut chart
-    { type: 'donut', position: { h: '35vh', w: '45vw', x: '2vw', y: '82vh' } },
-    {type: 'line', position: { h: '35vh', w: '45vw', x: '52vw', y: '82vh' } },
-    // {type: 'area', position: { h: '35vh', w: '45vw', x: '2vw', y: '82vh' } },
-
+    {
+      type: 'bar',
+      position: {
+        h: '35vh',
+        w: '95vw',
+        x: '2vw',
+        y: '50vh',
+      }
+    },
+    {
+        type:'card',
+        position:{
+        "h": '5vh',
+        "w": '7vw',
+        "x": '44vw',
+        "y": '0',
+        }
+    },
   ];
 
 chartInfo = [
-  // First bar chart (top center)
-  { type: 'bar', title: 'Facility Stats', data: [15, 8, 7, 7, 6, 6, 6, 5, 5, 4] },
-  
-  // Second bar chart (bottom full width)  
-  { type: 'bar', title: 'Facility Overview', data: [15, 8, 7, 7, 6, 6, 6, 5, 5, 4, 3] },
-  
-  // Pie chart data
+  // ✅ One entry per type - all charts of same type will share this data
+  { type: 'card', title: '4772', data: [4772] },
   { type: 'pie', title: 'Distribution', data: [30, 25, 20, 15, 10] },
-  // Donut chart data
-  { type: 'donut', title: 'User Types', data: [40, 30, 20, 10] },
-  
-  // Cards data
-  { type: 'card', title: 'Total Count', data: [4772] },
-  { type: 'card', title: 'Facility Types', data: [4772] },
-  {type:"line", title: 'Revenue Growth', data: [100, 120, 110, 140, 160, 180] },
-  {type: 'area', title: 'Area Chart Example', data: [10, 20, 15, 25, 30, 35] },
+  { type: 'bar', title: 'Facility Stats', data: [15, 8, 7, 7,  5, 5, 4] },
 ];
 
-// tracking how many times each chart type is used
-chartCount: Record<string, number> = {};
+// // 🔄 Transform backend positions to reference layout positions
+// transformToReferenceLayout(backendPositions: any[]): any[] {
+//   // Reference layout pattern (like image 2):
+//   // Top row: Pie (left) | Bar (center) | Cards (right)
+//   // Bottom row: Full-width Bar
+  
+//   const referencePositions = [
+//     // Top left - Pie chart
+//     { h: '45vh', w: '30vw', x: '2vw', y: '5vh' },
+//     // Top center - Bar chart  
+//     { h: '45vh', w: '35vw', x: '34vw', y: '5vh' },
+//     // Top right - Card 1
+//     { h: '20vh', w: '25vw', x: '72vw', y: '5vh' },
+//     // Top right - Card 2
+//     { h: '20vh', w: '25vw', x: '72vw', y: '28vh' },
+//     // Bottom - Full width Bar
+//     { h: '40vh', w: '95vw', x: '2vw', y: '55vh' }
+//   ];
+
+//   return backendPositions.map((item, index) => ({
+//     ...item,
+//     position: referencePositions[index] || item.position // Fallback to original if no mapping
+//   }));
+// }
 
 layoutData = this.layoutPositions.map((layoutItem) => {
   const type = layoutItem.type;
 
-  // init count
-  if (!this.chartCount[type]) this.chartCount[type] = 0;
-
-  // find chart with matching type and current count
-  const matchingCharts = this.chartInfo.filter(c => c.type === type);
-  const chart = matchingCharts[this.chartCount[type]];
-
-  // increase the count for this type
-  this.chartCount[type]++;
+  // ✅ Get the FIRST chartInfo with matching type (shared data for same type)
+  const chart = this.chartInfo.find(c => c.type === type);
 
   return {
     type,
@@ -106,7 +149,7 @@ layoutData = this.layoutPositions.map((layoutItem) => {
 
       const svg = svgElement as SVGElement;
       
-      // Convert viewport units to pixels
+      // Convert vh/vw/px units to pixels
       const width = this.convertToPx(chart.position.w);
       const height = this.convertToPx(chart.position.h);
 
@@ -153,9 +196,9 @@ layoutData = this.layoutPositions.map((layoutItem) => {
   // Convert viewport units (vh, vw) to pixels
   convertToPx(value: string): number {
     if (value.endsWith('vh')) {
-      return (parseFloat(value) / 100) * window.innerHeight;
+      return (parseFloat(value) / 100) * window.innerHeight + 20;
     } else if (value.endsWith('vw')) {
-      return (parseFloat(value) / 100) * window.innerWidth;
+      return (parseFloat(value) / 100) * window.innerWidth +20;
     } else if (value.endsWith('px')) {
       return parseFloat(value);
     } else {
@@ -266,7 +309,9 @@ layoutData = this.layoutPositions.map((layoutItem) => {
       path.setAttribute('d', pathData);
       path.setAttribute('fill', this.colors[index % this.colors.length]);
       svg.appendChild(path);
-      
+      // svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
+
       startAngle += sliceAngle;
     });
   }

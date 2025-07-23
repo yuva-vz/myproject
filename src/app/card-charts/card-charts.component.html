@@ -1,0 +1,12 @@
+<div class="card-dashboard-charts">
+  <div
+    class="chart-container"
+    *ngFor="let chart of layoutData; let i = index"
+    [style]="'position: absolute; left: ' + chart.position.x + '; top: ' + chart.position.y + '; width: ' + chart.position.w + '; height: ' + chart.position.h + ';'"
+  >
+    <svg
+      [attr.id]="'card-chart-' + chart.type + '-' + i"
+      [style]="'width: 100%; height: 100%; display: block;'"
+    ></svg>
+  </div>
+</div>

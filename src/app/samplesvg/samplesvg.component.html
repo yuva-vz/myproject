@@ -1,17 +1,20 @@
-<div class="dashboard-charts">
+<div class="dashboard-charts" style="display: block; width: 100%; height: 100%;">
   <div
+   style="position: absolute;"
     class="chart-container"
     *ngFor="let chart of layoutData; let i = index"
     [style.left]="chart.position.x"
     [style.top]="chart.position.y"
-    [style.width]="chart.position.w"
-    [style.height]="chart.position.h"
-  >
+     [style.width]="chart.position.w"
+      [style.height]="chart.position.h"
+     >
     <!-- <h3 class="chart-title">{{ chart.title }}</h3> -->
     <svg
+    
+
       [attr.id]="'chart-' + chart.type + '-' + i"
-      [attr.width]="chart.position.w"
-      [attr.height]="chart.position.h"
+    
+     
     ></svg>
   </div>
 </div>

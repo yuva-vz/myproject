@@ -1,0 +1,10 @@
+<div class="pie-chart-container">
+  <h4 class="chart-title">{{ title }}</h4>
+  <svg 
+    #pieChart
+    [attr.width]="width" 
+    [attr.height]="height"
+    [attr.viewBox]="'0 0 ' + width + ' ' + height"
+    preserveAspectRatio="xMidYMid meet">
+  </svg>
+</div>

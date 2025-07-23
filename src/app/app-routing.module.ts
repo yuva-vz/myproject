@@ -6,15 +6,17 @@ import { CompletedTasksComponent } from './pages/completed-tasks/completed-tasks
 import { PrimenggComponent } from './pages/primengg/primengg.component';
 import { SvgChartComponent } from './svg-chart/svg-chart.component';
 import { SamplesvgComponent } from './samplesvg/samplesvg.component';
+import { CombinedDashboardComponent } from './combined-dashboard/combined-dashboard.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'samplesvg', pathMatch: 'full' },
+    { path: '', redirectTo: 'combined-dashboard', pathMatch: 'full' },
   { path: 'add', component: AddTaskComponent },
   { path: 'pending', component: PendingTasksComponent },
   { path: 'completed', component: CompletedTasksComponent },
    { path: 'primeng', component: PrimenggComponent },
    { path: 'svgchart', component: SvgChartComponent },
-   { path: 'samplesvg', component: SamplesvgComponent }
+   { path: 'samplesvg', component: SamplesvgComponent },
+   { path: 'combined-dashboard', component: CombinedDashboardComponent }
 ];
 
 

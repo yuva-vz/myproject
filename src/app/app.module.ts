@@ -31,6 +31,11 @@ import { TooltipModule } from 'primeng/tooltip';
 import { RippleModule } from 'primeng/ripple';
 import { SvgChartComponent } from './svg-chart/svg-chart.component';
 import { SamplesvgComponent } from './samplesvg/samplesvg.component';
+import { DashboardCardComponent } from './dashboard-card/dashboard-card.component';
+import { BarChartComponent } from './bar-chart/bar-chart.component';
+import { PieChartComponent } from './pie-chart/pie-chart.component';
+import { CombinedDashboardComponent } from './combined-dashboard/combined-dashboard.component';
+import { CardChartsComponent } from './card-charts/card-charts.component';
 
 
 @NgModule({
@@ -43,7 +48,12 @@ import { SamplesvgComponent } from './samplesvg/samplesvg.component';
     FooterComponent,
     PrimenggComponent,
     SvgChartComponent,
-    SamplesvgComponent
+    SamplesvgComponent,
+    DashboardCardComponent,
+    BarChartComponent,
+    PieChartComponent,
+    CombinedDashboardComponent,
+    CardChartsComponent
   ],
   imports: [
     BrowserModule,
