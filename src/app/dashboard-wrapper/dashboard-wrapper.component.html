@@ -1,26 +1,12 @@
 <!-- 🎯 Main Dashboard Card Container -->
 <div class="dashboard-page">
-  <div class="dashboard-header">
-    <h1>{{ dashboardTitle }}</h1>
-    <p class="last-updated">Last updated: {{ lastUpdated | date:'medium' }}</p>
-  </div>
-
   <!-- 📊 Single Dashboard Card containing your multi-chart component -->
-  <div class="dashboard-card-container">
-    <div class="dashboard-card">
-      <div class="card-header">
-        <h2>Multi-Chart Analytics</h2>
-        <div class="card-actions">
-          <button class="action-btn">⚙️</button>
-          <button class="action-btn">📊</button>
-          <button class="action-btn">⋯</button>
-        </div>
-      </div>
-      
-      <!-- 🎨 Your existing samplesvg component goes here -->
-      <div class="card-content">
-        <app-samplesvg></app-samplesvg>
-      </div>
+  <div class="dashboard-card">
+    <div class="card-header">
+      <h3>Analytics Dashboard</h3>
+    </div>
+    <div class="card-content">
+      <app-samplesvg></app-samplesvg>
     </div>
   </div>
 </div>

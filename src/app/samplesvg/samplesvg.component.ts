@@ -535,41 +535,41 @@ svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
     const colWidth = tableWidth / colCount;
 
     // Add title
-    const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    titleText.setAttribute('x', (width / 2).toString());
-    titleText.setAttribute('y', '25');
-    titleText.setAttribute('text-anchor', 'middle');
-    titleText.setAttribute('font-size', '16');
-    titleText.setAttribute('font-weight', 'bold');
-    titleText.setAttribute('fill', '#333');
-    titleText.textContent = title;
-    svg.appendChild(titleText);
+    // const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    // titleText.setAttribute('x', (width / 2).toString());
+    // titleText.setAttribute('y', '25');
+    // titleText.setAttribute('text-anchor', 'middle');
+    // titleText.setAttribute('font-size', '16');
+    // titleText.setAttribute('font-weight', 'bold');
+    // titleText.setAttribute('fill', '#333');
+    // titleText.textContent = title;
+    // svg.appendChild(titleText);
 
     // Create table background
-    const tableBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    tableBg.setAttribute('x', padding.left.toString());
-    tableBg.setAttribute('y', padding.top.toString());
-    tableBg.setAttribute('width', tableWidth.toString());
-    tableBg.setAttribute('height', tableHeight.toString());
-    tableBg.setAttribute('fill', 'white');
-    tableBg.setAttribute('stroke', '#ddd');
-    tableBg.setAttribute('stroke-width', '1');
-    svg.appendChild(tableBg);
+    // const tableBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    // tableBg.setAttribute('x', padding.left.toString());
+    // tableBg.setAttribute('y', padding.top.toString());
+    // tableBg.setAttribute('width', tableWidth.toString());
+    // tableBg.setAttribute('height', tableHeight.toString());
+    // tableBg.setAttribute('fill', 'white');
+    // tableBg.setAttribute('stroke', '#ddd');
+    // tableBg.setAttribute('stroke-width', '1');
+    // svg.appendChild(tableBg);
 
     // Draw table rows and cells
     data.forEach((row, rowIndex) => {
       const y = padding.top + rowIndex * rowHeight;
       
-      // Draw row background (alternating colors)
-      const rowBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      rowBg.setAttribute('x', padding.left.toString());
-      rowBg.setAttribute('y', y.toString());
-      rowBg.setAttribute('width', tableWidth.toString());
-      rowBg.setAttribute('height', rowHeight.toString());
-      rowBg.setAttribute('fill', rowIndex === 0 ? '#f8f9fa' : (rowIndex % 2 === 0 ? '#ffffff' : '#f8f9fa'));
-      rowBg.setAttribute('stroke', '#ddd');
-      rowBg.setAttribute('stroke-width', '0.5');
-      svg.appendChild(rowBg);
+      // // Draw row background (alternating colors)
+      // const rowBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      // rowBg.setAttribute('x', padding.left.toString());
+      // rowBg.setAttribute('y', y.toString());
+      // rowBg.setAttribute('width', tableWidth.toString());
+      // rowBg.setAttribute('height', rowHeight.toString());
+      // rowBg.setAttribute('fill', rowIndex === 0 ? '#f8f9fa' : (rowIndex % 2 === 0 ? '#ffffff' : '#f8f9fa'));
+      // rowBg.setAttribute('stroke', '#ddd');
+      // rowBg.setAttribute('stroke-width', '0.5');
+      // svg.appendChild(rowBg);
 
       // Draw cells and text
       row.forEach((cell, colIndex) => {
@@ -584,23 +584,24 @@ svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
         cellBorder.setAttribute('fill', 'none');
         cellBorder.setAttribute('stroke', '#ddd');
         cellBorder.setAttribute('stroke-width', '0.5');
+        cellBorder.setAttribute('border', 'bold');
         svg.appendChild(cellBorder);
 
         // Add cell text
-        const cellText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        cellText.setAttribute('x', (x + colWidth / 2).toString());
-        cellText.setAttribute('y', (y + rowHeight / 2 + 4).toString()); // +4 for vertical centering
-        cellText.setAttribute('text-anchor', 'middle');
-        cellText.setAttribute('dominant-baseline', 'middle');
-        cellText.setAttribute('font-size', Math.min(12, rowHeight * 0.6).toString());
-        cellText.setAttribute('font-weight', rowIndex === 0 ? 'bold' : 'normal');
-        cellText.setAttribute('fill', rowIndex === 0 ? '#333' : '#666');
+        // const cellText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        // cellText.setAttribute('x', (x + colWidth / 2).toString());
+        // cellText.setAttribute('y', (y + rowHeight / 2 + 4).toString()); // +4 for vertical centering
+        // cellText.setAttribute('text-anchor', 'middle');
+        // cellText.setAttribute('dominant-baseline', 'middle');
+        // cellText.setAttribute('font-size', Math.min(12, rowHeight * 0.6).toString());
+        // cellText.setAttribute('font-weight', rowIndex === 0 ? 'bold' : 'normal');
+        // cellText.setAttribute('fill', rowIndex === 0 ? '#333' : '#666');
         
         // Truncate text if too long
-        const maxTextLength = Math.floor(colWidth / 8); // Rough estimate
-        const displayText = cell.length > maxTextLength ? cell.substring(0, maxTextLength - 3) + '...' : cell;
-        cellText.textContent = displayText;
-        svg.appendChild(cellText);
+        // const maxTextLength = Math.floor(colWidth / 8); // Rough estimate
+        // const displayText = cell.length > maxTextLength ? cell.substring(0, maxTextLength - 3) + '...' : cell;
+        // cellText.textContent = displayText;
+        // svg.appendChild(cellText);
       });
 
       // Draw horizontal line after header
@@ -612,6 +613,8 @@ svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
         headerLine.setAttribute('y2', (y + rowHeight).toString());
         headerLine.setAttribute('stroke', '#333');
         headerLine.setAttribute('stroke-width', '2');
+        headerLine.setAttribute('border', 'bold');
+
         svg.appendChild(headerLine);
       }
     });
@@ -625,8 +628,10 @@ svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
       verticalLine.setAttribute('x2', x.toString());
       verticalLine.setAttribute('y2', (padding.top + tableHeight).toString());
       verticalLine.setAttribute('stroke', '#ddd');
+      verticalLine.setAttribute('border', 'bold');
       verticalLine.setAttribute('stroke-width', i === 0 || i === colCount ? '1' : '0.5');
       svg.appendChild(verticalLine);
+      
     }
   }
 }

@@ -7,6 +7,4 @@ import { Component } from '@angular/core';
 })
 export class DashboardWrapperComponent {
   // Dashboard title and metadata
-  dashboardTitle = 'Analytics Dashboard';
-  lastUpdated = new Date();
 }
