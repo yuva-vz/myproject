@@ -12,7 +12,7 @@ import { PendingTasksComponent } from './pages/pending-tasks/pending-tasks.compo
 import { CompletedTasksComponent } from './pages/completed-tasks/completed-tasks.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
-import { PrimenggComponent } from './pages/primengg/primengg.component';
+// import { PrimenggComponent } from './pages/primengg/primengg.component';
 
 // PrimeNG Modules - Complete Import List
 import { MenubarModule } from 'primeng/menubar';
@@ -37,6 +37,11 @@ import { PieChartComponent } from './pie-chart/pie-chart.component';
 import { CombinedDashboardComponent } from './combined-dashboard/combined-dashboard.component';
 import { CardChartsComponent } from './card-charts/card-charts.component';
 import { DashboardWrapperComponent } from './dashboard-wrapper/dashboard-wrapper.component';
+import { ImageDashboardComponent } from './image-dashboard/image-dashboard.component';
+import { CanvasDashboardComponent } from './canvas-dashboard/canvas-dashboard.component';
+import { SvgCanvasDashboardComponent } from './svg-canvas-dashboard/svg-canvas-dashboard.component';
+
+import { DashboardGridComponent } from './dashboard-grid/dashboard-grid.component';
 
 
 @NgModule({
@@ -47,7 +52,7 @@ import { DashboardWrapperComponent } from './dashboard-wrapper/dashboard-wrapper
     CompletedTasksComponent,
     HeaderComponent,
     FooterComponent,
-    PrimenggComponent,
+    // PrimenggComponent,
     SvgChartComponent,
     SamplesvgComponent,
     DashboardCardComponent,
@@ -55,7 +60,12 @@ import { DashboardWrapperComponent } from './dashboard-wrapper/dashboard-wrapper
     PieChartComponent,
     CombinedDashboardComponent,
     CardChartsComponent,
-    DashboardWrapperComponent
+    DashboardWrapperComponent,
+    ImageDashboardComponent,
+    CanvasDashboardComponent,
+    SvgCanvasDashboardComponent,
+   
+    DashboardGridComponent
   ],
   imports: [
     BrowserModule,

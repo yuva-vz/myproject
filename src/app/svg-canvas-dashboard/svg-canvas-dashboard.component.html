@@ -1,0 +1,116 @@
+<div class="svg-canvas-dashboard-wrapper">
+  <!-- Dashboard Controls -->
+  <div class="dashboard-controls">
+    <h2>🎨 SVG + Canvas Dashboard</h2>
+    <div class="control-buttons">
+      <button class="btn btn-primary" (click)="generateCanvasThumbnail()" [disabled]="isGenerating">
+        <span *ngIf="!isGenerating">📸 Capture SVG → Canvas</span>
+        <span *ngIf="isGenerating">⏳ Generating...</span>
+      </button>
+      
+      <button class="btn btn-secondary" (click)="generateCanvasDirectly()" [disabled]="isGenerating">
+        🎯 Generate Canvas Directly
+      </button>
+      
+      <button class="btn btn-success" (click)="downloadCanvasAsImage()" 
+              [disabled]="!canvasGenerated" *ngIf="canvasGenerated">
+        💾 Download PNG
+      </button>
+      
+      <button class="btn btn-info" (click)="copyCanvasToClipboard()" 
+              [disabled]="!canvasGenerated" *ngIf="canvasGenerated">
+        📋 Copy to Clipboard
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <!-- Interactive SVG Dashboard -->
+    <div class="svg-section">
+      <h3>🖼️ Interactive SVG Dashboard</h3>
+      <div #dashboardContainer class="dashboard-charts">
+        <div
+          class="chart-container"
+          *ngFor="let chart of layoutData; let i = index"
+          [style.left]="chart.position.x"
+          [style.top]="chart.position.y"
+          [style.width]="chart.position.w"
+          [style.height]="chart.position.h">
+          
+          <svg
+            [attr.id]="'chart-' + chart.type + '-' + i"
+            width="100%"
+            height="100%">
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Canvas Thumbnail -->
+    <div class="canvas-section" *ngIf="showThumbnail">
+      <h3>🎯 Canvas Thumbnail ({{ thumbnailSize.width }}×{{ thumbnailSize.height }})</h3>
+      <div class="canvas-container">
+        <canvas #thumbnailCanvas
+                [width]="thumbnailSize.width"
+                [height]="thumbnailSize.height"
+                [style.width.px]="thumbnailSize.width"
+                [style.height.px]="thumbnailSize.height">
+        </canvas>
+        
+        <div class="canvas-info" *ngIf="canvasGenerated">
+          <p>✅ Canvas Generated Successfully!</p>
+          <p>📐 Dimensions: {{ thumbnailSize.width }} × {{ thumbnailSize.height }}px</p>
+          <p>🎨 Format: PNG with transparency support</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Explanation -->
+  <div class="feature-explanation">
+    <h4>🔥 Why This Is Powerful:</h4>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h5>🖼️ SVG Benefits</h5>
+        <ul>
+          <li>✅ Interactive & Scalable</li>
+          <li>✅ Crisp at any size</li>
+          <li>✅ DOM manipulation</li>
+          <li>✅ CSS styling</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h5>🎯 Canvas Benefits</h5>
+        <ul>
+          <li>✅ High performance</li>
+          <li>✅ Image export (PNG/JPG)</li>
+          <li>✅ Pixel manipulation</li>
+          <li>✅ Fixed dimensions</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h5>🚀 Combined Power</h5>
+        <ul>
+          <li>✅ Design in SVG</li>
+          <li>✅ Export via Canvas</li>
+          <li>✅ Thumbnail generation</li>
+          <li>✅ Best of both worlds</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workflow Steps -->
+  <div class="workflow-steps">
+    <h4>📋 Workflow Example:</h4>
+    <ol>
+      <li>👨‍💻 User builds dashboard with interactive SVG charts</li>
+      <li>📸 Click "Capture SVG → Canvas" to convert to image</li>
+      <li>🎯 Canvas creates a fixed-size thumbnail (219×149px)</li>
+      <li>💾 Export as PNG or copy to clipboard</li>
+      <li>🔄 Use thumbnail for previews, reports, or sharing</li>
+    </ol>
+  </div>
+</div>

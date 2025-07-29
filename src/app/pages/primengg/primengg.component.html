@@ -53,7 +53,7 @@
 
 <!-- Table with Pagination -->
 <div class="card table-section">
-    <h3>Products Table with Built-in Pagination</h3>
+    <h3>Ps Table with Built-in Pagination</h3>
     <p-table 
         #dt2
         [value]="products" 
@@ -68,7 +68,7 @@
         
         <ng-template pTemplate="caption">
             <div class="table-header">
-                <span class="table-title">Product Inventory</span>
+                <span class="table-title">P Inventory</span>
                 <p-iconField iconPosition="left" class="search-field">
                     <p-inputIcon>
                         <i class="pi pi-search"></i>
@@ -538,7 +538,7 @@
         </p-button>
     </div>
     
-    <!-- Grid Layout -->
+    Grid Layout
     <div *ngIf="layout === 'grid'" class="grid col-offset-3 ">
         <div *ngFor="let item of gridItems" class="col-12 md:col-6 lg:col-4 xl:col-3">
             <div class="bg-white p-3 border-round shadow-2 h-full">

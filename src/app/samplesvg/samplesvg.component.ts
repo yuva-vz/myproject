@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-samplesvg',
@@ -17,18 +17,19 @@ export class SamplesvgComponent implements AfterViewInit {
   //   { type: 'line', w: '350', h: '200', x: '550px', y: '280px', title: 'Revenue Growth', data: [100, 120, 110, 140, 160, 180] },
   // ];
  originalLayout = [
-  // { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '0vh' } },
-  // { type: 'bar', position: { h: '14vh', w: '22vw', x: '22vw', y: '0vh' } },
-  // { type: 'pie', position: { h: '14vh', w: '22vw', x: '0vw', y: '0vh' } },
-  // { type: 'bar', position: { h: '14vh', w: '55vw', x: '0vw', y: '14vh' } },
-  // { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '6vh' } },
+  { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '0vh' } },
+  { type: 'bar', position: { h: '14vh', w: '22vw', x: '22vw', y: '0vh' } },
+  { type: 'pie', position: { h: '14vh', w: '22vw', x: '0vw', y: '0vh' } },
+  { type: 'bar', position: { h: '14vh', w: '40vw', x: '0vw', y: '14vh' } },
+  { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '6vh' } },
+  { type: 'table', position: { h: '16vh', w: '18vw', x: '40vw', y: '14vh' } },
  
-  { type: 'bar', position: { h: '14vh', w: '22vw', x: '1vw', y: '0vh' } },
-  { type: 'table', position: { h: '14vh', w: '22vw', x: '23vw', y: '0vh' } },
-  { type: 'card', position: { h: '9vh', w: '15vw', x: '24vw', y: '15vh' } },
-  { type: 'pie', position: { h: '14vh', w: '22vw', x: '1vw', y: '15vh' } },
-  // { type: 'table', position: { h: '20vh', w: '49vw', x: '1vw', y: '30vh' } },
-  { type: 'bar', position: { h: '20vh', w: '49vw', x: '1vw', y: '30vh' } },
+  // { type: 'bar', position: { h: '14vh', w: '22vw', x: '1vw', y: '0vh' } },
+  // { type: 'table', position: { h: '14vh', w: '22vw', x: '23vw', y: '0vh' } },
+  // { type: 'card', position: { h: '9vh', w: '15vw', x: '24vw', y: '15vh' } },
+  // { type: 'pie', position: { h: '14vh', w: '22vw', x: '1vw', y: '15vh' } },
+  // // { type: 'table', position: { h: '20vh', w: '49vw', x: '1vw', y: '30vh' } },
+  // { type: 'bar', position: { h: '20vh', w: '49vw', x: '1vw', y: '30vh' } },
   
 ];
 
@@ -58,21 +59,22 @@ normalizeLayout(layout: any[]) {
 
 chartInfo = [
   { type: 'card', title: '4772', data: ['123.'] },
-  { type: 'pie', title: 'Distribution', data: [30, 25, 20, 15, 10] },
-  { type: 'bar', title: 'Facility Stats', data: [15, 8, 7, 7, 6, 5, 4] },
-  { type: 'donut', title: 'User Types', data: [40, 30, 20, 10] },
-  { type: 'area', title: 'User Growth', data: [10, 20, 30, 40, 50] },
-  { type: 'line', title: 'Revenue Growth', data: [100, 120, 110, 140, 160, 180] },
+  { type: 'pie', title: 'Distribution', data: [30, 30, 30, 30, 30, 30] },
+  { type: 'bar', title: 'Facility Stats', data: [15, 8, 7, 7, 6, 5, 4, 3, 2, 1] },
+  { type: 'donut', title: 'User Types', data: [40, 30, 20, 10, 15, 12, 8, 5, 7, 3] },
+  { type: 'area', title: 'User Growth', data: [10, 20, 30, 40, 50, 60, 55, 65, 70, 80] },
+  { type: 'line', title: 'Revenue Growth', data: [100, 120, 110, 140, 160, 180, 200, 220, 210, 230] },
   { 
     type: 'table', 
     title: 'Performance Data', 
-    data: [
-      ['Product', 'Sales', 'Revenue', 'Growth'],
-      ['Product A', '125', '$45K', '+12%'],
-      ['Product B', '89', '$32K', '+8%'],
-      ['Product C', '156', '$67K', '+15%'],
-      ['Product D', '203', '$78K', '+22%']
-    ]
+     data: [
+        ['Facility.Name', 'Facility.City'],
+        ["Saint Mary's Hospital", 'Waterbury'],
+        ['Goodall Witcher Hospital', 'Clifton'],
+        ['Yale-New Haven Hospital', 'New Haven'],
+        ['Texas Childrens Hosp', 'Houston'],
+        ['Griffin Hospital', 'Derby'],
+      ]
   },
   // Add your new chart info objects below as needed
 ];
@@ -99,7 +101,27 @@ layoutData = this.normalizedLayout.map(layoutItem => {
 
 
   // Chart colors
-  colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8',];
+  colors = [
+    "#005DA6",
+    "#FFC52F",
+    "#BAE1FF",
+    "#75C2FF",
+    "#30A4FF",
+    "#00467D",
+    "#CBC53E",
+    "#089AD7",
+    "#6D6E71",
+    "#D0CECE",
+    "#DE354C",
+    "#932432",
+    "#3C1874",
+    "#283747",
+    "#DDAF94",
+    "#E8CEBF",
+    "#f43a09",
+    "#c2edda",
+    "#fbe3e8",
+];
 
  
 
@@ -582,7 +604,7 @@ svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
         cellBorder.setAttribute('width', colWidth.toString());
         cellBorder.setAttribute('height', rowHeight.toString());
         cellBorder.setAttribute('fill', 'none');
-        cellBorder.setAttribute('stroke', '#ddd');
+        cellBorder.setAttribute('stroke', '#000000');
         cellBorder.setAttribute('stroke-width', '0.5');
         cellBorder.setAttribute('border', 'bold');
         svg.appendChild(cellBorder);
@@ -627,7 +649,7 @@ svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
       verticalLine.setAttribute('y1', padding.top.toString());
       verticalLine.setAttribute('x2', x.toString());
       verticalLine.setAttribute('y2', (padding.top + tableHeight).toString());
-      verticalLine.setAttribute('stroke', '#ddd');
+      verticalLine.setAttribute('stroke', '#000000');
       verticalLine.setAttribute('border', 'bold');
       verticalLine.setAttribute('stroke-width', i === 0 || i === colCount ? '1' : '0.5');
       svg.appendChild(verticalLine);

@@ -1,0 +1,19 @@
+<div class="dashboard-flex-container">
+  <h1> Dashboard Grid - 50 Canvas Dashboards</h1>
+  
+  <div class="loading-indicator" *ngIf="isLoading">
+    Loading dashboards...
+  </div>
+  
+  <div class="dashboard-flex" [class.loading]="isLoading">
+    <app-canvas-dashboard 
+      *ngFor="let dashboardId of dashboards; trackBy: trackByDashboardId; let i = index"
+      [dashboardId]="dashboardId"
+      [attr.data-index]="i">
+    </app-canvas-dashboard>
+  </div>
+  
+  <div class="dashboard-stats">
+    <p>{{ dashboards.length }} dashboards rendered • 4-column responsive flex layout</p>
+  </div>
+</div>

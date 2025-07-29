@@ -1,0 +1,244 @@
+.dashboard-flex-container {
+    padding: 2rem;
+    background: #f8f9fa;
+}
+
+.dashboard-flex-container h1 {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
+    color: #333;
+}
+
+.dashboard-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+}
+
+app-canvas-dashboard {
+    flex: 0 1 calc(25% - 2rem); // 4 columns
+    height: 25vh;
+    width: 25vw;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    transition: box-shadow 0.2s;
+}
+
+// app-canvas-dashboard:hover {
+//     box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+// }// Dashboard Flex - 4 Column Responsive Design
+// .dashboard-flex-container {
+//   padding: 20px;
+//   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+//   min-height: 100vh;
+//   width: 100%;
+//   box-sizing: border-box;
+  
+//   @media (max-width: 768px) {
+//     padding: 15px;
+//   }
+  
+//   @media (max-width: 480px) {
+//     padding: 10px;
+//   }
+// }
+
+.dashboard-flex-container h1 {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+  font-weight: 300;
+  font-size: 2.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+}
+
+.dashboard-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  justify-content: center;
+  
+  // 4 columns layout - Primary layout
+  app-canvas-dashboard {
+    flex: 0 1 calc(25% - 15px); // 4 items per row with gap
+    min-width: 300px;
+    max-width: 400px;
+    
+    // Responsive breakpoints
+    @media (max-width: 1400px) {
+      flex: 0 1 calc(33.333% - 14px); // 3 columns
+    }
+    
+    @media (max-width: 1024px) {
+      flex: 0 1 calc(50% - 10px); // 2 columns
+    }
+    
+    @media (max-width: 640px) {
+      flex: 0 1 100%; // 1 column
+      max-width: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    gap: 15px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 10px;
+  }
+}
+
+// Individual dashboard item styling
+app-canvas-dashboard {
+  display: block;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Loading animation for dashboards
+.dashboard-flex.loading app-canvas-dashboard {
+  opacity: 0;
+  transform: scale(0.9);
+  animation: dashboardFadeIn 0.6s ease forwards;
+}
+
+@keyframes dashboardFadeIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// // Stagger animation for each dashboard (first 20 items)
+// app-canvas-dashboard:nth-child(1) { animation-delay: 0.1s; }
+// app-canvas-dashboard:nth-child(2) { animation-delay: 0.15s; }
+// app-canvas-dashboard:nth-child(3) { animation-delay: 0.2s; }
+// app-canvas-dashboard:nth-child(4) { animation-delay: 0.25s; }
+// app-canvas-dashboard:nth-child(5) { animation-delay: 0.3s; }
+// app-canvas-dashboard:nth-child(6) { animation-delay: 0.35s; }
+// app-canvas-dashboard:nth-child(7) { animation-delay: 0.4s; }
+// app-canvas-dashboard:nth-child(8) { animation-delay: 0.45s; }
+// app-canvas-dashboard:nth-child(9) { animation-delay: 0.5s; }
+// app-canvas-dashboard:nth-child(10) { animation-delay: 0.55s; }
+// app-canvas-dashboard:nth-child(11) { animation-delay: 0.6s; }
+// app-canvas-dashboard:nth-child(12) { animation-delay: 0.65s; }
+// app-canvas-dashboard:nth-child(13) { animation-delay: 0.7s; }
+// app-canvas-dashboard:nth-child(14) { animation-delay: 0.75s; }
+// app-canvas-dashboard:nth-child(15) { animation-delay: 0.8s; }
+// app-canvas-dashboard:nth-child(16) { animation-delay: 0.85s; }
+
+// Loading indicator
+.loading-indicator {
+  text-align: center;
+  color: white;
+  font-size: 1.2rem;
+  margin: 20px 0;
+  opacity: 0.8;
+}
+
+// Dashboard statistics
+.dashboard-stats {
+  text-align: center;
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  
+  p {
+    color: white;
+    font-size: 1rem;
+    margin: 0;
+    opacity: 0.9;
+    
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// Performance optimization for large grids
+.dashboard-flex {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Responsive breakpoint indicators (for development)
+.dashboard-flex-container::before {
+  content: "4 Columns (XL)";
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 1000;
+  
+  @media (max-width: 1400px) {
+    content: "3 Columns (L)";
+  }
+  
+  @media (max-width: 1024px) {
+    content: "2 Columns (M)";
+  }
+  
+  @media (max-width: 640px) {
+    content: "1 Column (S)";
+  }
+}
+
+// Alternative: Row-based layout (uncomment if preferred)
+/*
+.dashboard-flex {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  
+  // Force 4 items per row
+  app-canvas-dashboard {
+    width: calc(25% - 15px);
+    
+    &:nth-child(4n+1) {
+      clear: left;
+    }
+  }
+}
+*/

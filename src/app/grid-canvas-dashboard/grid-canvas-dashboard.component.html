@@ -1,0 +1,25 @@
+<!-- <div class="grid-dashboard-container">
+  <div class="grid-header">
+    <h2>Grid Canvas Dashboard ({{gridSize}} Dashboards)</h2>
+    <div class="controls">
+      <button (click)="changeGridSize(25)">25 Dashboards</button>
+      <button (click)="changeGridSize(50)">50 Dashboards</button>
+      <button (click)="changeGridSize(100)">100 Dashboards</button>
+      <button (click)="regenerateAllDashboards()">Regenerate All</button>
+    </div>
+  </div>
+  
+  <div class="dashboard-grid" [style.grid-template-columns]="gridColumns">
+    <div *ngFor="let dashboard of dashboards; let i = index" 
+         class="dashboard-item" 
+         [attr.data-index]="i">
+      <div class="dashboard-title">Dashboard {{i + 1}}</div>
+      <canvas #dashboardCanvas
+              [id]="'canvas-' + i"
+              [width]="canvasWidth"
+              [height]="canvasHeight"
+              class="dashboard-canvas">
+      </canvas>
+    </div>
+  </div>
+</div> -->
