@@ -17,6 +17,7 @@ export class DashboardGridComponent implements OnInit {
     setTimeout(() => {
       this.isLoading = false;
     }, 1000);
+    
   }
   
   // TrackBy function for better performance

@@ -13,6 +13,8 @@ import { CanvasDashboardComponent } from './canvas-dashboard/canvas-dashboard.co
 import { SvgCanvasDashboardComponent } from './svg-canvas-dashboard/svg-canvas-dashboard.component';
 // import { GridCanvasDashboardComponent } from './grid-canvas-dashboard/grid-canvas-dashboard.component';
 import { DashboardGridComponent } from './dashboard-grid/dashboard-grid.component';
+import { ThumbnailDashboardComponent } from './thumbnail-dashboard/thumbnail-dashboard.component';
+import { MiniDashboardComponent } from './mini-dashboard/mini-dashboard.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard-grid', pathMatch: 'full' },
@@ -28,7 +30,9 @@ const routes: Routes = [
   { path: 'canvas-dashboard', component: CanvasDashboardComponent },
   { path: 'svg-canvas-dashboard', component: SvgCanvasDashboardComponent },
   // { path: 'grid-canvas-dashboard', component: GridCanvasDashboardComponent },
-  { path: 'dashboard-grid', component: DashboardGridComponent }
+  { path: 'dashboard-grid', component: DashboardGridComponent },
+  { path: 'thumbnail-dashboard', component: ThumbnailDashboardComponent },
+  { path: 'mini-dashboard', component: MiniDashboardComponent }
 ];
 
 

@@ -42,6 +42,8 @@ import { CanvasDashboardComponent } from './canvas-dashboard/canvas-dashboard.co
 import { SvgCanvasDashboardComponent } from './svg-canvas-dashboard/svg-canvas-dashboard.component';
 
 import { DashboardGridComponent } from './dashboard-grid/dashboard-grid.component';
+import { ThumbnailDashboardComponent } from './thumbnail-dashboard/thumbnail-dashboard.component';
+import { MiniDashboardComponent } from './mini-dashboard/mini-dashboard.component';
 
 
 @NgModule({
@@ -65,7 +67,9 @@ import { DashboardGridComponent } from './dashboard-grid/dashboard-grid.componen
     CanvasDashboardComponent,
     SvgCanvasDashboardComponent,
    
-    DashboardGridComponent
+    DashboardGridComponent,
+        ThumbnailDashboardComponent,
+        MiniDashboardComponent
   ],
   imports: [
     BrowserModule,

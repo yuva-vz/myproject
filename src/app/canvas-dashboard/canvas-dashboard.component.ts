@@ -12,8 +12,8 @@ export class CanvasDashboardComponent implements AfterViewInit {
   ctx!: CanvasRenderingContext2D;
   
   // Canvas viewport dimensions
-  canvasVW = 20; // 20vw
-  canvasVH = 20; // 20vh
+  // canvasVW = 20; // 20vw
+  // canvasVH = 20; // 20vh
 colors = [
   "#005DA6", // Royal Blue
   "#FFC52F", // Saffron Yellow
@@ -34,20 +34,13 @@ colors = [
 
   // Layout data using the same structure as samplesvg component
   originalLayout = [
-    { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '0vh' } },
-    { type: 'pie', position: { h: '14vh', w: '22vw', x: '22vw', y: '0vh' } },
-    { type: 'line', position: { h: '14vh', w: '22vw', x: '0vw', y: '0vh' } },
-    { type: 'donut', position: { h: '20vh', w: '40vw', x: '0vw', y: '14vh' } },
-    { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '6vh' } },
-    { type: 'funnel', position: { h: '22vh', w: '18vw', x: '40vw', y: '14vh' } },
-    // { type: 'funnel', position: { h: '15vh', w: '20vw', x: '58vw', y: '0vh' } },
-    // Add treemap chart
-    // { type: 'treemap', position: { h: '12vh', w: '20vw', x: '0vw', y: '30vh' } },
-    // New chart types
-    // { type: 'area', position: { h: '12vh', w: '20vw', x: '0vw', y: '30vh' } },
-    // { type: 'waterfall', position: { h: '12vh', w: '20vw', x: '22vw', y: '30vh' } },
-    // { type: 'bubble', position: { h: '12vh', w: '20vw', x: '44vw', y: '30vh' } },
-    // { type: 'radar', position: { h: '12vh', w: '20vw', x: '22vw', y: '44vh' } },
+     { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '0vh' } },
+  { type: 'funnel', position: { h: '14vh', w: '22vw', x: '22vw', y: '0vh' } },
+  { type: 'bubble', position: { h: '14vh', w: '22vw', x: '0vw', y: '0vh' } },
+  { type: '', position: { h: '14vh', w: '40vw', x: '0vw', y: '14vh' } },
+  { type: 'card', position: { h: '5vh', w: '7vw', x: '44vw', y: '6vh' } },
+  { type: 'waterfall', position: { h: '16vh', w: '18vw', x: '40vw', y: '14vh' } },
+  
   ];
 
   // Filter items where h > '60vh' or w > '60vw'
@@ -63,64 +56,63 @@ colors = [
   REF_WIDTH = 60;  // Reference container width
 
 chartInfo = [
-    { type: 'card', title: '4772', data: ['123.'] },
-    { type: 'pie', title: 'Distribution', data: [30, 30, 30, 30, 30, 30] },
+    { type: 'card', title: 'Distribution', data: ['123.'] },
+    { type: 'pie', title: 'Distribution', data: [30, 30, 30, 30, 30, 30,30] },
     { type: 'bar', title: 'Facility Stats', data: [15, 18, 27, 26, 16, 15, 34, 23, 22, 12] },
     { type: 'donut', title: 'User Types', data: [30, 30, 30, 30, 30] },
     { type: 'line', title: 'Revenue Growth', data: [100, 120, 110, 140, 160, 180, 200, 220, 210, 230] },
     { 
       type: 'table', 
-      title: 'Performance Data', 
+      title: 'A,b', 
       data: [
-    ['Facility.Name', 'Facility.City', 'State'], // ✅ Added "State" column in header
-    ["Saint Mary's Hospital", 'Waterbury', 'CT'],
-    ['Goodall Witcher Hospital', 'Clifton', 'TX'],
-    ['Texas Childrens Hosp', 'Houston', 'TX'],
-    ['Griffin Hospital', 'Derby', 'CT'],
-    ['Mount Sinai Hospital', 'New York', 'NY'] // ✅ Added one more with third column
+    ['A', 'B', 'C'], // ✅ Added "State" column in header
+    ['-', '-', '-'],
+    ['-', '-', '-'],
+    ['-', '-', '-']
   ],
 
     },
-    // Treemap chart data
+    // Treemap chart data - Indian states with population-based proportions
     { 
       type: 'treemap', 
-      title: 'Market Share',
+      title: 'State Population Distribution',
       data: [
-  { label: 'Memorial Hospital', value: 15, color: this.colors[0] },
-  { label: 'Community Memorial Hospital', value: 8, color: this.colors[1] },
-  { label: 'Good Samaritan Hospital', value: 7, color: this.colors[2] },
-  { label: 'St Joseph Hospital', value: 7, color: this.colors[3] },
-  { label: 'Memorial Medical Center', value: 6, color: this.colors[4] },
-  { label: 'Shriners Hospitals For Children', value: 6, color: this.colors[5] },
-  { label: 'St Francis Hospital', value: 6, color: this.colors[6] },
-  { label: 'Mercy Hospital', value: 5, color: this.colors[7] },
-  { label: 'St Joseph Medical Center', value: 5, color: this.colors[8] },
-  { label: 'Community Hospital', value: 4, color: this.colors[9] }
-],
+        { label: 'KARNATAKA', value: 30713, color: '#5B9BD5' },
+        { label: 'TAMIL NADU', value: 15956, color: '#70AD47' },
+        // { label: 'ANDHRA PRADESH', value: 17805, color: '#FFC000' },
+        { label: 'TELANGANA', value: 11226, color: '#4472C4' },
+        { label: 'KERALA', value: 8547, color: '#C65911' }
+      ],
       
-    },
+  },
       
     // New chart types data
     { type: 'area', title: 'Area Chart', data: [20, 45, 35, 60, 50, 75, 65, 85] },
     { 
       type: 'waterfall', 
-      title: 'Cash Flow', 
+      title: 'Row ID Count', 
       data: [
-        { label: 'Start', value: 100, type: 'start' },
-        { label: 'Sales', value: 50, type: 'positive' },
-        { label: 'Costs', value: -30, type: 'negative' },
-        { label: 'Tax', value: -10, type: 'negative' },
-        { label: 'Final', value: 110, type: 'end' }
+        { label: 'A', value: 8000, type: 'start' },
+        { label: 'B', value: 4800, type: 'positive' },
+        { label: 'C', value: 5000, type: 'positive' },
+        { label: 'D', value: 4500, type: 'positive' },
+        // { label: 'E', value: 700, type: 'positive' },
+        // { label: 'F', value: 1, type: 'positive' },
+        // { label: 'G', value: 1, type: 'positive' },
+        // { label: '6509-08', value: 1, type: 'positive' },
+        // { label: '6509-09', value: 1, type: 'positive' },
+        // { label: 'Total', value: 9, type: 'end' }
       ]
     },
+      
     { 
       type: 'bubble', 
       title: 'Bubble Chart', 
       data: [
-        { x: 20, y: 30, size: 15, label: 'A' },
-        { x: 40, y: 70, size: 25, label: 'B' },
-        { x: 65, y: 45, size: 20, label: 'C' },
-        { x: 80, y: 80, size: 30, label: 'D' }
+        { x: 20, y: 30, size: 2, label: 'A' },
+        { x: 40, y: 70, size: 4, label: 'B' },
+        { x: 65, y: 45, size: 2, label: 'C' },
+        { x: 80, y: 80, size: 2, label: 'D' }
       ]
     },
     { 
@@ -149,48 +141,6 @@ chartInfo = [
 
   layoutData: any[] = [];
 
-//   constructor(private router: Router) {}
-  
-  // Handle escape key to exit full screen
-//   @HostListener('document:keydown.escape', ['$event'])
-//   onEscapeKey(event: KeyboardEvent) {
-//     // this.exitFullScreen();
-//   }
-  
-  // Handle click on canvas to show navigation
-//   @HostListener('click', ['$event'])
-//   onCanvasClick(event: MouseEvent) {
-//     // Show a temporary navigation hint
-//     // this.showNavigationHint();
-//   }
-  
-//   exitFullScreen() {
-//     this.router.navigate(['/image-dashboard']);
-//   }
-  
-//   showNavigationHint() {
-//     // Create a temporary overlay with navigation instructions
-//     const overlay = document.createElement('div');
-//     overlay.style.cssText = `
-//       position: fixed;
-//       top: 20px;
-//       right: 20px;
-//       background: rgba(168, 162, 162, 0.8);
-//       color: white;
-//       padding: 10px 15px;
-//       border-radius: 5px;
-//       font-family: Arial, sans-serif;
-//       font-size: 14px;
-//       z-index: 1001;
-//       pointer-events: none;
-//     `;
-//     // overlay.innerHTML = 'Press ESC to exit full screen';
-//     document.body.appendChild(overlay);
-    
-//     setTimeout(() => {
-//       document.body.removeChild(overlay);
-//     }, 2000);
-//   }
   
   ngAfterViewInit() {
     const canvas = this.canvasRef.nativeElement;
@@ -201,19 +151,18 @@ chartInfo = [
     }
     
     // Set canvas to fixed size for consistent rendering
-    // canvas.width = 1800;
+    // canvas.width = 1900;
     // canvas.height = 1200;
-    // canvas.width = document.documentElement.clientWidth;
-    // canvas.height = document.documentElement.clientHeight;
-    canvas.width = 378; // 378px    
-    canvas.height = 200; // 210px
+
+    canvas.width = 378; // 378px
+    canvas.height = 210; // 210px
 
 
     // // Set canvas display size to match internal resolution
     // canvas.style.width = '100vw';
     // canvas.style.height = '100vh';
-     canvas.style.width = '378px';
-    canvas.style.height = '210px';
+    // canvas.style.width = '378px';
+    // canvas.style.height = '210px';
 
 
     this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -258,7 +207,9 @@ chartInfo = [
         data: chart?.data || []
       };
     });
+     console.log('Layout Data:', this.layoutData);
   }
+ 
 
   renderAllCharts() {
     const canvas = this.canvasRef.nativeElement;
@@ -306,7 +257,7 @@ chartInfo = [
           this.drawTable(chart.data as string[][], x, y, width, height, chart.title);
           break;
         case 'treemap':
-          this.drawTreemapChart(chart.data as any[], x, y, width, height);
+          this.drawTreemapChart(chart.data as any[], x, y, width, height, chart.title);
           break;
         case 'area':
           this.drawAreaChart(chart.data as number[], x, y, width, height, chart.title);
@@ -480,8 +431,8 @@ chartInfo = [
       
       this.ctx.beginPath();
       this.ctx.arc(pointX, pointY, 3, 0, Math.PI * 2);
-      this.ctx.strokeStyle = '#45BD1';
-      this.ctx.fillStyle = '#45BD1';
+      this.ctx.strokeStyle = this.colors[0];
+      this.ctx.fillStyle = this.colors[0];
       this.ctx.fill();
     });
   }
@@ -498,13 +449,14 @@ chartInfo = [
     this.ctx.strokeRect(x, y, width, height);
 
     // Draw value
-    this.ctx.fillStyle = 'black';
-    this.ctx.font = 'bold 20px Arial';
+    this.ctx.fillStyle = 'black'
+    this.ctx.font = 'bold 25px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.fillText(value.toString(), x + width / 2, y + height / 2 + 8);
 
-    // // Draw title
-    // this.ctx.font = 'bold 10px Arial';
+    // Draw title
+    // this.ctx.font = 'bold 5px Arial';
+    
     // this.ctx.fillText(title, x + width / 2, y + height - 10);
   }
 
@@ -537,20 +489,20 @@ drawTable(data: string[][], x: number, y: number, width: number, height: number,
       this.ctx.lineWidth = 1;
       this.ctx.strokeRect(cellX, rowY, colWidth, rowHeight);
 
-    //   // Cell text
-    //   if (rowIdx === 0) {
-    //     this.ctx.fillStyle = '#005DA6'; // Header text color
-    //     this.ctx.font = 'bold 12px Arial';
-    //   } else {
-    //     this.ctx.fillStyle = '#333';
-    //     this.ctx.font = '11px Arial';
-    //   }
-    //   this.ctx.textAlign = 'center';
-    //   this.ctx.textBaseline = 'middle';
+      // Cell text
+      if (rowIdx === 0) {
+        this.ctx.fillStyle = '#005DA6'; // Header text color
+        this.ctx.font = 'bold 12px Arial';
+      } else {
+        this.ctx.fillStyle = '#333';
+        this.ctx.font = '11px Arial';
+      }
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
 
-    //   // Wrap text if too long
-    //   const text = cell.length > 20 ? cell.substring(0, 17) + '...' : cell;
-    //   this.ctx.fillText(text, cellX + colWidth / 2, rowY + rowHeight / 2);
+      // Wrap text if too long
+      const text = cell.length > 20 ? cell.substring(0, 17) + '...' : cell;
+      this.ctx.fillText(text, cellX + colWidth / 2, rowY + rowHeight / 2);
     });
   });
 }
@@ -669,87 +621,7 @@ drawTable(data: string[][], x: number, y: number, width: number, height: number,
     this.ctx.stroke();
   }
 
-  // Waterfall Chart - Cumulative bars with increases/decreases
-  drawWaterfallChart(data: any[], x: number, y: number, width: number, height: number, title: string) {
-    const padding = 10;
-    const titleHeight = 20;
-    const chartArea = height - titleHeight - padding * 2;
-    const chartWidth = width - padding * 2;
-    const barWidth = chartWidth / data.length - 2;
-    
-    // Draw background
-    this.ctx.fillStyle = 'white';
-    this.ctx.fillRect(x, y, width, height);
-    this.ctx.strokeStyle = '#e1e5e9';
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeRect(x, y, width, height);
-
-    // Draw title
-    this.ctx.fillStyle = '#333';
-    this.ctx.font = '12px Arial';
-    this.ctx.textAlign = 'left';
-    this.ctx.fillText(title, x + padding, y + titleHeight - 5);
-
-    let cumulativeValue = 0;
-    const maxCumulative = Math.max(...data.map((item, i) => {
-      if (i === 0) return item.value;
-      if (item.type === 'end') return item.value;
-      cumulativeValue += item.value;
-      return cumulativeValue;
-    }));
-
-    cumulativeValue = 0;
-    const baseY = y + titleHeight + padding + chartArea;
-
-    data.forEach((item, i) => {
-      const barX = x + padding + i * (barWidth + 2);
-      let barHeight: number;
-      let barY: number;
-      let color: string;
-
-      if (item.type === 'start' || item.type === 'end') {
-        barHeight = (item.value / maxCumulative) * chartArea;
-        barY = baseY - barHeight;
-        color = this.colors[4]; // Blue for start/end
-        cumulativeValue = item.value;
-      } else {
-        const absValue = Math.abs(item.value);
-        barHeight = (absValue / maxCumulative) * chartArea;
-        
-        if (item.value > 0) {
-          barY = baseY - (cumulativeValue / maxCumulative) * chartArea - barHeight;
-          color = this.colors[1]; // Green for positive
-          cumulativeValue += item.value;
-        } else {
-          barY = baseY - (cumulativeValue / maxCumulative) * chartArea;
-          color = this.colors[10]; // Red for negative
-          cumulativeValue += item.value;
-        }
-      }
-
-      // Draw bar
-      this.ctx.fillStyle = color;
-      this.ctx.fillRect(barX, barY, barWidth, barHeight);
-      
-      // Draw connecting line to next bar (except last)
-      if (i < data.length - 1) {
-        this.ctx.strokeStyle = '#666';
-        this.ctx.lineWidth = 1;
-        this.ctx.setLineDash([2, 2]);
-        this.ctx.beginPath();
-        this.ctx.moveTo(barX + barWidth, barY);
-        this.ctx.lineTo(barX + barWidth + 2, barY);
-        this.ctx.stroke();
-        this.ctx.setLineDash([]);
-      }
-
-      // Draw label
-      this.ctx.fillStyle = '#666';
-      this.ctx.font = '9px Arial';
-      this.ctx.textAlign = 'center';
-      this.ctx.fillText(item.label, barX + barWidth / 2, baseY + 12);
-    });
-  }
+  
 
   // Bubble Chart - Scatter plot with size dimension
   drawBubbleChart(data: any[], x: number, y: number, width: number, height: number, title: string) {
@@ -759,21 +631,21 @@ drawTable(data: string[][], x: number, y: number, width: number, height: number,
     const chartWidth = width - padding * 2;
     
     // Draw background
-    this.ctx.fillStyle = 'white';
-    this.ctx.fillRect(x, y, width, height);
-    this.ctx.strokeStyle = '#e1e5e9';
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeRect(x, y, width, height);
+    // this.ctx.fillStyle = 'white';
+    // this.ctx.fillRect(x, y, width, height);
+    // this.ctx.strokeStyle = '#e1e5e9';
+    // this.ctx.lineWidth = 1;
+    // this.ctx.strokeRect(x, y, width, height);
 
-    // Draw title
-    this.ctx.fillStyle = '#333';
-    this.ctx.font = '12px Arial';
-    this.ctx.textAlign = 'left';
-    this.ctx.fillText(title, x + padding, y + titleHeight - 5);
+    // // Draw title
+    // this.ctx.fillStyle = '#333';
+    // this.ctx.font = '12px Arial';
+    // this.ctx.textAlign = 'left';
+    // this.ctx.fillText(title, x + padding, y + titleHeight - 5);
 
     // Find ranges for scaling
-    const maxX = Math.max(...data.map(d => d.x));
-    const maxY = Math.max(...data.map(d => d.y));
+    const maxX = Math.max(...data.map(d => d.x + 5));
+    const maxY = Math.max(...data.map(d => d.y + 5));
     const maxSize = Math.max(...data.map(d => d.size));
 
     // Draw bubbles
@@ -788,19 +660,19 @@ drawTable(data: string[][], x: number, y: number, width: number, height: number,
       this.ctx.fillStyle = this.colors[i % this.colors.length] + '80'; // Semi-transparent
       this.ctx.fill();
       this.ctx.strokeStyle = this.colors[i % this.colors.length];
-      this.ctx.lineWidth = 2;
+      this.ctx.lineWidth = 1;
       this.ctx.stroke();
 
       // Draw label
-      this.ctx.fillStyle = '#333';
-      this.ctx.font = '10px Arial';
-      this.ctx.textAlign = 'center';
-      this.ctx.fillText(bubble.label, bubbleX, bubbleY + radius + 12);
+      // this.ctx.fillStyle = '#333';
+      // this.ctx.font = '5px Arial';
+      // this.ctx.textAlign = 'center';
+      // this.ctx.fillText(bubble.label, bubbleX, bubbleY + radius + 12);
     });
 
     // Draw simple axes
-    this.ctx.strokeStyle = '#ccc';
-    this.ctx.lineWidth = 1;
+    this.ctx.strokeStyle = '#000';
+    this.ctx.lineWidth = 2;
     // X-axis
     this.ctx.beginPath();
     this.ctx.moveTo(x + padding, y + titleHeight + padding + chartArea);
@@ -921,11 +793,11 @@ drawTable(data: string[][], x: number, y: number, width: number, height: number,
     const chartArea = height - titleHeight - padding * 2;
     const chartWidth = width - padding * 2;
 
-    // Draw title
-    this.ctx.fillStyle = '#333';
-    this.ctx.font = '12px Arial';
-    this.ctx.textAlign = 'center';
-    this.ctx.fillText(title, x + width / 2, y + titleHeight - 5);
+    // // Draw title
+    // this.ctx.fillStyle = '#333';
+    // this.ctx.font = '12px Arial';
+    // this.ctx.textAlign = 'center';
+    // this.ctx.fillText(title, x + width / 2, y + titleHeight - 5);
 
     // Calculate total value for proportional sizing
     const totalValue = Math.max(...data.map(item => item.value));
@@ -969,177 +841,251 @@ drawTable(data: string[][], x: number, y: number, width: number, height: number,
       this.ctx.lineWidth = 2;
       this.ctx.stroke();
       
-      // Add label
-      this.ctx.fillStyle = 'white';
-      this.ctx.font = '10px Arial';
-      this.ctx.textAlign = 'center';
-      const labelX = x + width / 2;
-      const labelY = segmentY + segmentHeight / 2 + 3;
-      this.ctx.fillText(`${item.label}: ${item.value}`, labelX, labelY);
+      // // Add label
+      // this.ctx.fillStyle = 'white';
+      // this.ctx.font = '10px Arial';
+      // this.ctx.textAlign = 'center';
+      // const labelX = x + width / 2;
+      // const labelY = segmentY + segmentHeight / 2 + 3;
+      // this.ctx.fillText(`${item.label}: ${item.value}`, labelX, labelY);
     });
   }
 
-  // // Treemap Chart - Hierarchical data visualization with rectangles
-  // drawTreemapChart(data: any[], x: number, y: number, width: number, height: number, title: string) {
-  //   const padding = 10;
-  //   const titleHeight = 20;
-  //   const chartArea = height - titleHeight - padding * 2;
-  //   const chartWidth = width - padding * 2;
+  // Treemap Chart - Hierarchical data visualization with rectangles
+  drawTreemapChart(data: any[], x: number, y: number, width: number, height: number, title: string) {
+    const padding = 10;
+    const titleHeight = 20;
+    const chartArea = height - titleHeight - padding * 2;
+    const chartWidth = width - padding * 2;
 
-  //   // Draw background
-  //   // this.ctx.fillStyle = 'white';
-  //   // this.ctx.fillRect(x, y, width, height);
-  //   // this.ctx.strokeStyle = '#e1e5e9';
-  //   // this.ctx.lineWidth = 1;
-  //   // this.ctx.strokeRect(x, y, width, height);
+    // Draw background
+    // this.ctx.fillStyle = 'white';
+    // this.ctx.fillRect(x, y, width, height);
+    // this.ctx.strokeStyle = '#e1e5e9';
+    // this.ctx.lineWidth = 1;
+    // this.ctx.strokeRect(x, y, width, height);
 
-  //   // // Draw title
-  //   // this.ctx.fillStyle = '#333';
-  //   // this.ctx.font = '12px Arial';
-  //   // this.ctx.textAlign = 'left';
-  //   // this.ctx.fillText(title, x + padding, y + titleHeight - 5);
+    // // Draw title
+    // this.ctx.fillStyle = '#333';
+    // this.ctx.font = '12px Arial';
+    // this.ctx.textAlign = 'left';
+    // this.ctx.fillText(title, x + padding, y + titleHeight - 5);
 
-  //   // Calculate total value for proportional sizing
-  //   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+    // Calculate total value for proportional sizing
+    const totalValue = data.reduce((sum, item) => sum + item.value, 0);
     
-  //   // Simple squarified treemap algorithm
-  //   const rectangles = this.calculateTreemapRectangles(data, x + padding, y + titleHeight + padding, chartWidth, chartArea, totalValue);
+    // Simple squarified treemap algorithm
+    const rectangles = this.calculateTreemapRectangles(data, x + padding, y + titleHeight + padding, chartWidth, chartArea, totalValue);
 
-  //   // Draw rectangles
-  //   rectangles.forEach((rect, i) => {
-  //     // Draw rectangle
-  //     this.ctx.fillStyle = rect.color || this.colors[i % this.colors.length];
-  //     this.ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+    // Draw rectangles
+    rectangles.forEach((rect, i) => {
+      // Draw rectangle
+      this.ctx.fillStyle = rect.color || this.colors[i % this.colors.length];
+      this.ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
       
-  //     // Draw border
-  //     this.ctx.strokeStyle = 'white';
-  //     this.ctx.lineWidth = 2;
-  //     this.ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+      // Draw border
+      this.ctx.strokeStyle = 'white';
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
 
-  //     // // Draw label if rectangle is large enough
-  //     // if (rect.width > 30 && rect.height > 20) {
-  //     //   this.ctx.fillStyle = 'white';
-  //     //   this.ctx.font = 'bold 10px Arial';
-  //     //   this.ctx.textAlign = 'center';
+      // Draw label if rectangle is large enough
+      // if (rect.width > 50 && rect.height > 30) {
+      //   this.ctx.fillStyle = 'white';
+      //   this.ctx.font = 'bold 12px Arial';
+      //   this.ctx.textAlign = 'center';
+      //   this.ctx.textBaseline = 'middle';
         
-  //     //   // Label
-  //     //   this.ctx.fillText(
-  //     //     rect.label, 
-  //     //     rect.x + rect.width / 2, 
-  //     //     rect.y + rect.height / 2 - 5
-  //     //   );
+      //   // State name
+      //   const centerX = rect.x + rect.width / 2;
+      //   const centerY = rect.y + rect.height / 2;
         
-  //     //   // Value
-  //     //   this.ctx.font = '9px Arial';
-  //     //   this.ctx.fillText(
-  //     //     rect.value.toString(), 
-  //     //     rect.x + rect.width / 2, 
-  //     //     rect.y + rect.height / 2 + 8
-  //     //   );
-  //     // }
-  //   });
-  // }
-
-  // // Helper method to calculate treemap rectangles using a simple layout algorithm
-  // private calculateTreemapRectangles(data: any[], startX: number, startY: number, totalWidth: number, totalHeight: number, totalValue: number) {
-  //   const rectangles: any[] = [];
-  //   let currentX = startX;
-  //   let currentY = startY;
-  //   let remainingWidth = totalWidth;
-  //   let remainingHeight = totalHeight;
-    
-  //   // Sort data by value (largest first) for better layout
-  //   const sortedData = [...data].sort((a, b) => b.value - a.value);
-    
-  //   // Simple row-based layout
-  //   let currentRowHeight = 0;
-  //   let currentRowWidth = 0;
-  //   let itemsInCurrentRow: any[] = [];
-    
-  //   sortedData.forEach((item, index) => {
-  //     const area = (item.value / totalValue) * (totalWidth * totalHeight);
-      
-  //     if (itemsInCurrentRow.length === 0) {
-  //       // Start new row
-  //       currentRowHeight = Math.sqrt(area * (totalHeight / totalWidth));
-  //       currentRowHeight = Math.min(currentRowHeight, remainingHeight);
-  //     }
-      
-  //     const itemWidth = area / currentRowHeight;
-      
-  //     // Check if we should start a new row
-  //     if (currentRowWidth + itemWidth > remainingWidth && itemsInCurrentRow.length > 0) {
-  //       // Finalize current row
-  //       this.finalizeTreemapRow(itemsInCurrentRow, currentX, currentY, currentRowWidth, currentRowHeight, rectangles);
+      //   this.ctx.fillText(rect.label, centerX, centerY - 8);
         
-  //       // Start new row
-  //       currentY += currentRowHeight;
-  //       remainingHeight -= currentRowHeight;
-  //       currentX = startX;
-  //       currentRowWidth = 0;
-  //       itemsInCurrentRow = [];
-        
-  //       // Recalculate for new row
-  //       currentRowHeight = Math.sqrt(area * (remainingHeight / totalWidth));
-  //       currentRowHeight = Math.min(currentRowHeight, remainingHeight);
-  //     }
+      //   // Value in parentheses
+      //   this.ctx.font = '10px Arial';
+      //   this.ctx.fillText(`(${rect.value})`, centerX, centerY + 8);
+      // }
+    });
+  }
+
+  // Helper method to calculate treemap rectangles with better proportional layout
+  private calculateTreemapRectangles(
+    data: any[],
+    startX: number,
+    startY: number,
+    totalWidth: number,
+    totalHeight: number,
+    totalValue: number
+  ) {
+    const rectangles: any[] = [];
+    
+    // Sort data by value (largest first) for better visual balance
+    const sortedData = [...data].sort((a, b) => b.value - a.value);
+    
+    // Calculate aspect ratio for optimal rectangle shapes
+    const aspectRatio = totalWidth / totalHeight;
+    
+    // Use a simple but effective layout algorithm
+    let remainingData = [...sortedData];
+    let currentX = startX;
+    let currentY = startY;
+    let remainingWidth = totalWidth;
+    let remainingHeight = totalHeight;
+    
+    while (remainingData.length > 0) {
+      if (remainingData.length === 1) {
+        // Last item gets all remaining space
+        const item = remainingData[0];
+        rectangles.push({
+          x: currentX,
+          y: currentY,
+          width: remainingWidth,
+          height: remainingHeight,
+          label: item.label,
+          value: item.value,
+          color: item.color
+        });
+        break;
+      }
       
-  //     itemsInCurrentRow.push({
-  //       ...item,
-  //       width: itemWidth,
-  //       height: currentRowHeight
-  //     });
-  //     currentRowWidth += itemWidth;
-  //   });
-    
-  //   // Finalize last row
-  //   if (itemsInCurrentRow.length > 0) {
-  //     this.finalizeTreemapRow(itemsInCurrentRow, currentX, currentY, currentRowWidth, currentRowHeight, rectangles);
-  //   }
-    
-  //   return rectangles;
-  // }
-    drawTreemapChart(data: any[], x: number, y: number, width: number, height: number) {
-  const totalValue = data.reduce((sum, item) => sum + item.value, 0);
-
-  let currentX = x + 2;
-  let currentY = y + 2;
-  let remainingWidth = width;
-  let remainingHeight = height;
-
-  // Sort by value (largest first)
-  const sortedData = [...data].sort((a, b) => b.value - a.value);
-
-  // For simplicity, split into 2 rows dynamically
-  let rows = 2;
-  let rowHeight = remainingHeight / rows;
-
-  sortedData.forEach((item, index) => {
-    const area = (item.value / totalValue) * (width * height);
-    const rectWidth = area / rowHeight;
-
-    // If no space in current row → new row
-    if (currentX + rectWidth > x + width) {
-      currentX = x;
-      currentY += rowHeight;
+      // For 2 items, split optimally
+      if (remainingData.length === 2) {
+        const [item1, item2] = remainingData;
+        const total = item1.value + item2.value;
+        
+        if (remainingWidth > remainingHeight) {
+          // Split vertically
+          const width1 = remainingWidth * (item1.value / total);
+          rectangles.push({
+            x: currentX,
+            y: currentY,
+            width: width1,
+            height: remainingHeight,
+            label: item1.label,
+            value: item1.value,
+            color: item1.color
+          });
+          rectangles.push({
+            x: currentX + width1,
+            y: currentY,
+            width: remainingWidth - width1,
+            height: remainingHeight,
+            label: item2.label,
+            value: item2.value,
+            color: item2.color
+          });
+        } else {
+          // Split horizontally
+          const height1 = remainingHeight * (item1.value / total);
+          rectangles.push({
+            x: currentX,
+            y: currentY,
+            width: remainingWidth,
+            height: height1,
+            label: item1.label,
+            value: item1.value,
+            color: item1.color
+          });
+          rectangles.push({
+            x: currentX,
+            y: currentY + height1,
+            width: remainingWidth,
+            height: remainingHeight - height1,
+            label: item2.label,
+            value: item2.value,
+            color: item2.color
+          });
+        }
+        break;
+      }
+      
+      // For more items, take the largest and split the space
+      const largestItem = remainingData[0];
+      const remainingItems = remainingData.slice(1);
+      const remainingTotal = remainingItems.reduce((sum, item) => sum + item.value, 0);
+      const largestRatio = largestItem.value / (largestItem.value + remainingTotal);
+      
+      if (remainingWidth > remainingHeight) {
+        // Split vertically - largest item takes left portion
+        const largestWidth = remainingWidth * largestRatio;
+        rectangles.push({
+          x: currentX,
+          y: currentY,
+          width: largestWidth,
+          height: remainingHeight,
+          label: largestItem.label,
+          value: largestItem.value,
+          color: largestItem.color
+        });
+        
+        // Update for remaining items
+        currentX += largestWidth;
+        remainingWidth -= largestWidth;
+        remainingData = remainingItems;
+      } else {
+        // Split horizontally - largest item takes top portion
+        const largestHeight = remainingHeight * largestRatio;
+        rectangles.push({
+          x: currentX,
+          y: currentY,
+          width: remainingWidth,
+          height: largestHeight,
+          label: largestItem.label,
+          value: largestItem.value,
+          color: largestItem.color
+        });
+        
+        // Update for remaining items
+        currentY += largestHeight;
+        remainingHeight -= largestHeight;
+        remainingData = remainingItems;
+      }
     }
+    
+    return rectangles;
+  }
+  
+//     drawTreemapChart(data: any[], x: number, y: number, width: number, height: number) {
+//   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
 
-    // Draw rectangle
-    this.ctx.fillStyle = item.color;
-    this.ctx.fillRect(currentX, currentY, rectWidth, rowHeight);
-    this.ctx.strokeStyle = 'black';
-    this.ctx.strokeRect(currentX, currentY, rectWidth, rowHeight);
+//   let currentX = x + 2;
+//   let currentY = y + 2;
+//   let remainingWidth = width;
+//   let remainingHeight = height;
 
-    // Draw text inside
-    // this.ctx.fillStyle = '#000';
-    // this.ctx.font = '10px Arial';
-    // this.ctx.textAlign = 'center';
-    // this.ctx.textBaseline = 'middle';
-    // this.ctx.fillText(item.label, currentX + rectWidth / 2, currentY + rowHeight / 2);
+//   // Sort by value (largest first)
+//   const sortedData = [...data].sort((a, b) => b.value - a.value);
 
-    currentX += rectWidth;
-  });
-}
+//   // For simplicity, split into 2 rows dynamically
+//   let rows = 2;
+//   let rowHeight = remainingHeight / rows;
+
+//   sortedData.forEach((item, index) => {
+//     const area = (item.value / totalValue) * (width * height);
+//     const rectWidth = area / rowHeight;
+
+//     // If no space in current row → new row
+//     if (currentX + rectWidth > x + width) {
+//       currentX = x;
+//       currentY += rowHeight;
+//     }
+
+//     // Draw rectangle
+//     this.ctx.fillStyle = item.color;
+//     this.ctx.fillRect(currentX, currentY, rectWidth, rowHeight);
+//     this.ctx.strokeStyle = 'black';
+//     this.ctx.strokeRect(currentX, currentY, rectWidth, rowHeight);
+
+//     // Draw text inside
+//     // this.ctx.fillStyle = '#000';
+//     // this.ctx.font = '10px Arial';
+//     // this.ctx.textAlign = 'center';
+//     // this.ctx.textBaseline = 'middle';
+//     // this.ctx.fillText(item.label, currentX + rectWidth / 2, currentY + rowHeight / 2);
+
+//     currentX += rectWidth;
+//   });
+// }
 
 
   // Helper method to finalize a row in the treemap
@@ -1158,5 +1104,177 @@ drawTable(data: string[][], x: number, y: number, width: number, height: number,
       });
       currentX += item.width;
     });
+  }
+
+  // Waterfall Chart - Clear and responsive cumulative visualization
+  drawWaterfallChart(data: any[], x: number, y: number, width: number, height: number, title: string) {
+    const padding = 3;
+    const titleHeight = 10;
+    const chartArea = height - titleHeight - padding * 2 - 30; // Extra space for labels
+    const chartWidth = width - padding * 2;
+    
+    // Calculate bar dimensions
+    const barCount = data.length;
+    const totalSpacing = chartWidth * 0.2; // 20% for spacing
+    const barWidth = (chartWidth - totalSpacing) / barCount;
+    const spacing = totalSpacing / (barCount - 1);
+    
+    // Calculate cumulative values
+    let cumulativeValue = 0;
+    const processedData = data.map((item, i) => {
+      let startValue = cumulativeValue;
+      let endValue = startValue;
+      
+      if (item.type === 'start') {
+        endValue = item.value;
+        cumulativeValue = item.value;
+      } else if (item.type === 'end') {
+        endValue = item.value; // Total value
+      } else {
+        endValue = startValue + item.value;
+        cumulativeValue += item.value;
+      }
+      
+      return {
+        ...item,
+        startValue,
+        endValue,
+        displayValue: item.value
+      };
+    });
+    
+    // Find scaling range
+    const allValues = processedData.flatMap(item => [item.startValue, item.endValue]);
+    const minValue = 0; // Always start from 0 for clarity
+    const maxValue = Math.max(...allValues) * 1.1; // Add 10% padding
+    const range = maxValue - minValue;
+    
+    // // Draw chart background with border
+    // this.ctx.fillStyle = '#ffffff';
+    // this.ctx.fillRect(x, y, width, height);
+    // this.ctx.strokeStyle = '#e0e0e0';
+    // this.ctx.lineWidth = 1;
+    // this.ctx.strokeRect(x, y, width, height);
+    
+    // Draw title
+    // this.ctx.fillStyle = '#333';
+    // this.ctx.font = 'bold 14px Arial';
+    // this.ctx.textAlign = 'left';
+    // this.ctx.fillText(title, x + padding, y + titleHeight - 5);
+    
+    const baseY = y + titleHeight + padding + chartArea;
+    const zeroY = baseY; // Zero line at bottom
+    
+    // Draw horizontal grid lines
+    const gridLines = 5;
+    this.ctx.strokeStyle = '#f5f5f5';
+    this.ctx.lineWidth = 0.5;
+    
+    for (let i = 0; i <= gridLines; i++) {
+      const gridValue = (maxValue * i) / gridLines;
+      const gridY = baseY - (gridValue / maxValue) * chartArea;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(x + padding, gridY);
+      this.ctx.lineTo(x + width - padding, gridY);
+      this.ctx.stroke();
+      
+    //   // Grid value labels
+    //   this.ctx.fillStyle = '#666';
+    //   this.ctx.font = '10px Arial';
+    //   this.ctx.textAlign = 'right';
+    //   this.ctx.fillText(Math.round(gridValue).toString(), x + padding - 5, gridY + 3);
+    }
+    
+    // Draw bars
+    processedData.forEach((item, i) => {
+      const barX = x + padding + i * (barWidth + spacing);
+      
+      let barY, barHeight;
+      let fillColor, strokeColor;
+      
+      if (item.type === 'start') {
+        // Starting bar from zero
+        barHeight = (item.value / maxValue) * chartArea;
+        barY = baseY - barHeight;
+        fillColor = '#4CAF50'; // Green
+        strokeColor = '#388E3C';
+      } else if (item.type === 'end') {
+        // Total bar from zero
+        barHeight = (item.value / maxValue) * chartArea;
+        barY = baseY - barHeight;
+        fillColor = '#2196F3'; // Blue
+        strokeColor = '#1976D2';
+      } else {
+        // Increment bar floating
+        const startY = baseY - (item.startValue / maxValue) * chartArea;
+        const endY = baseY - (item.endValue / maxValue) * chartArea;
+        barY = endY;
+        barHeight = startY - endY;
+        fillColor = '#66BB6A'; // Light green for positive increments
+        strokeColor = '#4CAF50';
+      }
+      
+      // Draw bar
+      this.ctx.fillStyle = fillColor;
+      this.ctx.fillRect(barX, barY, barWidth, barHeight);
+      
+      // Draw bar border
+      // this.ctx.strokeStyle = strokeColor;
+      // this.ctx.lineWidth = 2;
+      // this.ctx.strokeRect(barX, barY, barWidth, barHeight);
+      
+      // // Draw value label on top of bar
+      // this.ctx.fillStyle = '#333';
+      // this.ctx.font = 'bold 11px Arial';
+      // this.ctx.textAlign = 'center';
+      // this.ctx.fillText(item.displayValue.toString(), barX + barWidth / 2, barY - 5);
+      
+      // // Draw connecting line to next bar
+      // if (i < processedData.length - 1 && item.type !== 'end') {
+      //   const nextItem = processedData[i + 1];
+      //   if (nextItem.type !== 'start') {
+      //     this.ctx.strokeStyle = '#999';
+      //     this.ctx.lineWidth = 1;
+      //     this.ctx.setLineDash([4, 4]);
+          
+      //     const currentEndY = baseY - (item.endValue / maxValue) * chartArea;
+      //     const nextBarX = x + padding + (i + 1) * (barWidth + spacing);
+          
+      //     this.ctx.beginPath();
+      //     this.ctx.moveTo(barX + barWidth, currentEndY);
+      //     this.ctx.lineTo(nextBarX, currentEndY);
+      //     this.ctx.stroke();
+      //     this.ctx.setLineDash([]);
+      //   }
+      // }
+      
+      // // Draw x-axis labels
+      // this.ctx.fillStyle = '#666';
+      // this.ctx.font = '9px Arial';
+      // this.ctx.textAlign = 'center';
+      
+      // Truncate long labels
+      // let label = item.label;
+      // if (label.length > 8) {
+      //   label = label.substring(0, 6) + '...';
+      // }
+      
+      // this.ctx.fillText(label, barX + barWidth / 2, baseY + 15);
+    });
+    
+    // Draw x-axis line
+    this.ctx.strokeStyle = '#333';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.moveTo(x + padding, baseY);
+    this.ctx.lineTo(x + width - padding, baseY);
+    this.ctx.stroke();
+    
+    // Draw y-axis line
+    this.ctx.beginPath();
+    this.ctx.moveTo(x + padding, y + titleHeight + padding);
+    this.ctx.lineTo(x + padding, baseY + padding - 2);
+    this.ctx.stroke();
   }
 }

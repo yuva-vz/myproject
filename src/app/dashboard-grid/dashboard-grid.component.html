@@ -6,11 +6,11 @@
   </div>
   
   <div class="dashboard-flex" [class.loading]="isLoading">
-    <app-canvas-dashboard 
+    <app-thumbnail-dashboard 
       *ngFor="let dashboardId of dashboards; trackBy: trackByDashboardId; let i = index"
       [dashboardId]="dashboardId"
       [attr.data-index]="i">
-    </app-canvas-dashboard>
+    </app-thumbnail-dashboard>
   </div>
   
   <div class="dashboard-stats">
