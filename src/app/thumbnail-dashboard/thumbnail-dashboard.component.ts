@@ -9,93 +9,133 @@ import { Table } from 'primeng/table';
 })
 export class ThumbnailDashboardComponent implements AfterViewInit, OnDestroy {
   @ViewChild('thumbnailContainer', { static: false }) thumbnailRef!: ElementRef<HTMLDivElement>;
-   componentsData: any[] = [];
+  componentsData: any[] = [];
   
   private thumbnail!: Thumbnail;
 
   // Default components data
   defaultComponentsData: any[] = [
-     {
-            x: 0,
-            y: 0,
-            width: 20,
-            height: 15,
-            component_type: "CHART",
-            series_type: ["BarSeries", "LineSeries", "PieSeries"],
-        },
-        {
-            x: 20,
-            y: 0,
-            width: 12,
-            height: 10,
-            component_type: "GEOMAP",
-            series_type: ["SpatialPolygonSeries"],
-        },
-        {
-            x: 32,
-            y: 0,
-            width: 28,
-            height: 15,
-            component_type: "GRID",
-            series_type: ["TableColumnSeries","TableRowSeries"],
-        },
-        {
-            x: 0,
-            y: 15,
-            width: 10,
-            height: 8,
-            component_type: "PIVOT",
-            series_type: ["TableColumnSeries","TableRowSeries"],
-        },
-        {
-            x: 10,
-            y: 15,
-            width: 15,
-            height: 12,
-            component_type: "CARD",
-            series_type: ["ValueSeries"],
-        },
-        {
-            x: 25,
-            y: 15,
-            width: 15,
-            height: 10,
-            component_type: "SPATIALMAP",
-            series_type: ["SpatialLineSeries", "HeatMapSeries"],
-        },
-        {
-            x: 40,
-            y: 15,
-            width: 8,
-            height: 5,
-            component_type: "text",
-            series_type: ["TextSeries"],
-        },
-        {
-            x: 0,
-            y: 27,
-            width: 12,
-            height: 8,
-            component_type: "filter",
-            series_type: ["FilterSeries", ""],
-        },
-        {
-            x: 12,
-            y: 27,
-            width: 6,
-            height: 4,
-            component_type: "image",
-            series_type: ["BubbleSeries"],
-        },
-        {
-            x: 18,
-            y: 27,
-            width: 8,
-            height: 5,
-            component_type: "button",
-            series_type: ["TooltipSeries", "TrendDifferenceSeries"],
-        },
-    ];
+    //  {
+    //         x: 0,
+    //         y: 0,
+    //         width: 20,
+    //         height: 15,
+    //         component_type: "CHART",
+    //         series_type: ["PieSeries",  "LineSeries"],
+    //     },
+    //     {
+    //         x: 20,
+    //         y: 0,
+    //         width: 12,
+    //         height: 10,
+    //         component_type: "GEOMAP",
+    //         series_type: ["SpatialPolygonSeries"],
+    //     },
+    //     {
+    //         x: 32,
+    //         y: 0,
+    //         width: 28,
+    //         height: 15,
+    //         component_type: "GRID",
+    //         series_type: ["TableColumnSeries","TableRowSeries"],
+    //     },
+    //     {
+    //         x: 0,
+    //         y: 15,
+    //         width: 10,
+    //         height: 8,
+    //         component_type: "PIVOT",
+    //         series_type: ["TableColumnSeries","TableRowSeries"],
+    //     },
+    //     {
+    //         x: 10,
+    //         y: 15,
+    //         width: 15,
+    //         height: 12,
+    //         component_type: "CARD",
+    //         series_type: ["ValueSeries"],
+    //     },
+    //     {
+    //         x: 25,
+    //         y: 15,
+    //         width: 15,
+    //         height: 10,
+    //         component_type: "SPATIALMAP",
+    //         series_type: ["SpatialLineSeries", "HeatMapSeries"],
+    //     },
+    //     {
+    //         x: 40,
+    //         y: 15,
+    //         width: 8,
+    //         height: 5,
+    //         component_type: "text",
+    //         series_type: ["TextSeries"],
+    //     },
+    //     {
+    //         x: 0,
+    //         y: 27,
+    //         width: 12,
+    //         height: 8,
+    //         component_type: "filter",
+    //         series_type: ["FilterSeries", ],
+    //     },
+    //     {
+    //         x: 12,
+    //         y: 27,
+    //         width: 6,
+    //         height: 4,
+    //         component_type: "image",
+    //         series_type: ["BubbleSeries"],
+    //     },
+    //     {
+    //         x: 18,
+    //         y: 27,
+    //         width: 8,
+    //         height: 5,
+    //         component_type: "button",
+    //         series_type: ["TooltipSeries", "TrendDifferenceSeries"],
+    //     }
+  {
+    component_type: "card",
+    x: 44,
+    y: 0,
+    width: 7,
+    height: 5,
+    series_type: ["ValueSeries"]
+  },
+  {
+    component_type: "chart",
+    x: 22,
+    y: 0,
+    width: 22,
+    height: 14,
+    series_type: ["ClusterAreaRadar"]
+  },
+  {
+    component_type: "chart",
+    x: 0,
+    y: 0,
+    width: 22,
+    height: 14,
+    series_type: ["ClusterAreaSeries",]
+  },
+  {
+    component_type: "chart",
+    x: 0,
+    y: 14,
+    width: 55,
+    height: 14,
+    series_type: ["WaterFallSeries",]
+  },
+  {
+    component_type: "card",
+    x: 44,
+    y: 55,
+    width: 7,
+    height: 5,
+    series_type: ["ValueSeries"]
+  }
+];
 
   ngAfterViewInit(): void {
     // Use provided data or default data

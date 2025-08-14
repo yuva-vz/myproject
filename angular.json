@@ -38,8 +38,8 @@
             ],
             "styles": [
                 "node_modules/quill/dist/quill.core.css",
-  "node_modules/quill/dist/quill.snow.css",
-  "node_modules/quill/dist/quill.bubble.css",
+               "node_modules/quill/dist/quill.snow.css",
+               "node_modules/quill/dist/quill.bubble.css",
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css",
@@ -55,13 +55,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "6mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 }
               ],
               "outputHashing": "all"

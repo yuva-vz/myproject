@@ -4,10 +4,10 @@
 }
 
 .dashboard-flex-container h1 {
-    margin-bottom: 2rem;
-    font-size: 2rem;
-    text-align: center;
-    color: #333;
+//     margin-bottom: 2rem;
+//     font-size: 2rem;
+//     text-align: center;
+//     color: #333;
 }
 
 .dashboard-flex {
@@ -17,20 +17,20 @@
     justify-content: center;
 }
 
-app-canvas-dashboard {
-    flex: 0 1 calc(25% - 2rem); // 4 columns
-    height: 25vh;
-    width: 25vw;
-    box-sizing: border-box;
-    background: #fff;
-    border-radius: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-    transition: box-shadow 0.2s;
-}
+// app-thumbnail-dashboard {
+//     flex: 0 1 calc(25% - 2rem); // 4 columns
+//     height: 30vh;
+//     width: 30vw;
+//     box-sizing: border-box;
+//     background: #fff;
+//     border-radius: 1rem;
+//     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     margin-bottom: 2rem;
+//     transition: box-shadow 0.2s;
+// }
 
 // app-canvas-dashboard:hover {
 //     box-shadow: 0 4px 16px rgba(0,0,0,0.15);
@@ -116,6 +116,7 @@ app-canvas-dashboard {
   overflow: hidden;
   background: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
   
   &:hover {
     transform: translateY(-5px);

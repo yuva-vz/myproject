@@ -66,10 +66,10 @@ import { MiniDashboardComponent } from './mini-dashboard/mini-dashboard.componen
     ImageDashboardComponent,
     CanvasDashboardComponent,
     SvgCanvasDashboardComponent,
-   
+
     DashboardGridComponent,
-        ThumbnailDashboardComponent,
-        MiniDashboardComponent
+    ThumbnailDashboardComponent,
+    MiniDashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,7 +79,7 @@ import { MiniDashboardComponent } from './mini-dashboard/mini-dashboard.componen
     FormsModule,
     CommonModule,
     HttpClientModule,
-    
+
     // PrimeNG Modules
     MenubarModule,
     DropdownModule,
@@ -94,10 +94,10 @@ import { MiniDashboardComponent } from './mini-dashboard/mini-dashboard.componen
     InputTextModule,
     AutoCompleteModule,
     TooltipModule,
-    RippleModule
+    RippleModule,
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // Allow unknown/custom tags
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
