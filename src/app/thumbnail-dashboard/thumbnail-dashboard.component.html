@@ -1,4 +1,145 @@
-<div class="thumbnail-dashboard">
-  <h3>Dashboard Thumbnail</h3>
-  <div class="thumbnail-container" #thumbnailContainer></div>
+<!-- thumbnail-dashboard.component.html -->
+<div class="dashboard-container">
+  <!-- Dashboard Title Header -->
+  <div class="dashboard-title">
+    <h1>Dashboard Analytics Overview</h1>
+    <p>{{ defaultComponentsData.length }} Interactive Dashboard Thumbnails</p>
+  </div>
+
+  <!-- Dashboard Grid with 20 thumbnails (4x5 layout) -->
+  <div class="dashboard-grid">
+    <div 
+      *ngFor="let dashboard of defaultComponentsData; let i = index" 
+      class="dashboard-item"
+      [class.active]="selectedDashboard?.id === dashboard.id"
+      (click)="selectDashboard(dashboard)"
+      [attr.data-dashboard-id]="dashboard.id"
+      tabindex="0"                         
+      role="button"
+      [attr.aria-label]="'Dashboard ' + dashboard.id + ': ' + dashboard.name">
+    
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <span class="dashboard-id">{{ dashboard.id }}</span>
+        <span class="dashboard-name">{{ dashboard.name }}</span>
+      </div>
+      
+      <!-- Thumbnail Canvas Container -->
+      <div 
+        class="thumbnail-container" 
+        #thumbnailContainer
+        [id]="'thumbnail-' + dashboard.id"
+      >
+        <!-- Canvas will be injected here by Thumbnail class -->
+        <div class="thumbnail-loading" *ngIf="!thumbnails.has(dashboard.id)">
+          <div class="loading-spinner"></div>
+          <span>Loading...</span>
+      </div>
+    </div>
+
+      <!-- Component Count Badge -->
+      <div class="component-count">
+        <span>{{ dashboard.components.length }} components</span>
+        
+      </div>
+
+      <!-- Hover Overlay -->
+      <!-- <div class="dashboard-overlay">
+        <div class="overlay-content">
+          <i class="icon-eye"></i>
+          <span>View Dashboard</span>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Selected Dashboard Details
+  <div class="dashboard-details" *ngIf="selectedDashboard">
+    <div class="details-header">
+      <h3>{{ selectedDashboard.name }}</h3>
+      <button class="close-details" (click)="selectedDashboard = null" aria-label="Close details">
+        <span>&times;</span>
+      </button>
+    </div>
+    
+    <div class="details-content">
+      <div class="details-stat">
+        <span class="stat-label">Dashboard ID:</span>
+        <span class="stat-value">{{ selectedDashboard.id }}</span>
+      </div>
+      
+      <div class="details-stat">
+        <span class="stat-label">Total Components:</span>
+        <span class="stat-value">{{ selectedDashboard.components.length }}</span>
+      </div>
+
+      <div class="components-list">
+        <h4>Components Breakdown:</h4>
+        <div class="component-grid">
+          <div 
+            *ngFor="let comp of selectedDashboard.components; let i = index" 
+            class="component-item"
+            [class]="'component-' + comp.component_type"
+          >
+            <div class="component-header">
+              <span class="component-type">{{ comp.component_type | titlecase }}</span>
+              <span class="component-index">#{{ i + 1 }}</span>
+            </div>
+            <div class="component-details">
+              <div class="component-position">
+                Position: ({{ comp.x }}, {{ comp.y }})
+              </div>
+              <div class="component-size">
+                Size: {{ comp.width }} × {{ comp.height }}
+              </div>
+              <div class="component-series">
+                Series: {{ comp.series_type.join(', ') }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-actions">
+        <button 
+          class="action-btn refresh-btn" 
+          (click)="refreshThumbnail(selectedDashboard.id)"
+        >
+          <span class="btn-icon">↻</span>
+          Refresh Thumbnail
+        </button>
+        
+        <button 
+          class="action-btn view-btn"
+          (click)="viewDashboard(selectedDashboard)"
+        >
+          <span class="btn-icon">👁</span>
+          Open Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+
+   Control Panel -->
+  <!-- <div class="control-panel">
+    <button 
+      class="control-btn" 
+      (click)="refreshAllThumbnails()"
+      title="Refresh all thumbnails"
+    >
+      <span class="btn-icon">🔄</span>
+      Refresh All
+    </button>
+    
+    <button 
+      class="control-btn" 
+      (click)="selectedDashboard = null"
+      title="Clear selection"
+      *ngIf="selectedDashboard"
+    >
+      <span class="btn-icon">✕</span>
+      Clear Selection
+    </button>
+  </div> --> 
+  </div>
 </div>

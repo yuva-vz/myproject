@@ -1,0 +1,6 @@
+<div class="dashboard-grid">
+  <div class="dashboard-card" *ngFor="let dashboard of (componentsData.length > 0 ? componentsData : defaultComponentsData)">
+    <h3>{{ dashboard.id }}</h3>
+    <p>{{ dashboard.name }}</p>
+  </div>
+</div>

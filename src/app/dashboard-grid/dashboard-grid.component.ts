@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ThumbnailDashboardComponent } from '../thumbnail-dashboard/thumbnail-dashboard.component';
 
 @Component({
   selector: 'app-dashboard-grid',
   templateUrl: './dashboard-grid.component.html',
-  styleUrls: ['./dashboard-grid.component.scss']
+  styleUrls: ['./dashboard-grid.component.scss'],
+  standalone: true,
+  imports: [CommonModule, ThumbnailDashboardComponent]
 })
 export class DashboardGridComponent   {
   // Generate array of 50 dashboard IDs

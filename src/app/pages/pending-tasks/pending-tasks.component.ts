@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { TaskService } from '../../services/task.service';
 import { Task } from '../../models/task';
 
 @Component({
   selector: 'app-pending-tasks',
   templateUrl: './pending-tasks.component.html',
-  styleUrls: ['./pending-tasks.component.scss']
+  styleUrls: ['./pending-tasks.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class PendingTasksComponent implements OnInit {
   tasks: Task[] = [];

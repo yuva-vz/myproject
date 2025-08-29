@@ -1,0 +1,62 @@
+<!-- india-bubble-map.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
+  <style>
+    /* Neutralize map colors and remove bubble markers */
+    /* Target the map group and its paths/circles */
+    g[transform^="translate"] path,
+    g[transform^="translate"] circle { fill: #E5E5E5 !important; stroke: none !important; }
+
+    /* Hide the specific bubbles group (uses red fill) */
+    g[fill="#e74c3c"] { display: none !important; }
+  </style>
+
+  <!-- Card/frame like your screenshot -->
+  <rect x="6" y="6" width="388" height="268" rx="6" fill="#fff" stroke="#1e90ff" stroke-width="3"/>
+  <rect x="36" y="36" width="328" height="208" fill="#fff" stroke="#1e90ff" stroke-width="2"/>
+
+  <!-- India silhouette (simplified vector) -->
+  <g transform="translate(36,36)">
+    <!-- Mainland (very simplified outline for lightweight SVG) -->
+    <path d="
+      M182,7
+      l12,10 10,2 5,10 -8,12 6,14 -9,10 -3,14 -8,9 -5,15 -14,6 -7,14 -1,10 -9,9 -12,5 -10,9
+      -8,16 -7,5 -10,-2 -6,-8 -12,-4 -8,-10 -12,-2 -10,-10 -9,-2 -6,-8 4,-10 8,-10 6,-12 -3,-8
+      5,-8 10,-6 10,-10 8,-8 5,-12 6,-6 9,3 8,-3 8,-9 9,-2 10,-8 11,-2 10,3 8,4 7,-3 8,2
+      z
+      " fill="#cfd3d8" stroke="#9aa3ad" stroke-width="1.2" opacity="0.95"/>
+
+    <!-- NE cluster (tiny blob to the right) -->
+    <path d="M276,82 l8,3 4,6 -4,7 -10,-2 -4,-6 z" fill="#cfd3d8" stroke="#9aa3ad" stroke-width="1.2" opacity="0.95"/>
+
+    <!-- Sri Lanka (dot) -->
+    <circle cx="165" cy="192" r="3.2" fill="#cfd3d8" stroke="#9aa3ad" stroke-width="0.8"/>
+
+    <!-- Bubbles (positions/size approximated to your image) -->
+    <g fill="#e74c3c" opacity="0.45" stroke="#e74c3c" stroke-opacity="0.55">
+      <!-- North (Punjab/J&K area) -->
+      <circle cx="160" cy="22" r="12"/>
+      <circle cx="178" cy="30" r="7"/>
+      <!-- Delhi-ish -->
+      <circle cx="184" cy="48" r="10"/>
+      <!-- Gujarat -->
+      <circle cx="120" cy="92" r="14"/>
+      <!-- Rajasthan/MP belt -->
+      <circle cx="152" cy="94" r="9"/>
+      <circle cx="168" cy="110" r="11"/>
+      <!-- Maharashtra -->
+      <circle cx="150" cy="128" r="16"/>
+      <!-- Telangana/AP -->
+      <circle cx="180" cy="135" r="9"/>
+      <!-- Karnataka/TN -->
+      <circle cx="165" cy="158" r="8"/>
+      <circle cx="180" cy="170" r="10"/>
+      <!-- East (Bihar/Jharkhand) -->
+      <circle cx="212" cy="96" r="12"/>
+      <!-- Northeast -->
+      <circle cx="282" cy="88" r="9"/>
+      <circle cx="292" cy="96" r="6"/>
+      <!-- Kerala -->
+      <circle cx="145" cy="170" r="7"/>
+    </g>
+  </g>
+</svg>

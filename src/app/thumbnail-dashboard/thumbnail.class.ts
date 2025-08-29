@@ -1,684 +1,387 @@
 import { ElementRef } from '@angular/core';
 
-// interface SeriesType {
-//   series_type: string[];
-// }
-interface IComponent { x: number; y: number; width: number; height: number; component_type: string; series_type: string[]; }
+interface IComponent {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  component_type: string;
+  series_type: string[];
+}
+
+// Define types for renderer functions
+type ChartRenderer = (x: number, y: number, w: number, h: number) => void;
+type ComponentRenderer = (x: number, y: number, w: number, h: number, comp: IComponent) => void;
 
 export class Thumbnail {
-private canvas: HTMLCanvasElement; private ctx: CanvasRenderingContext2D; private scaleX = 1; private scaleY = 1; private componentsData: IComponent[]; private readonly elementRef: ElementRef<HTMLDivElement>;
-// Dynamic color palette
-  constructor(
-    elementRef: ElementRef<HTMLDivElement>,
-    componentsData: IComponent[]
-  ) {
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+  private scaleX = 1;
+  private scaleY = 1;
+  private componentsData: IComponent[];
+  private readonly elementRef: ElementRef<HTMLDivElement>;
+  private readonly colors = [
+    '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BFBCF',
+    '#A0C4FF', '#BDB2FF', '#FFC6FF', '#9BF6FF'
+  ];
+
+  private readonly config: { 
+
+    map: {
+      geomap: { allowed: Set<string>; images: { [key: string]: string } };
+      spatialmap: { allowed: Set<string>; images: { [key: string]: string } };
+    };
+    seriesValidation: { [key: string]: Set<string> };
+    chartRenderers: { [key: string]: ChartRenderer };
+    componentRenderers: { [key: string]: ComponentRenderer };
+  } = {
+    map: {
+      geomap: {
+        allowed: new Set(['GeoMapSeries', 'GeomapBubbleSeries', 'HeatMapSeries', 'ChoroplethSeries']),
+        images: {
+          GeoMapSeries: 'assets/map1%20.webp',
+          GeomapBubbleSeries: 'assets/aaaa.webp',
+          // HeatMapSeries: 'assets/heatmap.webp',
+          // ChoroplethSeries: 'assets/choropleth.webp'
+        }
+      },
+      spatialmap: {
+        allowed: new Set(['SpatialMapBubbleSeries', 'SpatialMapSeries', 'SpatialPolygonSeries']),
+        images: {
+          SpatialMapBubbleSeries: 'assets/map4.svg',
+          SpatialMapSeries: 'assets/map2.webp',
+          // SpatialPolygonSeries: 'assets/spatial-polygon.svg'
+        }
+      }
+    },
+    seriesValidation: {
+      grid: new Set(['TableRowSeries', 'TableColumnSeries']),
+      pivot: new Set(['PivotRowSeries', 'PivotColumnSeries']),
+      card: new Set(['ValueSeries']),
+      filter: new Set(['DropdownSeries', 'ButtonSeries']),
+      text: new Set(['TextSeries']),
+      image: new Set<string>()
+    },
+    chartRenderers: {
+      LineSeries: (x, y, w, h) => this.drawLine(x, y, w, h, false, false),
+      AreaSeries: (x, y, w, h) => this.drawLine(x, y, w, h, true, false),
+      ClusterLineSeries: (x, y, w, h) => this.drawLine(x, y, w, h, false, true),
+      ClusterAreaSeries: (x, y, w, h) => this.drawLine(x, y, w, h, true, true),
+      ColumnSeries: (x, y, w, h) => this.drawBars(x, y, w, h, 'column'),
+      BarSeries: (x, y, w, h) => this.drawBars(x, y, w, h, 'bar'),
+      ClusterBarSeries: (x, y, w, h) => this.drawBars(x, y, w, h, 'cluster'),
+      StackedColumnSeries: (x, y, w, h) => this.drawBars(x, y, w, h, 'stacked-column'),
+      StackedBarSeries: (x, y, w, h) => this.drawBars(x, y, w, h, 'stacked-row'),
+      PieSeries: (x, y, w, h) => this.drawCircular(x, y, w, h, false),
+      DonutSeries: (x, y, w, h) => this.drawCircular(x, y, w, h, true),
+      RadarLine: (x, y, w, h) => this.drawRadar(x, y, w, h, 'line'),
+      RadarArea: (x, y, w, h) => this.drawRadar(x, y, w, h, 'area'),
+      ClusterLineRadar: (x, y, w, h) => this.drawRadar(x, y, w, h, 'clusterline'),
+      ClusterAreaRadar: (x, y, w, h) => this.drawRadar(x, y, w, h, 'clusterarea'),
+      ScatterSeries: (x, y, w, h) => this.drawScatter(x, y, w, h),
+      BubbleSeries: (x, y, w, h) => this.drawBubble(x, y, w, h),
+      TreeMapSeries: (x, y, w, h) => this.drawTreemap(x, y, w, h),
+      FunnelSeries: (x, y, w, h) => this.drawFunnel(x, y, w, h),
+      WaterFallSeries: (x, y, w, h) => this.drawWaterfall(x, y, w, h),
+      GaugeSeries: (x, y, w, h) => this.drawGauge(x, y, w, h),
+      CombinationChart: (x, y, w, h) => this.drawCombinationChartGeneric(x, y, w, h, 'normal'),
+      StackedCombinationChart: (x, y, w, h) => this.drawCombinationChartGeneric(x, y, w, h, 'stacked'),
+      RadialSeries: (x, y, w, h) => this.drawRadialChart(x, y, w, h, 'radial'),
+      RadialStackedChart: (x, y, w, h) => this.drawRadialChart(x, y, w, h, 'stacked'),
+      RadarColumn: (x, y, w, h) => this.drawRadarColumn(x, y, w, h, 'single'),
+      RadarColumnStacked: (x, y, w, h) => this.drawRadarColumn(x, y, w, h, 'stacked'),
+      RadarColumnCluster: (x, y, w, h) => this.drawRadarColumn(x, y, w, h, 'cluster')
+    },
+    componentRenderers: {
+      chart: (x, y, w, h, comp) => this.drawChart(x, y, w, h, comp.series_type),
+      grid: (x, y, w, h, comp) => this.handleTableRender(x, y, w, h, comp, 'grid'),
+      pivot: (x, y, w, h, comp) => this.handleTableRender(x, y, w, h, comp, 'pivot'),
+      card: (x, y, w, h, comp) => this.drawCard(x, y, w, h, comp),
+      image: (x, y, w, h, comp) => this.drawImage(x, y, w, h),
+      filter: (x, y, w, h, comp) => this.drawFilter(x, y, w, h, comp),
+      text: (x, y, w, h, comp) => this.drawTextBox(x, y, w, h, comp),
+      geomap: (x, y, w, h, comp) => this.drawMap(x, y, w, h, comp),
+      spatialmap: (x, y, w, h, comp) => this.drawMap(x, y, w, h, comp)
+    }
+  };
+
+  constructor(elementRef: ElementRef<HTMLDivElement>, componentsData: IComponent[]) {
+    if (!elementRef?.nativeElement || !Array.isArray(componentsData)) {
+      throw new Error('Invalid constructor inputs');
+    }
     this.componentsData = componentsData;
     this.elementRef = elementRef;
-    // Create canvas and context
-    this.canvas = elementRef.nativeElement.appendChild(
-      document.createElement('canvas')
-    );
+    this.canvas = elementRef.nativeElement.appendChild(document.createElement('canvas'));
     this.ctx = this.canvas.getContext('2d')!;
-    this.resizeCanvas();
-    this.calculateScales();
-    window.addEventListener('resize', () => this.handleResize());
-    this.render();
+    this.init();
   }
 
-  private resizeCanvas(): void {
-    this.canvas.width = this.elementRef.nativeElement.clientWidth;
-    this.canvas.height = this.elementRef.nativeElement.clientHeight - 6;
+  private init(): void {
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+  }
+
+  private resize(): void {
+    const { clientWidth, clientHeight } = this.elementRef.nativeElement;
+    this.canvas.width = clientWidth;
+    this.canvas.height = clientHeight - 6;
+    this.calculateScales();
+    this.render();
   }
 
   private calculateScales(): void {
-    // Find max x and y coordinates for scaling
     const maxX = 60;
     const maxY = 60;
-    this.scaleX = this.elementRef.nativeElement.clientWidth / maxX ;
-    this.scaleY = this.elementRef.nativeElement.clientHeight / maxY ;
+    const cw = this.canvas.width;
+    const ch = this.canvas.height;
+    this.scaleX = cw / maxX;
+    this.scaleY = ch / maxY;
   }
 
-  private handleResize(): void {
-    this.resizeCanvas();
-    this.calculateScales();
-    this.render();
+  private rnd(count: number, min = 40, max = 100): number[] {
+    return Array.from({ length: count }, () => Math.floor(Math.random() * (max - min) + min));
   }
 
-// private colors = ['#005DA6', '#FFC52F', '#BAE1FF', '#75C2FF', '#30A4FF', '#00467D', '#CBC53E', '#089AD7', '#6D6E71', '#D0CECE', '#DE354C', '#932432', '#3C1874', '#283747', '#DDAF94'];
-
-//   // ---------- UTILITIES ----------
-//   private getRandomData(count: number, min = 10, max = 100): number[] {
-//     return Array.from({ length: count }, () =>
-//       Math.floor(Math.random() * (max - min) + min)
-//     );
-//   }
-//   private setStroke(color: string, width = 2) {
-//     this.ctx.strokeStyle = color;
-//     this.ctx.lineWidth = width;
-//   }
-//   private setFill(color: string) {
-//     this.ctx.fillStyle = color;
-//   }
-
-//   // ---------- COMBINED CHART FUNCTIONS ----------
-
-//   // Line & Area
-// private drawLineOrAreaChart(x: number, y: number, w: number, h: number, color: string, isArea: boolean): void {
-//     const points = 8,
-//       stepX = w / (points - 1);
-//     const coords = Array.from({ length: points }, (_, i) => ({
-//       x: x + i * stepX,
-//       y: y + Math.random() * h,
-//     }));
-//     this.ctx.beginPath();
-//     this.setStroke(color);
-//     this.ctx.moveTo(coords[0].x, coords[0].y);
-//     coords.forEach((p, i) => i && this.ctx.lineTo(p.x, p.y));
-//     if (isArea) {
-//       this.ctx.lineTo(coords.at(-1)!.x, y + h);
-//       this.ctx.lineTo(coords[0].x, y + h);
-//       this.ctx.closePath();
-//       this.setFill(color + '40');
-//       this.ctx.fill();
-//     }
-//     this.ctx.stroke();
-//   }
-
-//   // //   private drawScatterChart(
-//   // //     x: number,
-//   // //     y: number,
-//   // //     width: number,
-//   // //     height: number,
-//   // //     color: string
-//   // //   ): void {
-//   // //     const points = 12;
-//   // //     this.ctx.fillStyle = color;
-
-//   // //     for (let i = 0; i < points; i++) {
-//   // //       const pointX = x + Math.random() * width;
-//   // //       const pointY = y + Math.random() * height;
-//   // //       const radius = 2;
-
-//   // //       this.ctx.beginPath();
-//   // //       this.ctx.arc(pointX, pointY, radius, 0, 2 * Math.PI);
-//   // //       this.ctx.fill();
-//   // //     }
-//   // //   }
-//   private drawTreemapChart(x: number, y: number, w: number, h: number): void {
-//     const areas = [0.4, 0.4, 0.25, 1]; // Example proportions
-// 	let curX = x, curY = y, remW = w, remH = h;
-//     this.ctx.lineWidth = 1;
-//     this.ctx.strokeStyle = '#fff';
-//     areas.forEach((a, i) => {
-//       const isHorizontal = i % 2 === 0;
-//       const rectW = isHorizontal ? remW * a : remW;
-//       const rectH = isHorizontal ? remH : remH * a;
-
-//       this.ctx.fillStyle = this.colors[i % this.colors.length];
-//       this.ctx.fillRect(curX, curY, rectW, rectH);
-//       this.ctx.strokeRect(curX, curY, rectW, rectH);
-
-//       if (isHorizontal) {
-//         curX += rectW;
-//         remW -= rectW;
-//       } else {
-//         curY += rectH;
-//         remH -= rectH;
-//       }
-//     });
-//   }
-
-//   // Pie & Donut
-// private drawPieOrDonutChart(x: number, y: number, w: number, h: number, isDonut: boolean): void {
-//     const data = this.getRandomData(6),
-//       total = data.reduce((a, b) => a + b, 0);
-//     const R = Math.min(w, h) / 2,
-//       r = isDonut ? R / 2 : 0,
-//       cx = x + w / 2,
-//       cy = y + h / 2;
-//     let angle = 0;
-//     data.forEach((val, i) => {
-//       const slice = (val / total) * Math.PI * 2;
-//       this.ctx.beginPath();
-//       this.ctx.arc(cx, cy, R, angle, angle + slice);
-//       isDonut
-//         ? this.ctx.arc(cx, cy, r, angle + slice, angle, true)
-//         : this.ctx.lineTo(cx, cy);
-//       this.ctx.closePath();
-//       this.setFill(this.colors[i % this.colors.length]);
-//       this.ctx.fill();
-//       angle += slice;
-//     });
-//   }
-
-//   // Bar / Column
-//   private drawBarChart(x: number, y: number, w: number, h: number): void {
-//     const bars = 6,
-//       barW = w / bars;
-//     for (let i = 0; i < bars; i++) {
-//       const bh = Math.random() * (h * 0.8);
-//       this.setFill(this.colors[i % this.colors.length]);
-//       this.ctx.fillRect(x + i * barW, y + h - bh, barW - 2, bh);
-//     }
-//   }
-
-//   // Bubble
-//   private drawBubbleChart(x: number, y: number, w: number, h: number): void {
-//     const bubbles = 8;
-//     for (let i = 0; i < bubbles; i++) {
-//       const bx = x + Math.random() * w,
-//         by = y + Math.random() * h;
-//       const radius = Math.random() * (Math.min(w, h) * 0.15) + 3;
-//       this.setFill(this.colors[i % this.colors.length] + '80');
-//       this.ctx.beginPath();
-//       this.ctx.arc(bx, by, radius, 0, 2 * Math.PI);
-//       this.ctx.fill();
-//       this.setStroke(this.colors[i % this.colors.length], 1);
-//       this.ctx.stroke();
-//     }
-//   }
-
-//   // Waterfall
-//   private drawWaterfallChart(x: number, y: number, w: number, h: number): void {
-//     const bars = 5,
-//       barW = w / bars + 6;
-//     let currentHeight = h * 0.3;
-//     for (let i = 0; i < bars; i++) {
-//       const change = h * 0.1,
-//         bh = Math.abs(change) + 3;
-//       const barX = x + i * barW + 2;
-//       const barY = i === 0 ? y + h - currentHeight : y + h - currentHeight - bh;
-//       this.setFill(this.colors[i % this.colors.length]);
-//       this.ctx.fillRect(barX, barY, barW - 4, bh);
-//       currentHeight += change + 1;
-//     }
-//   }
-
-//   // Radar
-// private drawRadarChart(x: number, y: number, w: number, h: number, color: string): void {
-//     const cx = x + w / 2,
-//       cy = y + h / 2,
-//       R = Math.min(w, h) / 2 - 5,
-//       axes = 6;
-//     this.setStroke('#ddd');
-//     for (let i = 0; i < axes; i++) {
-//       const angle = (i / axes) * 2 * Math.PI - Math.PI / 2;
-//       this.ctx.beginPath();
-//       this.ctx.moveTo(cx, cy);
-//       this.ctx.lineTo(cx + Math.cos(angle) * R, cy + Math.sin(angle) * R);
-//       this.ctx.stroke();
-//     }
-//     this.ctx.beginPath();
-//     this.setFill(color + '40');
-//     this.setStroke(color);
-//     for (let i = 0; i < axes; i++) {
-//       const angle = (i / axes) * 2 * Math.PI - Math.PI / 2;
-//       const val = Math.random() * 0.8 + 0.2;
-//       const px = cx + Math.cos(angle) * R * val,
-//         py = cy + Math.sin(angle) * R * val;
-//       i === 0 ? this.ctx.moveTo(px, py) : this.ctx.lineTo(px, py);
-//     }
-//     this.ctx.closePath();
-//     this.ctx.fill();
-//     this.ctx.stroke();
-//   }
-
-//   // Funnel
-//   private drawFunnelChart(x: number, y: number, w: number, h: number): void {
-//     const stages = 4,
-//       sh = h / stages;
-//     for (let i = 0; i < stages; i++) {
-//       const tW = w * (1 - i * 0.2),
-//         bW = w * (1 - (i + 1) * 0.2);
-//       const tOff = (w - tW) / 2,
-//         bOff = (w - bW) / 2;
-//       this.ctx.beginPath();
-//       this.ctx.moveTo(x + tOff, y + i * sh);
-//       this.ctx.lineTo(x + tOff + tW, y + i * sh);
-//       this.ctx.lineTo(x + bOff + bW, y + (i + 1) * sh);
-//       this.ctx.lineTo(x + bOff, y + (i + 1) * sh);
-//       this.ctx.closePath();
-//       this.setFill(this.colors[i % this.colors.length]);
-//       this.ctx.fill();
-//     }
-//   }
-
-//   // Card
-//   private drawCard(x: number, y: number, w: number, h: number): void {
-//     this.setFill('#fff');
-//     this.ctx.fillRect(x, y, w, h);
-//     this.setStroke('#000', 2);
-//     this.ctx.strokeRect(x, y, w, h);
-//     this.setFill('#2C3E50');
-//     this.ctx.font = `${Math.min(w / 6, h / 3)}px Arial`;
-//     this.ctx.textAlign = 'center';
-//     this.ctx.fillText('123', x + w / 2, y + h / 2);
-//   }
-
-//   // Table
-// private drawTableChart(x: number, y: number, w: number, h: number, color: string): void {
-//     const rows = 4,
-//       cols = 3;
-//     const cellW = w / cols,
-//       cellH = h / rows;
-
-//     // Header row
-//     this.ctx.fillStyle = color;
-//     this.ctx.fillRect(x, y, w, cellH);
-
-//     this.ctx.strokeStyle = '#000';
-//     this.ctx.lineWidth = 2;
-
-//     // Grid lines (both vertical and horizontal)
-//     for (let i = 0; i <= cols; i++) {
-//       const px = x + i * cellW;
-//       this.ctx.beginPath();
-//       this.ctx.moveTo(px, y);
-//       this.ctx.lineTo(px, y + h);
-//       this.ctx.stroke();
-//     }
-//     for (let i = 0; i <= rows; i++) {
-//       const py = y + i * cellH;
-//       this.ctx.beginPath();
-//       this.ctx.moveTo(x, py);
-//       this.ctx.lineTo(x + w, py);
-//       this.ctx.stroke();
-//     }
-//   }
-
-// private drawImageComponent(x: number, y: number, w: number, h: number): void {
-//   const img = new Image();
-//   img.src = 'assets/dashboard-great-design-any-site-600nw-1710898087.webp';
-
-//   img.onload = () => {
-//     this.ctx.clearRect(x, y, w, h);
-//     this.ctx.drawImage(img, x, y, w, h); // Fit image inside the component
-//     this.ctx.strokeStyle = '#000';
-//     this.ctx.lineWidth = 2;
-//     this.ctx.strokeRect(x, y, w, h); // Optional border
-//   };
-
-// //   img.onerror = () => {
-// //     // Fallback design if image fails
-// //     this.ctx.fillStyle = '#E74C3C';
-// //     this.ctx.fillRect(x, y, w, h);
-// //     this.ctx.fillStyle = '#FFF';
-// //     this.ctx.font = `${Math.min(w, h) * 0.3}px Arial`;
-// //     this.ctx.textAlign = 'center';
-// //     this.ctx.textBaseline = 'middle';
-// //     this.ctx.fillText('IMG', x + w / 2, y + h / 2);
-// //   };
-// }
-// private drawFilterTextComponent(x: number, y: number, w: number, h: number, type: string, label?: string) {
-//     this.ctx.fillStyle = '#fff';
-//     this.ctx.fillRect(x, y, w, h);
-//     this.ctx.strokeStyle = '#000';
-//     this.ctx.strokeRect(x, y, w, h);
-//     this.ctx.fillStyle = '#000';
-//     this.ctx.font = `${Math.min(w, h) * 0.3}px Arial`;
-//     this.ctx.textAlign = 'center';
-//     this.ctx.textBaseline = 'middle';
-
-//     if (type === 'dropdown') {
-//       this.ctx.fillText(`${label || 'Select'} ▼`, x + w / 2, y + h / 2);
-//     } else if (type === 'text') {
-//       this.ctx.fillText( 'Search', x + w / 2, y + h / 2);
-//     } else if (type === 'icon') {
-//       this.ctx.fillText('⚙', x + w / 2, y + h / 2);
-//     }
-//   }
-//   private drawMapComponent(x: number, y: number, w: number, h: number): void {
-//   const img = new Image();
-//   img.src = "assets/1000_F_1019790077_JTpsz2rNIXX4tHJvXZOSLF9aGn4XPp4k (1).jpg"; // ✅ Replace with your map image path
-
-//   img.onload = () => {
-//     this.ctx.drawImage(img, x, y, w, h);
-//     this.ctx.strokeStyle = '#000';  // Optional border
-//     this.ctx.strokeRect(x, y, w, h);
-//   };
-
-// //   img.onerror = () => {
-// //     // Fallback if image not found
-// //     this.ctx.fillStyle = '#EEE';
-// //     this.ctx.fillRect(x, y, w, h);
-// //     this.ctx.fillStyle = '#000';
-// //     this.ctx.font = `${Math.min(w, h) * 0.15}px Arial`;
-// //     this.ctx.textAlign = 'center';
-// //     this.ctx.textBaseline = 'middle';
-// //     this.ctx.fillText('Map Not Found', x + w / 2, y + h / 2);
-// //   };
-// }
-
-//   public render(): void {
-//   const { width: canvasW, height: canvasH } = this.canvas;
-//   this.ctx.clearRect(0, 0, canvasW, canvasH);
-
-//   // Background
-//   this.ctx.fillStyle = "#F8F9FA";
-//   this.ctx.fillRect(0, 0, canvasW, canvasH);
-
-//   this.componentsData.forEach(({ x, y, width, height, component_type, series_type }) => {
-//     const scaledX = x * this.scaleX, scaledY = y * this.scaleY;
-//     const w = width * this.scaleX, h = height * this.scaleY;
-
-//     switch (component_type.toLowerCase()) {
-//       case "chart":
-//         series_type?.forEach((series, i) => {
-//           const color = this.colors[i % this.colors.length];
-//           switch (series) {
-//             case "LineSeries":
-//             case "AreaSeries":
-//               this.drawLineOrAreaChart(scaledX, scaledY, w, h, color, series === "AreaSeries");
-//               break;
-//             case "ColumnSeries":
-//             case "ClusteredColumnSeries":
-//             case "StackedColumnSeries":
-//             case "Stacked100PercentColumnSeries":
-//               this.drawBarChart(scaledX, scaledY, w, h);
-//               break;
-//             case "PieSeries":
-//             case "DonutSeries":
-//               this.drawPieOrDonutChart(scaledX, scaledY, w, h, series === "DonutSeries");
-//               break;
-//             case "WaterFallSeries":
-//               this.drawWaterfallChart(scaledX, scaledY, w, h);
-//               break;
-//             case "TreeMapSeries":
-//               this.drawTreemapChart(scaledX, scaledY, w, h);
-//               break;
-//             case "RadarLineSeries":
-//             case "RadarAreaSeries":
-//             case "RadarColumnSeries":
-//               this.drawRadarChart(scaledX, scaledY, w, h, color);
-//               break;
-//             case "FunnelSeries":
-//               this.drawFunnelChart(scaledX, scaledY, w, h);
-//               break;
-//             case "BubbleSeries":
-//               this.drawBubbleChart(scaledX, scaledY, w, h);
-//               break;
-//             default:
-//               console.warn(`Unknown chart series type: '${series}'`);
-//           }
-//         });
-//         break;
-
-//       case "grid":
-//       case "pivot":
-//         series_type?.forEach((el) => {
-//           if (["TableRowSeries", "TableColumnSeries"].includes(el)) {
-//             this.drawTableChart(scaledX, scaledY, w, h, this.colors[0]);
-//           } else {
-//             console.warn(`Unknown grid series type: '${el}'`);
-//           }
-//         });
-//         break;
-
-//       case "card":
-//         series_type?.forEach((el) => {
-//           if (el === "ValueSeries") this.drawCard(scaledX, scaledY, w, h);
-//           else console.warn(`Unknown card series type: '${el}'`);
-//         });
-//         break;
-
-//       case "image":
-//         this.drawImageComponent(scaledX, scaledY, w, h );
-//         break;
-//        case 'filter':
-//        case 'text': {
-//       // If your IComponent interface contains filterType and filterLabel, extract them here.
-//        // Otherwise, set default values.
-//        const type = (component_type === 'text') ? 'text' : 'dropdown';
-//        const label = undefined; // Replace with actual label if available in your data
-//        this.drawFilterTextComponent(scaledX, scaledY, w, h, type, label);
-//        break;
-//        }
-//        case 'spatialmap':
-// 	   case 'geomap':
-// 			series_type?.forEach((el) => {
-// 		 if (["SpatialPolygonSeries", "HeatMapSeries"].includes(el)) {
-// 		   this.drawMapComponent(scaledX, scaledY, w, h);
-// 		 }
-// 		});
-// 		break;
-//       default:
-//         console.warn(`Unknown component type: '${component_type}'`);
-//         break;
-    
-//     }
-//   });
-// }
-
-// public destroy(): void {
-//   window.removeEventListener("resize", this.handleResize);
-//   if (this.canvas?.parentElement) {
-//     this.canvas.parentElement.removeChild(this.canvas);
-//   }
-// }
-
-// private colors = [
-//     '#005DA6', '#be952cff', '#BAE1FF', '#75C2FF', '#30A4FF',
-//     '#00467D', '#CBC53E', '#089AD7', '#6D6E71', '#D0CECE',
-//     '#DE354C', '#932432', '#3C1874', '#283747', '#DDAF94'
-//   ];
-// private colors = [ '#F8BBD0', // pink
-//   '#FCE38A', // pastel yellow
-//   '#B5EAD7', // mint green
-//   '#C7CEEA', // light lavender
-//   '#B4F8C8', // seafoam
-//   '#FFD3B6', // peach
-//   '#E0BBE4', // lavender
-//     ];
-
-private colors = ['#FFADAD', '#FFD6A5','#FDFFB6', '#CAFFBF',
-   '#9BFBCF', '#A0C4FF', '#BDB2FF', '#FFC6FF',];
-private cornerRadius = 5;       // Corner radius
-private borderWidth = 1;        // Border thickness
-
-// Function to draw rounded rectangle
-private drawRoundedRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number
-): void {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
-  // ---------- UTILITIES ----------
-  private getRandomData(count: number, min = 40, max = 170): number[] {
-    return Array.from({ length: count }, () => Math.floor(Math.random() * (max - min) + min + 10));
-  }
-  private setStroke(color: string, width = 2) {
-    this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = width;
-  }
-  private setFill(color: string) {
-    this.ctx.fillStyle = color;
+  private setStyle(fill?: string, stroke?: string, lineWidth = 2): void {
+    if (fill) this.ctx.fillStyle = fill;
+    if (stroke) {
+      this.ctx.strokeStyle = stroke;
+      this.ctx.lineWidth = lineWidth;
+    }
   }
 
+  private drawLine(x: number, y: number, w: number, h: number, isArea: boolean, isCluster: boolean): void {
+    let colors: string[];
+    if (isCluster) {
+      colors = isArea ? [this.colors[8], this.colors[6]] : [this.colors[8], this.colors[6]];
+    } else {
+      colors = isArea ? [this.colors[7]] : [this.colors[0]];
+    }
 
-  // ---------- DRAW METHODS ----------
-  // private drawLineOrAreaChart(x: number, y: number, w: number, h: number, color: string, isArea: boolean): void {
-  //   const points = 7, stepX = w / (points - 1);
-  //   // Use fixed values for more consistent chart shapes
-  //   const areaValues = [30, 30, 80, 50, 50, 80, 30]; 
-  //   const lineValues = [90, 80, 65, 40, 25, 10, 5];
-  //   const values = isArea ? areaValues : lineValues;
-  //   const maxVal = Math.max(...values);
-
-  //   // Calculate coordinates for both line and points
-  //   const coords = values.map((val, i) => ({
-  //     x: x + i * stepX,
-  //     y: y + h - (h * val) / maxVal
-  //   }));
-
-  //   this.ctx.save();
-  //   this.ctx.beginPath();
-  //   this.ctx.moveTo(coords[0].x, coords[0].y);
-  //   // Use bezier curves for smooth area/line
-  //   for (let i = 1; i < coords.length; i++) {
-  //     const prev = coords[i - 1];
-  //     const curr = coords[i];
-  //     const midX = (prev.x + curr.x) / 2;
-  //     this.ctx.quadraticCurveTo(prev.x, prev.y, midX, (prev.y + curr.y) / 2);
-  //   }
-  //   this.ctx.lineTo(coords.at(-1)!.x, coords.at(-1)!.y);
-
-  //   if (isArea) {
-  //     // Close area to bottom
-  //     this.ctx.lineTo(coords.at(-1)!.x, y + h);
-  //     this.ctx.lineTo(coords[0].x, y + h);
-  //     this.ctx.closePath();
-  //     // Pastel fill and thin border
-  //     this.ctx.fillStyle = this.colors[7];
-  //     this.ctx.fill();
-  //     this.ctx.strokeStyle = this.colors[7] + '40';
-  //     this.ctx.lineWidth = 2;
-  //     this.ctx.stroke();
-  //   } else {
-  //     // Line chart: just stroke
-  //     this.ctx.strokeStyle = this.colors[0];
-  //     this.ctx.lineWidth = 2;
-  //     this.ctx.stroke();
-
-  //     // Draw points for line chart only, centered on the line
-  //     for (const pt of coords) {
-  //       this.ctx.beginPath();
-  //       this.ctx.arc(pt.x, pt.y, 4, 0, 2 * Math.PI);
-  //       this.ctx.fillStyle = this.colors[0];
-  //       this.ctx.fill();
-  //       this.ctx.strokeStyle = this.colors[0] + '40'; // Lighter stroke for points
-  //       this.ctx.lineWidth = 2;
-  //       this.ctx.stroke();
-  //     }
-  //   }
-  //   this.ctx.restore();
-  // }
-
-  private drawLineOrAreaChart(
-  x: number, 
-  y: number, 
-  w: number, 
-  h: number, 
-  color: string, 
-  mode: 'area' | 'line' | 'clusterarea' | 'clusterline'
-): void {
-  
-  const points = 7;
-  const stepX = w / (points - 1);
-
-  // Base data sets
-  const areaValues = [30, 30, 80, 50, 50, 80, 30];
-  const lineValues = [90, 80, 65, 40, 25, 10, 5];
-
-  // For clusters: add a second set
-  const clusterOffset = 10; // small offset for cluster separation
-  const clusterValues = [50, 60, 75, 45, 35, 20, 15];
-
-  // Decide which main values to draw
-  const isArea = mode === 'area' || mode === 'clusterarea';
-  const values = isArea ? areaValues : lineValues;
-  const maxVal = Math.max(...values);
-
-  // Convert values to coordinates
-  const coords = values.map((val, i) => ({
-    x: x + i * stepX,
-    y: y + h - (h * val) / maxVal
-  }));
-
-  // Draw main chart
-  this.ctx.save();
-  this.ctx.beginPath();
-  this.ctx.moveTo(coords[0].x, coords[0].y);
-  for (let i = 1; i < coords.length; i++) {
-    const prev = coords[i - 1];
-    const curr = coords[i];
-    const midX = (prev.x + curr.x) / 2;
-    this.ctx.quadraticCurveTo(prev.x, prev.y, midX, (prev.y + curr.y) / 2);
-  }
-
-  if (isArea) {
-    this.ctx.lineTo(coords.at(-1)!.x, y + h);
-    this.ctx.lineTo(coords[0].x, y + h);
-    this.ctx.closePath();
-    this.ctx.fillStyle = color + '80'; // semi-transparent fill
-    this.ctx.fill();
-  }
-
-  this.ctx.strokeStyle = color;
-  this.ctx.lineWidth = 2;
-  this.ctx.stroke();
-
-  // Points on line chart
-  if (!isArea) {
-    for (const pt of coords) {
+    const drawPath = (data: number[], color: string, offset = 0): void => {
+      const max = Math.max(...data);
+      const step = w / (data.length - 1);
+      const coords = data.map((v, i) => ({ x: x + i * step, y: y + h - (v / max * h) + offset }));
       this.ctx.beginPath();
-      this.ctx.arc(pt.x, pt.y, 4, 0, 2 * Math.PI);
-      this.ctx.fillStyle = color;
-      this.ctx.fill();
+      coords.forEach((p, i) => (i ? this.ctx.lineTo(p.x, p.y) : this.ctx.moveTo(p.x, p.y)));
+      if (isArea) {
+        this.ctx.lineTo(coords[coords.length - 1].x, y + h);
+        this.ctx.lineTo(coords[0].x, y + h);
+        this.ctx.closePath();
+        this.setStyle(color + '80');
+        this.ctx.fill();
+      }
+      this.setStyle(undefined, color);
+      this.ctx.stroke();
+    };
+
+    drawPath(this.rnd(7, 10, 80), colors[0]);
+    if (isCluster) drawPath(this.rnd(7, 10, 90), colors[1], -10);
+  }
+
+  private drawBars(x: number, y: number, w: number, h: number, type: string): void {
+    const isVertical = type.includes('column');
+    const gap = 3;
+    const baseY = y + h;
+    const baseX = x;
+
+    if (type === 'cluster') {
+      const data1 = this.rnd(7);
+      const data2 = this.rnd(7);
+      const max = Math.max(...data1, ...data2);
+      const clusterGap = 5;
+      const clusters = data1.length;
+      const totalGaps = gap * (clusters + 1);
+      const totalClusterWidth = w - totalGaps;
+      const clusterWidth = totalClusterWidth / clusters;
+      const barWidth = (clusterWidth - clusterGap) / 2;
+
+      data1.forEach((val, i) => {
+        const barHeight1 = (val / max) * (h - gap);
+        const barHeight2 = (data2[i] / max) * (h - gap);
+        const xPos = x + gap + i * (clusterWidth + gap);
+
+        this.setStyle(this.colors[0]);
+        this.ctx.fillRect(xPos, baseY - barHeight1, barWidth, barHeight1);
+
+        this.setStyle(this.colors[8]);
+        this.ctx.fillRect(xPos + barWidth + clusterGap, baseY - barHeight2, barWidth, barHeight2);
+      });
+    } else {
+      const data = this.rnd(7);
+      const max = Math.max(...data);
+      const barCount = data.length;
+      const totalGaps = gap * (barCount + 1);
+      const availableSpace = isVertical ? w - totalGaps : h - totalGaps;
+      const barThickness = availableSpace / barCount;
+
+      data.forEach((val, i) => {
+        if (isVertical) {
+          const barWidth = barThickness;
+          const barHeight = (val / max) * (h - gap);
+          const xPos = x + gap + i * (barWidth + gap);
+          const yPos = baseY - barHeight;
+
+          if (type.includes('stacked')) {
+            const halfHeight = barHeight / 2;
+            this.setStyle(this.colors[1]);
+            this.ctx.fillRect(xPos, yPos + halfHeight, barWidth, halfHeight);
+            this.setStyle(this.colors[2]);
+            this.ctx.fillRect(xPos, yPos, barWidth, halfHeight);
+          } else {
+            this.setStyle(this.colors[5]);
+            this.ctx.fillRect(xPos, yPos, barWidth, barHeight);
+          }
+        } else {
+          const barHeight = barThickness;
+          const barWidth = (val / max) * (w - gap);
+          const xPos = baseX;
+          const yPos = y + gap + i * (barHeight + gap);
+
+          if (type.includes('stacked')) {
+            const halfWidth = barWidth / 2;
+            this.setStyle(this.colors[1]);
+            this.ctx.fillRect(xPos, yPos, halfWidth, barHeight);
+            this.setStyle(this.colors[2]);
+            this.ctx.fillRect(xPos + halfWidth, yPos, halfWidth, barHeight);
+          } else {
+            this.setStyle(this.colors[1]);
+            this.ctx.fillRect(xPos, yPos, barWidth, barHeight);
+          }
+        }
+      });
     }
   }
 
-  // Handle clusters (draw second series)
-  if (mode === 'clusterline' || mode === 'clusterarea') {
-    const maxClusterVal = Math.max(...clusterValues);
-    const clusterCoords = clusterValues.map((val, i) => ({
-      x: x + i * stepX,
-      y: y + h - (h * val) / maxClusterVal - clusterOffset
-    }));
+  private drawCircular(x: number, y: number, w: number, h: number, isDonut: boolean): void {
+    const data = this.rnd(6, 20, 60);
+    const total = data.reduce((a, b) => a + b, 0);
+    const R = Math.min(w, h) / 2;
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    let angle = 0;
 
-    this.ctx.beginPath();
-    this.ctx.moveTo(clusterCoords[0].x, clusterCoords[0].y);
-    for (let i = 1; i < clusterCoords.length; i++) {
-      const prev = clusterCoords[i - 1];
-      const curr = clusterCoords[i];
-      const midX = (prev.x + curr.x) / 2;
-      this.ctx.quadraticCurveTo(prev.x, prev.y, midX, (prev.y + curr.y) / 2);
-    }
-
-    if (mode === 'clusterarea') {
-      this.ctx.lineTo(clusterCoords.at(-1)!.x, y + h);
-      this.ctx.lineTo(clusterCoords[0].x, y + h);
+    data.forEach((val, i) => {
+      const slice = (val / total) * Math.PI * 2;
+      this.ctx.beginPath();
+      this.ctx.arc(cx, cy, R, angle, angle + slice);
+      if (isDonut) this.ctx.arc(cx, cy, R / 2, angle + slice, angle, true);
+      else this.ctx.lineTo(cx, cy);
       this.ctx.closePath();
-      this.ctx.fillStyle = '#ff980080'; // another semi-transparent color
+      this.setStyle(this.colors[i % this.colors.length], '#fff', 1);
       this.ctx.fill();
-    }
-
-    this.ctx.strokeStyle = '#ff9800';
-    this.ctx.lineWidth = 2;
-    this.ctx.stroke();
+      this.ctx.stroke();
+      angle += slice;
+    });
   }
 
-  this.ctx.restore();
-}
+  private drawRadar(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    mode: 'area' | 'line' | 'clusterline' | 'clusterarea'
+  ): void {
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    const R = Math.min(w, h) / 2 - 5;
+    const axes = 7;
 
-  private drawTreemapChart(x: number, y: number, w: number, h: number): void {
-    // const areas = [0.4, 0.4, 0.25, 1, 0.3, 0.2, 0.15,3];
+    const randomDataset = () => Array.from({ length: axes }, () => 0.5 + Math.random() * 0.5);
+    const datasets = mode.startsWith('cluster') ? [randomDataset(), randomDataset()] : [randomDataset()];
+
+    datasets.forEach((values, idx) => {
+      const points: { x: number; y: number }[] = [];
+      for (let i = 0; i < axes; i++) {
+        const angle = (i / axes) * 2 * Math.PI - Math.PI / 2;
+        const val = values[i];
+        points.push({
+          x: cx + Math.cos(angle) * R * val,
+          y: cy + Math.sin(angle) * R * val
+        });
+      }
+
+      this.ctx.beginPath();
+      points.forEach((pt, i) => (i === 0 ? this.ctx.moveTo(pt.x, pt.y) : this.ctx.lineTo(pt.x, pt.y)));
+      this.ctx.closePath();
+
+      let fillColor = '';
+      let strokeColor = '';
+      if (mode === 'clusterline') {
+        strokeColor = idx === 0 ? this.colors[1] : this.colors[6];
+      } else if (mode === 'clusterarea') {
+        fillColor = idx === 0 ? this.colors[0] + '70' : this.colors[6] + '70';
+        strokeColor = idx === 0 ? this.colors[0] : this.colors[6];
+      } else if (mode === 'area') {
+        fillColor = this.colors[6] + '70';
+        strokeColor = this.colors[6];
+      } else {
+        strokeColor = this.colors[6];
+      }
+
+      if (mode.endsWith('area')) {
+        if (fillColor) this.setStyle(fillColor);
+        else this.setStyle(this.colors[6] + '70');
+        this.ctx.fill();
+        this.setStyle(undefined, strokeColor || this.colors[6]);
+        this.ctx.stroke();
+      } else {
+        this.setStyle(undefined, strokeColor || this.colors[6], 2);
+        this.ctx.stroke();
+      }
+
+      for (const pt of points) {
+        this.ctx.beginPath();
+        this.ctx.arc(pt.x, pt.y, 2, 0, 2 * Math.PI);
+        this.ctx.fillStyle = strokeColor || this.colors[6];
+        this.ctx.fill();
+        this.ctx.strokeStyle = strokeColor || this.colors[6];
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+      }
+    });
+  }
+
+  private drawScatter(x: number, y: number, w: number, h: number): void {
+    this.setStyle('#fff');
+    this.ctx.fillRect(x, y, w, h);
+    for (let i = 0; i < 75; i++) {
+      this.ctx.beginPath();
+      this.ctx.arc(x + Math.random() * w, y + Math.random() * h, 3, 0, Math.PI * 2);
+      this.setStyle(this.colors[6]);
+      this.ctx.fill();
+    }
+  }
+
+  private drawBubble(x: number, y: number, w: number, h: number): void {
+    Array.from({ length: 8 }, () => ({
+      x: x + Math.random() * w * 0.8 + w * 0.1,
+      y: y + Math.random() * h * 0.8 + h * 0.1,
+      r: Math.min(w, h) * (0.04 + Math.random() * 0.08)
+    })).forEach(({ x: bx, y: by, r }) => {
+      this.ctx.beginPath();
+      this.ctx.arc(bx, by, r, 0, 2 * Math.PI);
+      this.setStyle(this.colors[6], '#BDB2FF40', 1);
+      this.ctx.fill();
+      this.ctx.stroke();
+    });
+  }
+
+  private drawTreemap(x: number, y: number, w: number, h: number): void {
     const areas = [0.4, 0.4, 0.25, 1, 0.3, 0.2, 0.15, 3];
+    let curX = x;
+    let curY = y;
+    let remW = w;
+    let remH = h;
 
-    let curX = x, curY = y, remW = w, remH = h;
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = '#fff';
     areas.forEach((a, i) => {
-      const isHorizontal = i % 2 === 0;
-      const rectW = isHorizontal ? remW * a : remW;
-      const rectH = isHorizontal ? remH : remH * a;
-      this.ctx.fillStyle = this.colors[i % this.colors.length];
+      const isHoriz = i % 2 === 0;
+      const rectW = isHoriz ? remW * a : remW;
+      const rectH = isHoriz ? remH : remH * a;
+      this.setStyle(this.colors[i % this.colors.length], '#fff', 1);
       this.ctx.fillRect(curX, curY, rectW, rectH);
       this.ctx.strokeRect(curX, curY, rectW, rectH);
-      if (isHorizontal) {
+      if (isHoriz) {
         curX += rectW;
         remW -= rectW;
       } else {
@@ -688,639 +391,451 @@ private drawRoundedRect(
     });
   }
 
-  // private drawPieOrDonutChart(x: number, y: number, w: number, h: number, isDonut: boolean): void {
-  //   const data = this.getRandomData(6),
-  //     total = data.reduce((a, b) => a + b, 0);
-  //   const R = Math.min(w, h) / 2,
-  //     r = isDonut ? R / 2 : 0,
-  //     cx = x + w / 2,
-  //     cy = y + h / 2;
-  //   let angle = 0;
-  //   data.forEach((val, i) => {
-  //     const slice = (val / total) * Math.PI * 2;
-  //     this.ctx.beginPath();
-  //     this.ctx.arc(cx, cy, R, angle, angle + slice);
-  //     isDonut
-  //       ? this.ctx.arc(cx, cy, r, angle + slice, angle, true)
-  //       : this.ctx.lineTo(cx, cy);
-  //     this.ctx.closePath();
-  //     this.setFill(this.colors[i % this.colors.length]);
-  //     this.ctx.fill();
-  //     angle += slice;
-  //   });
-  // }
-  private drawPieOrDonutChart(
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  isDonut: boolean
-): void {
-  // const data = this.getRandomData(6);
-   const data = [30,30,30,30,30,30];
-  const total = data.reduce((a, b) => a + b, 0);
+  private drawFunnel(x: number, y: number, w: number, h: number): void {
+    const stages = 6;
+    const sh = h / stages;
 
-  const R = Math.min(w, h) / 2;
-  const r = isDonut ? R / 2 : 0;
-  const cx = x + w / 2;
-  const cy = y + h / 2;
+    for (let i = 0; i < stages; i++) {
+      const rectW = w * (1 - i * 0.15);
+      const rectX = x + (w - rectW) / 2;
+      const color = this.colors[Math.floor(Math.random() * this.colors.length)];
 
-  let angle = 0;
-
-  data.forEach((val, i) => {
-    const slice = (val / total) * Math.PI * 2;
-
-    this.ctx.beginPath();
-    this.ctx.arc(cx, cy, R, angle, angle + slice);
-
-    if (isDonut) {
-      this.ctx.arc(cx, cy, r, angle + slice, angle, true);
-    } else {
-      this.ctx.lineTo(cx, cy);
-    }
-
-    this.ctx.closePath();
-    this.ctx.fillStyle = this.colors[i % this.colors.length];
-    this.ctx.fill();
-
-    // White border for separation
-    this.ctx.lineWidth = 1; // Thickness of gap
-    this.ctx.strokeStyle = "#ffffff";
-    this.ctx.stroke();
-
-    angle += slice;
-  });
-}
-
-private drawColumnBarChart(
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  type: "column" | "bar" | "cluster" | "stacked-column" | "stacked-row"
-): void {
-  const data = this.getRandomData(6);
-  const chartHeight = h - 20;
-  const chartWidth = w - 20;
-  const maxVal = Math.max(...data);
-  const gap = 10;
-  const ctx = this.ctx;
-
-  // For stacked-column (vertical split)
-  const drawHalfStackVertical = (bx: number, by: number, barWidth: number, barHeight: number) => {
-    const half = barHeight / 2;
-    this.drawBar(ctx, bx, by, barWidth, half, this.colors[1]);
-    this.drawBar(ctx, bx, by + half, barWidth, half, this.colors[2]);
-  };
-
-  // For stacked-row (horizontal split)
-  const drawHalfStackHorizontal = (bx: number, by: number, barWidth: number, barHeight: number) => {
-    const half = barWidth / 2;
-    this.drawBar(ctx, bx, by, half, barHeight, this.colors[1]);
-    this.drawBar(ctx, bx + half, by, half, barHeight, this.colors[2]);
-  };
-
-  data.forEach((val, i) => {
-    let bx: number, by: number, barWidth: number, barHeight: number;
-
-    if (type === "column" || type === "stacked-column" || type === "cluster") {
-      barWidth = type === "cluster"
-        ? (chartWidth / data.length - gap) / 2
-        : chartWidth / data.length - gap;
-      barHeight = (val / maxVal) * chartHeight;
-      bx = x + gap + i * ((type === "cluster" ? barWidth * 2 : barWidth));
-      by = y + chartHeight - barHeight;
-    } else {
-      barHeight = chartHeight / data.length - gap;
-      barWidth = (val / maxVal) * chartWidth;
-      bx = x + gap;
-      by = y + i * (barHeight + gap);
-    }
-
-    switch (type) {
-      case "column":
-        this.drawBar(ctx, bx, by, barWidth, barHeight, this.colors[0]);
-        break;
-      case "stacked-column":
-        drawHalfStackVertical(bx, by, barWidth, barHeight);
-        break;
-      case "cluster":
-        this.drawBar(ctx, bx, by, barWidth, barHeight, this.colors[4]);
-        this.drawBar(ctx, bx + barWidth, by, barWidth, barHeight, this.colors[5]);
-        break;
-      case "bar":
-        this.drawBar(ctx, bx, by, barWidth, barHeight, this.colors[6]);
-        break;
-      case "stacked-row":
-        drawHalfStackHorizontal(bx, by, barWidth, barHeight);
-        break;
-    }
-  });
-}
-
-
-private drawBar(
-  ctx: CanvasRenderingContext2D,
-  bx: number,
-  by: number,
-  barWidth: number,
-  barHeight: number,
-  color: string
-): void {
-  this.drawRoundedRect(ctx, bx, by, barWidth, barHeight, this.cornerRadius);
-  ctx.fillStyle = color;
-  ctx.fill();
-  ctx.lineWidth = this.borderWidth;
-  ctx.strokeStyle = color;
-  ctx.stroke();
-}
-
- private drawBarChart(x: number, y: number, w: number, h: number): void {
-    const bars = 6, barW = w / bars;
-    for (let i = 0; i < bars; i++) {
-      const bh = Math.random() * (h * 0.8) * 0.8;
-      this.setFill(this.colors[i % this.colors.length]);
-      this.ctx.fillRect(x + i * barW, y + h - bh, barW - 2, bh);
-    }
-  }
-
-private drawBubbleChart(x: number, y: number, w: number, h: number): void {
-  const bubbles = 8;
-  // Define fixed bubble positions and radii once, outside the loop
-  
-const fixedBubbles = [
-  { bx: x + w * 0.3,  by: y + h * 0.1, radius: Math.min(w, h) * 0.10 }, // biggest
-  { bx: x + w * 0.4,  by: y + h * 0.25, radius: Math.min(w, h) * 0.08 },
-  { bx: x + w * 0.5,  by: y + h * 0.4, radius: Math.min(w, h) * 0.07 },
-  { bx: x + w * 0.6,  by: y + h * 0.55, radius: Math.min(w, h) * 0.06 },
-  { bx: x + w * 0.7,  by: y + h * 0.7, radius: Math.min(w, h) * 0.05 },
-  { bx: x + w * 0.8,  by: y + h * 0.85, radius: Math.min(w, h) * 0.04 }  // smallest
-];
-
-
-// Sort by radius in descending order
-
-  for (let i = 0; i < bubbles && i < fixedBubbles.length; i++) {
-    const { bx, by, radius } = fixedBubbles[i];
-    this.setFill(this.colors[6] ); // Assuming '80' is for 50% opacity (e.g., rgba)
-    this.ctx.beginPath();
-    this.ctx.arc(bx, by, radius, 0, 2 * Math.PI);
-    this.ctx.fill();
-    this.setStroke('#BDB2FF'+ '40', 1); // Lighter stroke for points
-    this.ctx.stroke();
-  }
-}
-
-  // private drawWaterfallChart(x: number, y: number, w: number, h: number): void {
-  //   const bars = 5, barW = w / bars + 6;
-  //   let currentHeight = h * 0.3;
-  //   for (let i = 0; i < bars; i++) {
-  //     const change = h * 0.1, bh = Math.abs(change) + 3;
-  //     const barX = x + i * barW + 2;
-  //     const barY = i === 0 ? y + h - currentHeight : y + h - currentHeight - bh;
-  //     this.setFill(this.colors[i % this.colors.length]);
-  //     this.ctx.fillRect(barX, barY, barW - 4, bh);
-  //     currentHeight += change + 1;
-  //   }
-  // }
-private drawWaterfallChart(x: number, y: number, w: number, h: number): void {
-  const bars = 6;
-  const gap = 10;
-  const barW = (w - (bars + 1) * gap) / bars;
-
-  // Clamp barW to minimum 1 to avoid negative/overflow
-  const safeBarW = Math.max(barW, 1);
-
-  let currentY = y + h;
-  // const barColor = "#ff6384";
-
-  // Calculate total bar heights to avoid overflow
-  const maxBarH = h / bars;
-  for (let i = 0; i < bars; i++) {
-    // Use fixed or clamped height to avoid overflow
-    // Use fixed bar heights for a consistent waterfall shape
-    const fixedHeights = [maxBarH * 1.2, maxBarH, maxBarH * 0.8, maxBarH * 0.6, maxBarH * 0.8, maxBarH];
-    const barH = Math.min(fixedHeights[i % fixedHeights.length], currentY - y);
-
-    currentY -= barH;
-    const barX = x + gap + i * (safeBarW + gap);
-    const barY = currentY;
-
-    // Prevent drawing outside the top boundary
-    if (barY < y) break;
-
-    this.ctx.fillStyle = this.colors[0];
-    this.drawRoundedRect(this.ctx, barX, barY, safeBarW, barH, 6);
-    this.ctx.fill();
-  }
-}
-
-
-private drawScatterChart(
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  color: string
-): void {
-  // Draw background box
-  this.ctx.fillStyle = '#fff';
-  this.ctx.fillRect(x, y, w, h);
-
-  // Random dots
-  for (let i = 0; i < 100; i++) {
-    const px = x + Math.random() * w;
-    const py = y + Math.random() * h;
-
-    this.ctx.beginPath();
-    this.ctx.arc(px, py, 3, 0, Math.PI * 2);
-    this.ctx.fillStyle = this.colors[6];;
-    this.ctx.fill();
-  }
-}
-  /**
-   * Draws a radar chart in either "area" or "line" mode.
-   * - "area": draws a filled polygon with points and a border (shows background under semi-transparent area).
-   * - "line": draws only the polygon outline and points (background fully visible).
-   */
-  // private drawRadarChart(
-  //   x: number,
-  //   y: number,
-  //   w: number,
-  //   h: number,
-  //   color: string,
-  //   mode: "area" | "line" 
-  // ): void {
-  //   const cx = x + w / 2;
-  //   const cy = y + h / 2;
-  //   const R = Math.min(w, h) / 2 - 5;
-  //   const axes = 7;
-
-  //   // Generate fixed values for consistent shape
-  //   const values = [0.7, 0.9, 0.6, 0.8, 0.5, 0.85, 0.65];
-  //   const points: { x: number, y: number }[] = [];
-  //   for (let i = 0; i < axes; i++) {
-  //     const angle = (i / axes) * 2 * Math.PI - Math.PI / 2;
-  //     const val = values[i % values.length];
-  //     points.push({
-  //       x: cx + Math.cos(angle) * R * val,
-  //       y: cy + Math.sin(angle) * R * val
-  //     });
-  //   }
-
-  //   // Draw radar polygon
-  //   this.ctx.beginPath();
-  //   points.forEach((pt, i) => {
-  //     if (i === 0) this.ctx.moveTo(pt.x, pt.y);
-  //     else this.ctx.lineTo(pt.x, pt.y);
-  //   });
-  //   this.ctx.closePath();
-
-  //   if (mode === "area") {
-  //     // Fill with semi-transparent color, then stroke
-  //     this.setFill(this.colors[6] + "40"); // Semi-transparent fill
-  //     this.ctx.fill();
-  //     this.setStroke(this.colors[6] );
-  //     this.ctx.stroke();
-  //   } else if (mode === "line") {
-  //     // Only stroke (no fill)
-
-  //     this.setStroke(this.colors[6], 2);
-  //     this.ctx.stroke();
-  //   }
-
-  //   // Draw points
-  //   for (const pt of points) {
-  //     this.ctx.beginPath();
-  //     this.ctx.arc(pt.x, pt.y, 4, 0, 2 * Math.PI);
-  //     this.ctx.fillStyle = this.colors[6];
-  //     this.ctx.fill();
-  //     this.ctx.strokeStyle = (mode === "area") ? this.colors[6] + "40" : this.colors[6];
-  //     this.ctx.lineWidth = 4;
-  //     this.ctx.stroke();
-  //   }
-  // }
-  // private drawFunnelChart(x: number, y: number, w: number, h: number): void {
-  //   const stages = 4, sh = h / stages;
-  //   for (let i = 0; i < stages; i++) {
-  //     const tW = w * (1 - i * 0.2), bW = w * (1 - (i + 1) * 0.2);
-  //     const tOff = (w - tW) / 2, bOff = (w - bW) / 2;
-  //     this.ctx.beginPath();
-  //     this.ctx.moveTo(x + tOff, y + i * sh);
-  //     this.ctx.lineTo(x + tOff + tW, y + i * sh);
-  //     this.ctx.lineTo(x + bOff + bW, y + (i + 1) * sh);
-  //     this.ctx.lineTo(x + bOff, y + (i + 1) * sh);
-  //     this.ctx.closePath();
-  //     this.setFill(this.colors[i % this.colors.length]);
-  //     this.ctx.fill();
-  //   }
-  // }
-
-  private drawRadarChart(
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  color: string,
-  mode: "area" | "line" | "clusterline" | "clusterarea"
-): void {
-  const cx = x + w / 2;
-  const cy = y + h / 2;
-  const R = Math.min(w, h) / 2 - 5;
-  const axes = 7;
-
-  // Multiple datasets for cluster modes
-  const datasets = mode.startsWith('cluster') 
-    ? [
-        [0.7, 0.9, 0.6, 0.8, 0.5, 0.85, 0.65], // first
-        [0.6, 0.8, 0.7, 0.75, 0.55, 0.9, 0.6]  // second
-      ]
-    : [[0.7, 0.9, 0.6, 0.8, 0.5, 0.85, 0.65]];
-
-  datasets.forEach((values, idx) => {
-    const points: { x: number, y: number }[] = [];
-
-    for (let i = 0; i < axes; i++) {
-      const angle = (i / axes) * 2 * Math.PI - Math.PI / 2;
-      const val = values[i % values.length];
-      points.push({
-        x: cx + Math.cos(angle) * R * val,
-        y: cy + Math.sin(angle) * R * val
-      });
-    }
-
-    // Draw radar polygon
-    this.ctx.beginPath();
-    points.forEach((pt, i) => {
-      if (i === 0) this.ctx.moveTo(pt.x, pt.y);
-      else this.ctx.lineTo(pt.x, pt.y);
-    });
-    this.ctx.closePath();
-
-    const currentColor = this.colors[(6 + idx) % this.colors.length];
-
-    if (mode.endsWith("area")) {
-      this.setFill(currentColor + "40"); // transparent fill
-      this.ctx.fill();
-      this.setStroke(currentColor);
-      this.ctx.stroke();
-    } else {
-      this.setStroke(currentColor, 2);
-      this.ctx.stroke();
-    }
-
-    // Draw points
-    for (const pt of points) {
       this.ctx.beginPath();
-      this.ctx.arc(pt.x, pt.y, 4, 0, 2 * Math.PI);
-      this.ctx.fillStyle = currentColor;
+      this.ctx.rect(rectX, y + i * sh, rectW, sh - 2);
+      this.setStyle(color, color);
       this.ctx.fill();
-      this.ctx.strokeStyle = currentColor;
-      this.ctx.lineWidth = 4;
       this.ctx.stroke();
     }
-  });
-}
+  }
 
- 
-private drawFunnelChart(x: number, y: number, w: number, h: number): void {
-  const stages = 6;
-  const sh = h / stages;
+  private drawWaterfall(x: number, y: number, w: number, h: number): void {
+    const bars = 6;
+    const gap = 10;
+    const barW = Math.max((w - (bars + 1) * gap) / bars, 1);
+    let currentY = y + h;
+    const heights = [0.2, 0.17, 0.13, 0.1, 0.13, 0.17].map(f => h * f);
 
-  for (let i = 0; i < stages; i++) {
-    const rectW = w * (1 - i * 0.15); // Gradually decrease width
-    const rectX = x + (w - rectW) / 2;
-    const rectY = y + i * sh;
+    heights.forEach((barH, i) => {
+      currentY -= barH;
+      if (currentY < y) return;
+      this.ctx.rect(x + gap + i * (barW + gap), currentY, barW, barH);
+      this.setStyle(this.colors[0]);
+      this.ctx.fill();
+    });
+  }
 
-    // Draw rounded rectangle for each stage
-    this.drawRoundedRect(this.ctx, rectX, rectY, rectW, sh - 2, this.cornerRadius);
-    this.ctx.fillStyle = this.colors[i % this.colors.length];
+  private drawGauge(x: number, y: number, w: number, h: number): void {
+    const cx = x + w / 2;
+    const cy = y + h * 0.9;
+    const radius = Math.min(w, h) * 0.6;
+    const value = this.rnd(1, 10, 90)[0];
+    const angle = Math.PI + (value / 100) * Math.PI;
+
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, radius, Math.PI, 0, false);
+    this.ctx.lineTo(cx, cy);
+    this.ctx.closePath();
+    this.setStyle('#eee');
     this.ctx.fill();
 
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = this.colors[i % this.colors.length];
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, radius, Math.PI, angle, false);
+    this.ctx.lineTo(cx, cy);
+    this.ctx.closePath();
+    this.setStyle(this.colors[7]);
+    this.ctx.fill();
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(cx, cy);
+    this.ctx.lineTo(cx + radius * 0.9 * Math.cos(angle), cy + radius * 0.9 * Math.sin(angle));
+    this.setStyle(undefined, '#333');
+    this.ctx.stroke();
+
+    this.ctx.font = `${Math.floor(h * 0.25)}px Arial`;
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.setStyle('#333');
+    this.ctx.fillText(`${value}`, cx, cy - radius * 0.3);
+  }
+
+  private drawCombinationChartGeneric(x: number, y: number, w: number, h: number, type: 'normal' | 'stacked'): void {
+    const bar = this.rnd(4, 20, 80);
+    const s1 = this.rnd(4, 10, 50);
+    const s2 = this.rnd(4, 10, 50);
+    const line = type === 'normal' ? this.rnd(4, 10, 80) : this.rnd(4, 20, 100);
+    const vals = type === 'normal' ? bar : s1.map((v, i) => v + s2[i]);
+    const bw = w / 4 / 2;
+    const max = Math.max(...vals, ...line);
+
+    for (let i = 0; i < 4; i++) {
+      const x0 = x + i * (w / 4) + bw / 2;
+      if (type === 'normal') {
+        this.setStyle(this.colors[5]);
+        this.ctx.fillRect(x0, y + h - (bar[i] / max) * h, bw, (bar[i] / max) * h);
+      } else {
+        const h1 = (s1[i] / max) * h;
+        const h2 = (s2[i] / max) * h;
+        this.setStyle(this.colors[5]);
+        this.ctx.fillRect(x0, y + h - h1, bw, h1);
+        this.setStyle(this.colors[1]);
+        this.ctx.fillRect(x0, y + h - h1 - h2, bw, h2);
+      }
+    }
+
+    this.ctx.beginPath();
+    line.forEach((v, i) => {
+      const px = x + i * (w / 4) + bw;
+      const py = y + h - (v / max) * h;
+      i ? this.ctx.lineTo(px, py) : this.ctx.moveTo(px, py);
+    });
+    this.ctx.lineTo(x + 3 * (w / 4) + bw, y + h);
+    this.ctx.lineTo(x + bw, y + h);
+    this.ctx.closePath();
+    this.setStyle(this.colors[4] + '50');
+    this.ctx.fill();
+
+    this.ctx.beginPath();
+    this.setStyle(undefined, this.colors[0]);
+    line.forEach((v, i) => {
+      const px = x + i * (w / 4) + bw;
+      const py = y + h - (v / max) * h;
+      i ? this.ctx.lineTo(px, py) : this.ctx.moveTo(px, py);
+    });
     this.ctx.stroke();
   }
-}
 
+  private drawRadialChart(x: number, y: number, w: number, h: number, chartType: 'radial' | 'stacked' = 'radial'): void {
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    const t = 4;
+    const gap = 1;
+    const outerR = Math.max(0, Math.min(w, h) / 2 - 10);
+    let vals: (number | number[])[];
+    let mode: 'radar' | 'clustered';
 
-  private drawCard(x: number, y: number, w: number, h: number): void {
-    this.setFill('#fff');
+    if (chartType === 'radial') {
+      vals = this.rnd(5, 10, 100);
+      mode = 'radar';
+    } else {
+      vals = Array.from({ length: 5 }, () => this.rnd(2, 10, 40));
+      mode = 'clustered';
+    }
+
+    const max = Math.max(...vals.map(v => (Array.isArray(v) ? v.reduce((a, b) => a + b, 0) : v)));
+
+    vals.forEach((val, i) => {
+      const r = outerR - i * (t + gap) + 5;
+      if (r <= 0) {
+        console.warn(`Skipped ring ${i}, invalid radius:`, r);
+        return;
+      }
+
+      const arr = Array.isArray(val) ? val : [val];
+      let sa = -Math.PI / 2;
+
+      arr.forEach((v, j) => {
+        const a = (v / max) * Math.PI * 1.6;
+        const innerR = r - t;
+
+        if (innerR <= 0) {
+          console.warn(`Skipped inner ring ${i}, invalid innerR:`, innerR);
+          return;
+        }
+
+        this.ctx.beginPath();
+        if (mode === 'radar') {
+          this.setStyle(this.colors[7], this.colors[0]);
+        } else {
+          const fillColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+          const strokeColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+          this.setStyle(fillColor, strokeColor);
+        }
+
+        this.ctx.arc(cx, cy, r, sa, sa + a);
+        this.ctx.lineTo(cx + innerR * Math.cos(sa + a), cy + innerR * Math.sin(sa + a));
+        this.ctx.arc(cx, cy, innerR, sa + a, sa, true);
+        this.ctx.closePath();
+        this.ctx.fill();
+        sa += a;
+      });
+    });
+  }
+
+  private drawRadarColumn(x: number, y: number, w: number, h: number, mode: string): void {
+    const points = 8;
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    const radius = Math.min(w, h) / 2 - 10;
+    const datasets = mode === 'single' ? [this.rnd(points, 10, 100)] : Array.from({ length: 3 }, () => this.rnd(points, 10, 40));
+    const sliceAngle = (2 * Math.PI) / points;
+
+    for (let i = 0; i < points; i++) {
+      if (mode === 'stacked') {
+        let cumulative = 0;
+        datasets.forEach((ds, d) => {
+          const r = (ds[i] / 100) * radius + 3;
+          this.ctx.beginPath();
+          this.ctx.moveTo(cx, cy);
+          this.ctx.arc(cx, cy, cumulative + r, i * sliceAngle, (i + 1) * sliceAngle);
+          this.ctx.closePath();
+          this.setStyle(this.colors[i % this.colors.length], '#fff', 1);
+          this.ctx.fill();
+          this.ctx.stroke();
+          cumulative += r;
+        });
+      } else if (mode === 'cluster') {
+        const clusterWidth = sliceAngle / datasets.length;
+        datasets.forEach((ds, d) => {
+          const r = (ds[i] / 100) * radius + 20;
+          const start = i * sliceAngle + d * clusterWidth;
+          this.ctx.beginPath();
+          this.ctx.moveTo(cx, cy);
+          this.ctx.arc(cx, cy, r, start, start + clusterWidth + 1e-61);
+          this.ctx.closePath();
+          this.setStyle(this.colors[i % this.colors.length], '#fff', 1);
+          this.ctx.fill();
+          this.ctx.stroke();
+        });
+      } else {
+        const r = (datasets[0][i] / 100) * radius + 10;
+        this.ctx.beginPath();
+        this.ctx.moveTo(cx, cy);
+        this.ctx.arc(cx, cy, r, i * sliceAngle, (i + 1) * sliceAngle);
+        this.ctx.closePath();
+        this.setStyle(this.colors[3], '#fff', 1);
+        this.ctx.fill();
+        this.ctx.stroke();
+      }
+    }
+  }
+
+  private drawTableChart(x: number, y: number, w: number, h: number, mode: 'pivot' | 'grid'): void {
+    const rows = 6;
+    const cols = 6;
+    const cellW = w / cols;
+    const cellH = h / rows;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const color = mode === 'grid'
+          ? (r % 2 === 0 ? this.colors[0] : '#fff')
+          : (r === 0 || c === 0 ? 'rgba(255,0,0,0.3)' : (r + c) % 2 === 0 ? 'rgba(0,255,0,0.2)' : 'rgba(255,0,0,0.1)');
+        this.setStyle(color);
+        this.ctx.fillRect(x + c * cellW, y + r * cellH, cellW, cellH);
+        this.setStyle(undefined, '#ddd');
+        this.ctx.strokeRect(x + c * cellW, y + r * cellH, cellW, cellH);
+      }
+    }
+  }
+
+  private drawCard(x: number, y: number, w: number, h: number, comp: IComponent): void {
+    const validSeries = comp.series_type.filter(s => this.config.seriesValidation['card']?.has(s) || false);
+    if (!validSeries.length) {
+      console.warn(`Invalid card series: ${comp.series_type.join(', ')}`);
+      return;
+    }
+    this.setStyle('#fff', '#fff');
     this.ctx.fillRect(x, y, w, h);
-    this.setStroke('#000', 2);
     this.ctx.strokeRect(x, y, w, h);
-    this.setFill('#2C3E50');
     this.ctx.font = `${Math.min(w / 6, h / 3)}px Arial`;
     this.ctx.textAlign = 'center';
-    this.ctx.fillText('123', x + w / 2, y + h / 2);
+    this.ctx.textBaseline = 'middle';
+    this.setStyle('#2C3E50');
+    this.ctx.fillStyle = '#000000';
+    this.ctx.fillText('21.2k ▲', x + w / 2, y + h / 2 - h * 0.08);
   }
 
-  private drawTableChart(x: number, y: number, w: number, h: number, color: string): void {
-    const rows = 4, cols = 3;
-    const cellW = w / cols, cellH = h / rows;
-    this.ctx.fillStyle = color;
-    this.ctx.fillRect(x, y, w, cellH);
-    this.ctx.strokeStyle = '#000';
-    this.ctx.lineWidth = 2;
-    for (let i = 0; i <= cols; i++) {
-      const px = x + i * cellW;
-      this.ctx.beginPath();
-      this.ctx.moveTo(px, y);
-      this.ctx.lineTo(px, y + h);
-      this.ctx.stroke();
+  private drawFilter(x: number, y: number, w: number, h: number, comp: IComponent): void {
+    const validSeries = comp.series_type.filter(s => this.config.seriesValidation['filter']?.has(s) || false);
+    if (!validSeries.length) {
+      console.warn(`Invalid filter series: ${comp.series_type.join(', ')}`);
+      return;
     }
-    for (let i = 0; i <= rows; i++) {
-      const py = y + i * cellH;
-      this.ctx.beginPath();
-      this.ctx.moveTo(x, py);
-      this.ctx.lineTo(x + w, py);
-      this.ctx.stroke();
+    if (validSeries.length > 1) {
+      console.error(`Multiple filter series: ${validSeries.join(', ')}`);
+      return;
+    }
+
+    const headerH = h * 0.2;
+    if (validSeries[0] === 'DropdownSeries') {
+      this.setStyle('#9E9E9E', '#fff', 2);
+      this.ctx.fillRect(x, y, w, headerH);
+      this.ctx.strokeRect(x, y, w, headerH);
+      this.setStyle('#CED4DA');
+      this.ctx.fillRect(x, y + headerH, w, h - headerH);
+      this.setStyle('#9E9E9E', '#fff', 2);
+      for (let i = 0; i <= 2; i++) {
+        const lineY = y + headerH + i * ((h - headerH) / 3);
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, lineY);
+        this.ctx.lineTo(x + w, lineY);
+        this.ctx.stroke();
+      }
+      this.ctx.strokeRect(x, y + headerH, w, h - headerH);
+      this.ctx.font = `${headerH * 0.9}px Arial`;
+      this.ctx.textAlign = 'right';
+      this.ctx.textBaseline = 'middle';
+      this.setStyle('rgba(255, 255, 255, 1)');
+      this.ctx.fillText('▼', x + w - 8, y + headerH / 2);
+    } else {
+      const btnW = w * 0.6;
+      const btnH = h * 0.4;
+      const btnX = x + (w - btnW) / 2;
+      const btnY = y + (h - btnH) / 2;
+      this.setStyle('#FFADAD', '#000');
+      this.ctx.fillRect(btnX, btnY, btnW + 10, btnH);
+      this.ctx.font = `${btnH * 0.5}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      this.setStyle('#fff');
+      this.ctx.fillText('🔍 Button', btnX + btnW / 2, btnY + btnH / 2);
     }
   }
 
-  private drawImageComponent(x: number, y: number, w: number, h: number): void {
+  private drawTextBox(x: number, y: number, w: number, h: number, comp: IComponent): void {
+    const validSeries = comp.series_type.filter(s => this.config.seriesValidation['text']?.has(s) || false);
+    if (!validSeries.length) {
+      console.warn(`Invalid text series: ${comp.series_type.join(', ')}`);
+      return;
+    }
+
+    const padding = Math.min(w, h) * 0.08;
+    const innerX = x + padding;
+    const innerY = y + padding;
+    const innerW = w - 2 * padding;
+    const innerH = h - 2 * padding;
+
+    this.setStyle('#fff', '#fff');
+    this.ctx.fillRect(innerX, innerY, innerW, innerH);
+    this.ctx.strokeRect(innerX, innerY, innerW, innerH);
+
+    this.ctx.fillStyle = '#222';
+    this.ctx.font = `bold ${Math.min(innerW, innerH) * 0.13}px Arial`;
+    this.ctx.textAlign = 'left';
+    this.ctx.textBaseline = 'top';
+    this.ctx.fillText('Heading', innerX + 10, innerY + 5);
+
+    const paragraph = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`;
+    this.ctx.fillStyle = '#222';
+    this.ctx.font = `${Math.min(innerW, innerH) * 0.11}px Arial`;
+    const lineHeight = Math.min(innerW, innerH) * 0.14;
+    const words = paragraph.split(' ');
+    let line = '';
+    let ty = innerY + innerH * 0.20;
+
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const testWidth = this.ctx.measureText(testLine).width;
+
+      if (testWidth > innerW - 20 && n > 0) {
+        this.ctx.fillText(line.trim(), innerX + 10, ty);
+        line = words[n] + ' ';
+        ty += lineHeight;
+        if (ty > innerY + innerH - lineHeight) break;
+      } else {
+        line = testLine;
+      }
+    }
+    if (line) {
+      this.ctx.fillText(line.trim(), innerX + 10, ty);
+    }
+  }
+
+  private drawImage(x: number, y: number, w: number, h: number): void {
     const img = new Image();
-    img.src = 'assets/dashboard-great-design-any-site-600nw-1710898087.webp';
+    img.crossOrigin = 'anonymous';
+    img.src = '/assets/img.svg';
     img.onload = () => {
       this.ctx.clearRect(x, y, w, h);
       this.ctx.drawImage(img, x, y, w, h);
-      this.ctx.strokeStyle = '#000';
-      this.ctx.lineWidth = 2;
+      this.setStyle(undefined, '#000', 2);
       this.ctx.strokeRect(x, y, w, h);
     };
   }
 
-  private drawFilterTextComponent(x: number, y: number, w: number, h: number, type: string, label?: string) {
-    this.ctx.fillStyle = '#fff';
-    this.ctx.fillRect(x, y, w, h);
-    this.ctx.strokeStyle = '#000';
-    this.ctx.strokeRect(x, y, w, h);
-    this.ctx.fillStyle = '#000';
-    this.ctx.font = `${Math.min(w, h) * 0.3}px Arial`;
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
-    if (type === 'dropdown') {
-      this.ctx.fillText(`${label || 'Select'} ▼`, x + w / 2, y + h / 2);
-    } else if (type === 'text') {
-      this.ctx.fillText('Search', x + w / 2, y + h / 2);
-    } else if (type === 'icon') {
-      this.ctx.fillText('⚙', x + w / 2, y + h / 2);
+  private drawMap(x: number, y: number, w: number, h: number, comp: IComponent): void {
+    const mapConfig = this.config.map[comp.component_type as 'geomap' | 'spatialmap'];
+    if (!mapConfig) {
+      console.warn(`Invalid map component: ${comp.component_type}`);
+      return;
     }
+
+    const validSeries = comp.series_type.filter(s => mapConfig.allowed.has(s));
+    if (!validSeries.length) {
+      console.warn(`Invalid map series: ${comp.series_type.join(', ')}`);
+      return;
+    }
+
+    validSeries.forEach(series => {
+      const imgSrc = mapConfig.images[series];
+      if (!imgSrc) {
+        console.warn(`No image for series: ${series}`);
+        return;
+      }
+      const img = new Image();
+      img.src = imgSrc;
+      img.onload = () => {
+        this.ctx.drawImage(img, x, y, w, h);
+        this.setStyle(undefined, '#fff', 2);
+        this.ctx.strokeRect(x, y, w, h);
+      };
+      img.onerror = () => console.error(`Failed to load image: ${img.src}`);
+    });
   }
 
-  private drawMapComponent(x: number, y: number, w: number, h: number): void {
-    const img = new Image();
-    img.src = 'assets/1000_F_1019790077_JTpsz2rNIXX4tHJvXZOSLF9aGn4XPp4k (1).jpg'; // Replace with your map image path
-    img.onload = () => {
-      this.ctx.drawImage(img, x, y, w, h);
-      this.ctx.strokeStyle = '#000';
-      this.ctx.strokeRect(x, y, w, h);
-    };
+  private handleTableRender(x: number, y: number, w: number, h: number, comp: IComponent, mode: 'pivot' | 'grid'): void {
+    const validSeries = comp.series_type.filter(s => this.config.seriesValidation[comp.component_type]?.has(s) || false);
+    if (!validSeries.length) {
+      console.warn(`Invalid ${mode} series: ${comp.series_type.join(', ')}`);
+      return;
+    }
+    this.drawTableChart(x, y, w, h, mode);
   }
-// ✅ Chart Series Renderer Mapping
-private chartRenderers: Record<string, (x: number, y: number, w: number, h: number, color: string) => void> = {
-  LineSeries: (x, y, w, h, color) => this.drawLineOrAreaChart(x, y, w, h, color, 'line'),
- AreaSeries: (x, y, w, h, color) => this.drawLineOrAreaChart(x, y, w, h, color, 'area'),
- ClusterLineSeries: (x, y, w, h, color) => this.drawLineOrAreaChart(x, y, w, h, color, 'clusterline'),
- ClusterAreaSeries: (x, y, w, h, color) => this.drawLineOrAreaChart(x, y, w, h, color, 'clusterarea'),
 
-  ColumnSeries: (x, y, w, h, color) => this.drawColumnBarChart(x, y, w, h, "column"),
-  ClusterBarSeries: (x, y, w, h, color) => this.drawColumnBarChart(x, y, w, h, "cluster"),
-  BarSeries: (x, y, w, h, color) => this.drawColumnBarChart(x, y, w, h, "bar"),
-  StackedBarSeries: (x, y, w, h, color) => this.drawColumnBarChart(x, y, w, h, "stacked-row"),
-  StackedColumnSeries: (x, y, w, h, color) => this.drawColumnBarChart(x, y, w, h, "stacked-column"),
-  ClusteredColumnSeries: (x, y, w, h) => this.drawBarChart(x, y, w, h),
-  PieSeries: (x, y, w, h) => this.drawPieOrDonutChart(x, y, w, h, false),
-  ScatterSeries: (x, y, w, h) => this.drawScatterChart(x, y, w, h, this.colors[0]),
-  DonutSeries: (x, y, w, h) => this.drawPieOrDonutChart(x, y, w, h, true),
-  WaterFallSeries: (x, y, w, h) => this.drawWaterfallChart(x, y, w, h),
-  TreeMapSeries: (x, y, w, h) => this.drawTreemapChart(x, y, w, h),
- RadarLine: (x, y, w, h, color) => this.drawRadarChart(x, y, w, h, color, 'line'),
-RadarArea: (x, y, w, h, color) => this.drawRadarChart(x, y, w, h, color, 'area'),
-ClusterLineRadar: (x, y, w, h, color) => this.drawRadarChart(x, y, w, h, color, 'clusterline'),
-ClusterAreaRadar: (x, y, w, h, color) => this.drawRadarChart(x, y, w, h, color, 'clusterarea'),
-
-  FunnelSeries: (x, y, w, h) => this.drawFunnelChart(x, y, w, h),
-  BubbleSeries: (x, y, w, h) => this.drawBubbleChart(x, y, w, h),
-};
- 
-
-// ✅ Common Handlers (DRY)
-private handleChartRender = (x: number, y: number, w: number, h: number, comp: IComponent) => {
-  comp.series_type?.forEach((series, i) => {
-    const renderer = this.chartRenderers[series];
-    if (renderer) renderer(x, y, w, h, this.colors[i % this.colors.length]);
-    else console.warn(`Unknown chart series type: ${series}`);
-  });
-};
-
-private handleGridRender = (x: number, y: number, w: number, h: number, comp: IComponent) => {
-  comp.series_type.forEach(series => {
-    if (["TableRowSeries", "TableColumnSeries"].includes(series)) {
-      this.drawTableChart(x, y, w, h, this.colors[0]);
-    } else {
-      console.warn(`Unknown grid series type: ${series}`);
+  private drawChart(x: number, y: number, w: number, h: number, series: string[]): void {
+    const validSeries = series.filter(s => Object.prototype.hasOwnProperty.call(this.config.chartRenderers, s));
+    if (!validSeries.length) {
+      console.warn(`Invalid chart series: ${series.join(', ')}`);
+      return;
     }
-  });
-};
-
-private handlePivotRender = (x: number, y: number, w: number, h: number, comp: IComponent) => {
-  comp.series_type?.forEach(series => {
-    if (["PivotRowSeries", "PivotColumnSeries"].includes(series)) {
-      this.drawTableChart(x, y, w, h, this.colors[1]);
-    } else {
-      console.warn(`Unknown pivot series type: ${series}`);
-    }
-  });
-};
-
-private handleCardRender = (x: number, y: number, w: number, h: number, comp: IComponent) => {
-  comp.series_type.forEach(series => {
-    if (series === "ValueSeries") {
-      this.drawCard(x, y, w, h);
-    } else {
-      console.warn(`Unknown card series type: ${series}`);
-    }
-  });
-};
-
-private handleFilterRender = (x: number, y: number, w: number, h: number, comp: IComponent) => {
-  comp.series_type.forEach(series => {
-    if (series === "DropdownSeries") {
-      this.drawFilterTextComponent(x, y, w, h, 'dropdown', 'Select');
-    } else if (series === "IconSeries") {
-      this.drawFilterTextComponent(x, y, w, h, 'icon', '');
-    } else {
-      console.warn(`Unknown filter series type: ${series}`);
-    }
-  });
-};
-
-private handleTextRender = (x: number, y: number, w: number, h: number, comp: IComponent) => {
-  comp.series_type.forEach(series => {
-    if (series === "TextSeries") {
-      this.drawFilterTextComponent(x, y, w, h, 'text', 'Search');
-    } else {
-      console.warn(`Unknown text series type: ${series}`);
-    }
-  });
-};
-
-private handleMapRender = (x: number, y: number, w: number, h: number, comp: IComponent) => {
-  const allowedSeries = [
-    "SpatialPolygonSeries", "HeatMapSeries",
-    "GeoMapSeries", "ChoroplethSeries"
-  ];
-
-  comp.series_type.forEach(series => {
-    if (allowedSeries.includes(series)) {
-      this.drawMapComponent(x, y, w, h);
-    } else {
-      console.warn(`Unknown map series type: ${series}`);
-    }
-  });
-};
-
-// ✅ Dispatcher for Components
-private componentRenderers: Record<string, (x: number, y: number, w: number, h: number, comp: IComponent) => void> = {
-  chart: this.handleChartRender,
-  grid: this.handleGridRender,
-  pivot: this.handleGridRender,
-  card: this.handleCardRender,
-  image: (x, y, w, h) => this.drawImageComponent(x, y, w, h),
-  filter: this.handleFilterRender,
-  text: this.handleTextRender,
-  spatialmap: this.handleMapRender,
-  geomap: this.handleMapRender
-};
-
-// ✅ Render Method
-public render(): void {
-  const { width: canvasW, height: canvasH } = this.canvas;
-  this.ctx.clearRect(0, 0, canvasW , canvasH );
-
-  // Background
-  this.ctx.fillStyle = "#ffffff";
-  this.ctx.fillRect(0, 0, canvasW , canvasH );
-
-  this.componentsData.forEach(comp => {
-    const { x, y, width, height, component_type } = comp;
-    const scaledX = x * this.scaleX, scaledY = y * this.scaleY;
-    const w = width * this.scaleX, h = height * this.scaleY;
-
-    const renderer = this.componentRenderers[component_type.toLowerCase()];
-    if (renderer) {
-      renderer(scaledX, scaledY, w, h, comp);
-    } else {
-      console.warn(`Unknown component type: ${component_type}`);
-    }
-  });
-}
-
-public destroy(): void {
-  window.removeEventListener('resize', this.handleResize);
-  if (this.canvas?.parentElement) {
-    this.canvas.parentElement.removeChild(this.canvas);
+    validSeries.forEach(s => this.config.chartRenderers[s](x, y, w, h));
   }
-}
+
+  public render(): void {
+    const { width, height } = this.canvas;
+    this.ctx.clearRect(0, 0, width, height);
+    this.setStyle('#ffffff');
+    this.ctx.fillRect(0, 0, width, height);
+
+    const maxUnitsX = 60;
+    const maxUnitsY = 60;
+
+    this.componentsData.forEach(comp => {
+      const componentType = comp.component_type?.toLowerCase();
+      if (!componentType || !Object.prototype.hasOwnProperty.call(this.config.componentRenderers, componentType)) {
+        console.warn(`Invalid component type: ${comp.component_type}`);
+        return;
+      }
+
+      const { x, y, width: unitW, height: unitH } = comp;
+
+      if (x >= maxUnitsX || y >= maxUnitsY) {
+        return;
+      }
+
+      const clampedX = Math.max(0, Math.min(x, maxUnitsX - unitW));
+      const clampedY = Math.max(0, Math.min(y, maxUnitsY - unitH));
+      const scaledXX = clampedX * this.scaleX;
+      const scaledYY = clampedY * this.scaleY;
+      const w = unitW * this.scaleX;
+      const h = unitH * this.scaleY;
+
+      this.config.componentRenderers[componentType](scaledXX, scaledYY, w, h, comp);
+    });
+  }
+
+  public destroy(): void {
+    window.removeEventListener('resize', () => this.resize());
+    this.canvas.parentElement?.removeChild(this.canvas);
+  }
 }
