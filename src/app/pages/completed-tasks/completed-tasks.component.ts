@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { TaskService } from '../../services/task.service';
 import { Task } from '../../models/task';
 
 @Component({
   selector: 'app-completed-tasks',
   templateUrl: './completed-tasks.component.html',
-  styleUrls: ['./completed-tasks.component.scss']
+  styleUrls: ['./completed-tasks.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class CompletedTasksComponent implements OnInit {
   tasks: Task[] = [];
